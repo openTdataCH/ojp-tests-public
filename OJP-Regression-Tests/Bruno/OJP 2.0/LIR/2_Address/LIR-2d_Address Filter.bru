@@ -1,0 +1,55 @@
+meta {
+  name: LIR-2d_Address Filter
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Accept: application/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="utf-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.vdv.de/ojp" version="2.0">
+    <OJPRequest>
+      <siri:ServiceRequest>
+        <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+        <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+        <OJPLocationInformationRequest>
+          <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+          <InitialInput>
+            <Name>Schulstrasse</Name>
+          </InitialInput>
+          <Restrictions>
+            <Type>address</Type>
+            <NumberOfResults>10</NumberOfResults>
+          </Restrictions>
+        </OJPLocationInformationRequest>
+      </siri:ServiceRequest>
+    </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Body contains <Address>", function () {
+      expect(res.getBody()?.toString()).to.include("<Address>");
+  });
+  
+  test("Body contains not <StopPlace>", function () {
+      expect(res.getBody()?.toString()).to.not.include("<StopPlace>");
+  });
+}
+
+settings {
+  encodeUrl: true
+}

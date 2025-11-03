@@ -1,0 +1,79 @@
+meta {
+  name: TR-1m6_Dest.DepArrTime_NumberOfResultsAfter-2
+  type: http
+  seq: 31
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>TR-1m6</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <siri:StopPointRef>8503424</siri:StopPointRef>
+                          <Name>
+                              <Text>Schaffhausen</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <siri:StopPointRef>8506000</siri:StopPointRef>
+                          <Name>
+                              <Text>Winterthur</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                  </Destination>
+                  <Params>
+                      <NumberOfResultsAfter>2</NumberOfResultsAfter>
+                      <NumberOfResultsBefore>0</NumberOfResultsBefore>
+                      <IncludeTrackSections>false</IncludeTrackSections>
+                      <IncludeLegProjection>false</IncludeLegProjection>
+                      <IncludeTurnDescription>false</IncludeTurnDescription>
+                      <IncludeIntermediateStops>false</IncludeIntermediateStops>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Ankunft nach 12:00", function () {
+      expect(res.getBody()?.toString()).to.include("EndTime>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechsel') + "11:");
+      expect(res.getBody()?.toString()).to.not.include("EndTime>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechsel') + "10:");
+      expect(res.getBody()?.toString()).to.not.include("EndTime>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechsel') + "12:");
+  });
+  
+  test("Response contains exactly 2 of </TripResult>", function () {
+      var searchString = "</TripResult>";
+      var responseBody = res.getBody()?.toString();
+      var occurrencesCount = (responseBody.match(new RegExp(searchString, "g")) || []).length;
+      expect(occurrencesCount).to.be.equal(2);
+  });
+}
+
+settings {
+  encodeUrl: true
+}

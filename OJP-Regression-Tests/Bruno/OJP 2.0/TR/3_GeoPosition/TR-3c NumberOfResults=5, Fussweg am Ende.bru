@@ -1,0 +1,79 @@
+meta {
+  name: TR-3c NumberOfResults=5, Fussweg am Ende
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="utf-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.vdv.de/ojp" version="2.0">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:ServiceRequestContext>
+                  <siri:Language>de</siri:Language>
+              </siri:ServiceRequestContext>
+              <siri:RequestTimestamp>2024-09-17T10:52:58.171Z</siri:RequestTimestamp>
+              <siri:RequestorRef>OJP_JS_SDK_v0.11.1</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>2024-09-17T10:52:58.171Z</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>TR-3c</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <StopPlaceRef>8507000</StopPlaceRef>
+                          <Name>
+                              <Text>Bern</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <GeoPosition>
+                              <siri:Longitude>7.629655</siri:Longitude>
+                              <siri:Latitude>46.755387</siri:Latitude>
+                          </GeoPosition>
+                          <Name>
+                              <Text>46.755387,7.629655</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <Params>
+                      <IncludeAllRestrictedLines>true</IncludeAllRestrictedLines>
+                      <NumberOfResults>5</NumberOfResults>
+                      <IncludeTrackSections>true</IncludeTrackSections>
+                      <IncludeLegProjection>true</IncludeLegProjection>
+                      <IncludeTurnDescription>true</IncludeTurnDescription>
+                      <IncludeIntermediateStops>true</IncludeIntermediateStops>
+                      <UseRealtimeData>explanatory</UseRealtimeData>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Response contains >=5 of TripResult", function () {
+      var searchString = "</TripResult>";
+      var responseBody = res.getBody()?.toString();
+      var occurrencesCount = (responseBody.match(new RegExp(searchString, "g")) || []).length;
+      expect(occurrencesCount).to.be.at.least(5);
+  });
+}
+
+settings {
+  encodeUrl: true
+}

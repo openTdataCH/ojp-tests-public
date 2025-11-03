@@ -1,0 +1,56 @@
+meta {
+  name: SER-2a_SPl__ZH-Kreuzplatz_incl-all
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+  	<OJPRequest>
+  		<siri:ServiceRequest>
+  			<siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+  			<siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+  			<OJPStopEventRequest>
+  				<siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+  				<siri:MessageIdentifier>ojp2_0</siri:MessageIdentifier>
+  				<Location>
+  					<PlaceRef>
+  						<StopPlaceRef>8530813</StopPlaceRef>
+  						<Name>
+  							<Text>Zürich Kreuzplatz</Text>
+  						</Name>
+  					</PlaceRef>
+  					<DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+  				</Location>
+  				<Params>
+  					<StopEventType>both</StopEventType>
+  					<IncludePreviousCalls>true</IncludePreviousCalls>
+  					<IncludeOnwardCalls>true</IncludeOnwardCalls>
+  					<IncludeOperatingDays>true</IncludeOperatingDays>
+  					<UseRealtimeData>full</UseRealtimeData>
+  				</Params>
+  			</OJPStopEventRequest>
+  		</siri:ServiceRequest>
+  	</OJPRequest>
+  </OJP>
+  
+}
+
+settings {
+  encodeUrl: true
+}

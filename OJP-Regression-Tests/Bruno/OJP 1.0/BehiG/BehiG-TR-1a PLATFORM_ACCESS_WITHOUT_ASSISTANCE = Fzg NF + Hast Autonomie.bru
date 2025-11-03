@@ -1,0 +1,110 @@
+meta {
+  name: BehiG-TR-1a PLATFORM_ACCESS_WITHOUT_ASSISTANCE = Fzg NF + Hast Autonomie
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPTripRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>BehiG-TR-1a</MessageIdentifier>
+                  <ojp:Origin>
+                      <ojp:PlaceRef>
+                          <StopPointRef>8500456</StopPointRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Oberdorf, Endhalt (Autonomie)</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                  </ojp:Origin>
+                  <ojp:Destination>
+                      <ojp:PlaceRef>
+                          <StopPointRef>8500490</StopPointRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Chutz (Rampeneinsatz)</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                  </ojp:Destination>
+                  <ojp:Params>
+                      <ojp:NumberOfResults>1</ojp:NumberOfResults>
+                  </ojp:Params>
+              </ojp:OJPTripRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+  
+}
+
+script:post-response {
+  test("Body matches string", function () {
+      expect(res.getBody()?.toString()).to.include(">PLATFORM_ACCESS_WITHOUT_ASSISTANCE<");
+  });
+  
+  // Parse the XML response
+  const xmlResponse = res.getBody()?.toString();
+  
+  // Use an XML parsing library like xml2js to parse the response
+  const xml2js = require('xml2js');
+  const parser = new xml2js.Parser({ explicitArray: false });
+  
+  parser.parseString(xmlResponse, function (err, result) {
+      if (err) {
+          console.error('XML parsing error:', err);
+      } else {
+          // Extract the ActiveJourneyRef value
+          const activeJourneyRef = findPropertyValue(result, 'JourneyRef');
+  
+          // Extract the ActiveOperatingDayRef value
+          const activeOperatingDayRef = findPropertyValue(result, 'OperatingDayRef');
+  
+          // Set the ActiveJourneyRef variable
+          bru.setGlobalEnvVar('ActiveJourneyRef', activeJourneyRef);
+  
+          // Set the ActiveOperatingDayRef variable
+          bru.setGlobalEnvVar('ActiveOperatingDayRef', activeOperatingDayRef);
+  
+          // Print to the console
+          console.log('ActiveJourneyRef:', activeJourneyRef);
+          console.log('ActiveOperatingDayRef:', activeOperatingDayRef);
+      }
+  });
+  
+  // Helper function to find property value in the response
+  function findPropertyValue(obj, propertyName) {
+      for (const key in obj) {
+          if (key.includes(propertyName)) {
+              return obj[key];
+          } else if (typeof obj[key] === 'object') {
+              const result = findPropertyValue(obj[key], propertyName);
+              if (result) {
+                  return result;
+              }
+          }
+      }
+      return null;
+  }
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,64 @@
+meta {
+  name: SER-1a2_SPoR_no-DepArrTime-Default-current-time
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPStopEventRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>SER-1a2</siri:MessageIdentifier>
+                  <Location>
+                      <PlaceRef>
+                          <siri:StopPointRef>8530813</siri:StopPointRef>
+                          <Name>
+                              <Text>Zürich Kreuzplatz</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Location>
+                  <Params>
+                      <NumberOfResults>5</NumberOfResults>
+                      <StopEventType>departure</StopEventType>
+                  </Params>
+              </OJPStopEventRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+  
+}
+
+script:post-response {
+  // Generiere das aktuelle Datum im Format "YYYY-MM-DD"
+  let currentDate = new Date().toISOString().split('T')[0];
+  let formattedDate = "TimetabledTime>" + currentDate;
+  
+  // Überprüfe, ob das heutige Datum im Format "YYYY-MM-DD" im String "TimetabledTime>YYYY-MM-DD" vorkommt
+  test('Überprüfe das heutige Datum im Format "YYYY-MM-DD"', function() {
+      expect(res.getBody()?.toString()).to.include(formattedDate);
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

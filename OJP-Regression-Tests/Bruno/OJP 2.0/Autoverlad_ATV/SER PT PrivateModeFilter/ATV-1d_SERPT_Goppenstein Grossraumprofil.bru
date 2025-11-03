@@ -1,0 +1,67 @@
+meta {
+  name: ATV-1d_SERPT_Goppenstein Grossraumprofil
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:ServiceRequestContext>
+                  <siri:Language>de</siri:Language>
+              </siri:ServiceRequestContext>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+  			<OJPStopEventRequest>
+  				<siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+  				<siri:MessageIdentifier>SER-1a1</siri:MessageIdentifier>
+  				<Location>
+  					<PlaceRef>
+  						<siri:StopPointRef>8519655</siri:StopPointRef>
+  						<Name>
+  							<Text>Goppenstein, Autoverlad</Text>
+  						</Name>
+  					</PlaceRef>
+  				</Location>
+  				<Params>
+  				    <IncludeAllRestrictedLines>true</IncludeAllRestrictedLines>
+  					<NumberOfResults>200</NumberOfResults>
+  					<StopEventType>both</StopEventType>
+  				</Params>
+  			</OJPStopEventRequest>
+  		</siri:ServiceRequest>
+  	</OJPRequest>
+  </OJP>
+  
+}
+
+script:post-response {
+  test("Contains Grossraumprofil", function() {
+      expect(res.getBody()?.toString()).to.include("Grossraumprofil");
+  });
+  
+  test("Contains A__GF", function() {
+      expect(res.getBody()?.toString()).to.include("A__GF");
+  });
+  
+  test("Contains Zieltexte", function() {
+      expect(res.getBody()?.toString()).to.include("<DestinationText>");
+      expect(res.getBody()?.toString()).to.include("<DestinationStopPointRef>8519655");
+  });
+}
+
+settings {
+  encodeUrl: true
+}

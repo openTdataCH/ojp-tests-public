@@ -1,0 +1,81 @@
+meta {
+  name: TR-1l2_Dest.DepArrTime_NumberOfResults-4
+  type: http
+  seq: 25
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>TR-1l2</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <siri:StopPointRef>8507000</siri:StopPointRef>
+                          <Name>
+                              <Text>Bern</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <siri:StopPointRef>8503424</siri:StopPointRef>
+                          <Name>
+                              <Text>Schaffhausen</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                  </Destination>
+                  <Params>
+                      <NumberOfResults>4</NumberOfResults>
+                      <IncludeIntermediateStops>false</IncludeIntermediateStops>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Response contains = 4 of </TripResult>", function () {
+      var searchString = "</TripResult>";
+      var responseBody = res.getBody()?.toString();
+      var occurrencesCount = (responseBody.match(new RegExp(searchString, "g")) || []).length;
+      expect(occurrencesCount).equal(4);
+  });
+  
+  test("Ankunftszeit vor 12 Uhr an Destination", function () {
+      const expectedValue = "EndTime>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechsel') + "10";
+  
+      expect(res.getBody()?.toString()).to.include(expectedValue);
+  });
+  
+  test("keine Ankunftszeit nach 12 Uhr an Destination", function () {
+      const expectedValue = "EndTime>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechsel') + "11";
+  
+      expect(res.getBody()?.toString()).to.not.include(expectedValue);
+  });
+}
+
+settings {
+  encodeUrl: true
+}

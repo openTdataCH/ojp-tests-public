@@ -1,0 +1,77 @@
+meta {
+  name: TR-1q4_IncludeTurnDescription
+  type: http
+  seq: 31
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="utf-8"?>
+  <OJP xmlns="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd" version="1.0">
+      <OJPRequest>
+          <ServiceRequest>
+              <ServiceRequestContext>
+                  <Language>fr</Language>
+              </ServiceRequestContext>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <ojp:OJPTripRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>TR-1q3</MessageIdentifier>
+                  <ojp:Origin>
+                      <ojp:PlaceRef>
+                          <StopPointRef>8503091</StopPointRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Zürich Giesshübel (Zürich)</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                  </ojp:Origin>
+                  <ojp:Destination>
+                      <ojp:PlaceRef>
+                          <ojp:GeoPosition>
+                              <Longitude>8.535721</Longitude>
+                              <Latitude>47.376061</Latitude>
+                          </ojp:GeoPosition>
+                          <ojp:LocationName>
+                              <ojp:Text>Zürich, Gessnerallee</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                  </ojp:Destination>
+                  <ojp:Params>
+                      <ojp:NumberOfResultsAfter>1</ojp:NumberOfResultsAfter>
+                      <ojp:NumberOfResultsBefore>0</ojp:NumberOfResultsBefore>
+                      <ojp:IncludeTrackSections>false</ojp:IncludeTrackSections>
+                      <ojp:IncludeLegProjection>true</ojp:IncludeLegProjection>
+                      <ojp:IncludeTurnDescription>true</ojp:IncludeTurnDescription>
+                      <ojp:IncludeIntermediateStops>false</ojp:IncludeIntermediateStops>
+                  </ojp:Params>
+              </ojp:OJPTripRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Body matches string", function () {
+      expect(res.getBody()?.toString()).to.include("<ojp:TurnAction>");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

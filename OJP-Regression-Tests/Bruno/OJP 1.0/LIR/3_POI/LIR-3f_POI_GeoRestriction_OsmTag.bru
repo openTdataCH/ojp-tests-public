@@ -1,0 +1,66 @@
+meta {
+  name: LIR-3f_POI_GeoRestriction_OsmTag
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPLocationInformationRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>LIR-3f</MessageIdentifier>
+                  <ojp:InitialInput>
+                      <ojp:GeoRestriction>
+                          <ojp:Circle>
+                              <ojp:Center>
+                                  <Longitude>8.53464</Longitude>
+                                  <Latitude>47.37682</Latitude>
+                              </ojp:Center>
+                              <ojp:Radius>250</ojp:Radius>
+                          </ojp:Circle>
+                      </ojp:GeoRestriction>
+                  </ojp:InitialInput>
+                  <ojp:Restrictions>
+                      <ojp:Type>poi</ojp:Type>
+                      <ojp:PointOfInterestFilter>
+                          <ojp:PointOfInterestCategory>
+                              <ojp:OsmTag>
+                                  <ojp:Tag>POI</ojp:Tag>
+                                  <ojp:Value>service</ojp:Value>
+                              </ojp:OsmTag>
+                          </ojp:PointOfInterestCategory>
+                      </ojp:PointOfInterestFilter>
+                  </ojp:Restrictions>
+              </ojp:OJPLocationInformationRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Response contains only POI Category service", function () {
+      expect(res.getBody()?.toString()).to.not.include("<ojp:Value>restaurant</ojp:Value>");
+      expect(res.getBody()?.toString()).to.not.include("<ojp:Value>catering</ojp:Value>");
+      expect(res.getBody()?.toString()).to.include("service");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

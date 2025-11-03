@@ -1,0 +1,50 @@
+meta {
+  name: LIR-1a_SP_LocationName_Stop
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp file:///C:/Users/Thomas%20Odermatt/OneDrive/01_Dokumente/OJP%20OpenJourneyPlanner/OJP%20release%202.0/OJP.xsd">
+  	<OJPRequest>
+  		<siri:ServiceRequest>
+  			<siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+  			<siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+  			<OJPLocationInformationRequest>
+  				<siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+  				<siri:MessageIdentifier>LIR-1a2</siri:MessageIdentifier>
+  				<InitialInput>
+  				<GeoRestriction>
+  					<Circle>
+  						<Center>
+  							<siri:Longitude>8.538936</siri:Longitude>
+  							<siri:Latitude>47.376569</siri:Latitude>
+  						</Center>
+  						<Radius>5000</Radius>
+  					</Circle>
+  				</GeoRestriction>
+  				</InitialInput>
+  				<Restrictions>
+                      <Type>stop</Type>
+                      <NumberOfResults>10</NumberOfResults>
+  				</Restrictions>
+  			</OJPLocationInformationRequest>
+  		</siri:ServiceRequest>
+  	</OJPRequest>
+  </OJP>
+}
+
+settings {
+  encodeUrl: true
+}

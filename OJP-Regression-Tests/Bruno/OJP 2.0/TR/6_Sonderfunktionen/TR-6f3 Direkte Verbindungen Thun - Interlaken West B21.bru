@@ -1,0 +1,77 @@
+meta {
+  name: TR-6f3 Direkte Verbindungen Thun - Interlaken West B21
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="utf-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.vdv.de/ojp" version="2.0">
+    <OJPRequest>
+      <siri:ServiceRequest>
+        <siri:ServiceRequestContext>
+          <siri:Language>en</siri:Language>
+        </siri:ServiceRequestContext>
+        <siri:RequestTimestamp>2024-09-24T15:09:19.041Z</siri:RequestTimestamp>
+        <siri:RequestorRef>OJP_JS_SDK_v0.11.1</siri:RequestorRef>
+        <OJPTripRequest>
+          <siri:RequestTimestamp>2024-09-24T15:09:19.041Z</siri:RequestTimestamp>
+          <Origin>
+            <PlaceRef>
+              <StopPlaceRef>8507100</StopPlaceRef>
+              <Name>
+                <Text>Thun</Text>
+              </Name>
+            </PlaceRef>
+            <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+          </Origin>
+          <Destination>
+            <PlaceRef>
+              <StopPlaceRef>8507493</StopPlaceRef>
+              <Name>
+                <Text>Interlaken West</Text>
+              </Name>
+            </PlaceRef>
+          </Destination>
+          <Params>
+            <NumberOfResults>5</NumberOfResults>
+            <IncludeTrackSections>false</IncludeTrackSections>
+            <IncludeLegProjection>false</IncludeLegProjection>
+            <IncludeTurnDescription>false</IncludeTurnDescription>
+            <IncludeIntermediateStops>false</IncludeIntermediateStops>
+            <UseRealtimeData>full</UseRealtimeData>
+          </Params>
+        </OJPTripRequest>
+      </siri:ServiceRequest>
+    </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Contains Line >21<", function () {
+      expect(res.getBody()?.toString()).to.include(">21<");
+  });
+  
+  test("Contains Line >Bus<", function () {
+      expect(res.getBody()?.toString()).to.include(">Bus<");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

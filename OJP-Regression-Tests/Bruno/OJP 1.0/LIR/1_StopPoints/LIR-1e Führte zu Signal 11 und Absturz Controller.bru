@@ -1,0 +1,54 @@
+meta {
+  name: LIR-1e Führte zu Signal 11 und Absturz Controller
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+  <OJP version="1.0" xmlns="http://www.siri.org.uk/siri" xmlns:ns5="http://datex2.eu/schema/2_0RC1/2_0" xmlns:ns2="http://www.vdv.de/ojp" xmlns:ns4="http://www.ifopt.org.uk/ifopt" xmlns:ns3="http://www.ifopt.org.uk/acsb">
+      <OJPRequest>
+          <ServiceRequest>
+              <ServiceRequestContext>
+                  <Language>de</Language>
+                  <DistanceUnits>m</DistanceUnits>
+                  <RequestTimeout>PT29S</RequestTimeout>
+              </ServiceRequestContext>
+              <RequestTimestamp>2024-06-20T20:45:39+02:00</RequestTimestamp>
+              <RequestorRef>J-S_TEST</RequestorRef>
+              <ns2:OJPLocationInformationRequest>
+                  <RequestTimestamp>2024-06-20T20:45:39+02:00</RequestTimestamp>
+                  <ns2:InitialInput>
+                      <ns2:LocationName>Oerlikon</ns2:LocationName>
+                      <ns2:GeoPosition>
+                          <Longitude>8.544112</Longitude>
+                          <Latitude>47.411527</Latitude>
+                      </ns2:GeoPosition>
+                  </ns2:InitialInput>
+                  <ns2:Restrictions>
+                      <ns2:Type>stop</ns2:Type>
+                      <ns2:NumberOfResults>10</ns2:NumberOfResults>
+                  </ns2:Restrictions>
+              </ns2:OJPLocationInformationRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+settings {
+  encodeUrl: true
+}

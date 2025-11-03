@@ -1,0 +1,81 @@
+meta {
+  name: TR-3a2 GeoPos Wasserauen - Appenzell
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Accept: application/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>MENTZ StatusCake</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>TR-3a2</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <GeoPosition>
+                              <siri:Longitude>9.425469</siri:Longitude>
+                              <siri:Latitude>47.282817</siri:Latitude>
+                          </GeoPosition>
+                          <Name>
+                              <Text>Wasserauen, Appenzell</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <siri:StopPointRef>8506286</siri:StopPointRef>
+                          <Name>
+                              <Text>Appenzell</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <Params>
+                      <NumberOfResults>1</NumberOfResults>
+                      <IncludeTrackSections>false</IncludeTrackSections>
+                      <IncludeLegProjection>false</IncludeLegProjection>
+                      <IncludeTurnDescription>false</IncludeTurnDescription>
+                      <IncludeIntermediateStops>false</IncludeIntermediateStops>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Body contains foot", function () {
+      expect(res.getBody()?.toString()).to.include("<PersonalMode>foot</PersonalMode>");
+  });
+  
+  test("Body contains rail", function () {
+      expect(res.getBody()?.toString()).to.include("<PtMode>rail</PtMode>");
+  });
+  
+  test("Body contains <Distance>623x", function () {
+      expect(res.getBody()?.toString()).to.include("<Distance>61");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

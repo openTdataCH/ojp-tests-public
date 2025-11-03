@@ -1,0 +1,59 @@
+meta {
+  name: SER-1g4_SPoR_IncludeRealtimeData-true
+  type: http
+  seq: 22
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPStopEventRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>SER-1g4</MessageIdentifier>
+                  <ojp:Location>
+                      <ojp:PlaceRef>
+                          <StopPointRef>8504108</StopPointRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Bern Europaplatz</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                      <ojp:DepArrTime>{{isoTimestamp}}</ojp:DepArrTime>
+                  </ojp:Location>
+                  <ojp:Params>
+                      <ojp:NumberOfResults>10</ojp:NumberOfResults>
+                      <ojp:StopEventType>departure</ojp:StopEventType>
+                      <ojp:IncludePreviousCalls>false</ojp:IncludePreviousCalls>
+                      <ojp:IncludeOnwardCalls>false</ojp:IncludeOnwardCalls>
+                      <ojp:IncludeOperatingDays>false</ojp:IncludeOperatingDays>
+                      <ojp:IncludeRealtimeData>true</ojp:IncludeRealtimeData>
+                  </ojp:Params>
+              </ojp:OJPStopEventRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Body to include ojp EstimatedTime>", function () {
+      expect(res.getBody()?.toString()).to.include("<ojp:EstimatedTime>");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

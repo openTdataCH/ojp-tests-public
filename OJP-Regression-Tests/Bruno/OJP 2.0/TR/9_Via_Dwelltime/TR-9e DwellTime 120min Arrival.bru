@@ -1,0 +1,81 @@
+meta {
+  name: TR-9e DwellTime 120min Arrival
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>TR-1e2</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <siri:StopPointRef>8503000</siri:StopPointRef>
+                          <Name>
+                              <Text>Zürich HB</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <siri:StopPointRef>8503424</siri:StopPointRef>
+                          <Name>
+                              <Text>Schaffhausen</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                  </Destination>
+                  <Via>
+                      <ViaPoint>
+                          <siri:StopPointRef>8506000</siri:StopPointRef>
+                          <Name>
+                              <Text>Winterthur</Text>
+                          </Name>
+                      </ViaPoint>
+                      <DwellTime>PT120M</DwellTime>
+                  </Via>
+                  <Params>
+                      <NumberOfResultsBefore>2</NumberOfResultsBefore>
+                      <NumberOfResultsAfter>2</NumberOfResultsAfter>
+                      <IncludeIntermediateStops>true</IncludeIntermediateStops>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Body matches string", function () {
+      expect(res.getBody()?.toString()).to.include("Winterthur");
+  });
+  
+  test("Body Datum Freitag Vor Fahplanwechsel", function () {
+      expect(res.getBody()?.toString()).to.include("TimetabledTime>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechsel') + "11");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

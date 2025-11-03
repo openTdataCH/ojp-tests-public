@@ -1,0 +1,59 @@
+meta {
+  name: SER-1h_StopEventType=Arrival
+  type: http
+  seq: 23
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPStopEventRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>SER-1h</MessageIdentifier>
+                  <ojp:Location>
+                      <ojp:PlaceRef>
+                          <StopPointRef>8591381</StopPointRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Zürich Stauffacher</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                  </ojp:Location>
+                  <ojp:Params>
+                      <ojp:NumberOfResults>1</ojp:NumberOfResults>
+                      <ojp:StopEventType>arrival</ojp:StopEventType>
+                  </ojp:Params>
+              </ojp:OJPStopEventRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  // Generiere das aktuelle Datum im Format "YYYY-MM-DD"
+  let currentDate = new Date().toISOString().split('T')[0];
+  let formattedDate = "TimetabledTime>" + currentDate;
+  
+  // Überprüfe, ob das heutige Datum im Format "YYYY-MM-DD" im String "TimetabledTime>YYYY-MM-DD" vorkommt
+  test('Überprüfe das heutige Datum im Format "YYYY-MM-DD"', function() {
+      expect(res.getBody()?.toString()).to.include(formattedDate);
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

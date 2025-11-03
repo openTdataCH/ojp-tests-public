@@ -1,0 +1,84 @@
+meta {
+  name: TR-1b_Origin_TimeAllowance
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>TR-1b</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <siri:StopPointRef>8507000</siri:StopPointRef>
+                          <Name>
+                              <Text>Bern</Text>
+                          </Name>
+                      </PlaceRef>
+                      <TimeAllowance>PT2H</TimeAllowance>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <siri:StopPointRef>8503424</siri:StopPointRef>
+                          <Name>
+                              <Text>Schaffhausen</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <Params>
+                      <NumberOfResults>3</NumberOfResults>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  // Aktuelles Datum und Uhrzeit als Zeitstempel in Millisekunden
+  let currentTimeStamp = new Date().getTime();
+  
+  // Erzeugen der aktuellen Zeit plus 2 Stunden als Zeitstempel in Millisekunden
+  let twoHoursLaterTimeStamp = currentTimeStamp + 2 * 60 * 60 * 1000;
+  
+  // Überprüfe, ob StartTime in der Response mehr als 2 Stunden nach der aktuellen Zeit ist
+  test('Überprüfe StartTime ist mehr als 2 Stunden nach der aktuellen Zeit', function() {
+      let responseXml = res.getBody()?.toString(); // Annahme: Die Antwort ist als XML-Text verfügbar
+      let regex = new RegExp(`<StartTime>(.*?)<\/StartTime>`);
+      let match = responseXml.match(regex);
+  
+      if (match) {
+          let StartTimeString = match[1];
+          let StartTime = new Date(StartTimeString).getTime(); // Zeitstempel der StartTime
+  
+          expect(StartTime).to.be.above(twoHoursLaterTimeStamp);
+      } else {
+          expect.fail('StartTime wurde nicht gefunden.');
+      }
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

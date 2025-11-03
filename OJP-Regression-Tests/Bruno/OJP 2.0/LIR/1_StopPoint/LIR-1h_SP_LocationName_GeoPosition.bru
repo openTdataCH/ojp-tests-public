@@ -1,0 +1,86 @@
+meta {
+  name: LIR-1h_SP_LocationName_GeoPosition
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Accept: application/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPLocationInformationRequest>
+                 <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>LIR-1c</siri:MessageIdentifier>
+                  <InitialInput>
+                      <GeoPosition>
+                          <siri:Longitude>8.55330</siri:Longitude>
+                          <siri:Latitude>47.37609</siri:Latitude>
+                      </GeoPosition>
+                  </InitialInput>
+                  <Restrictions>
+                      <Type>stop</Type>
+                      <NumberOfResults>10</NumberOfResults>
+                      <IncludePtModes>true</IncludePtModes>
+                  </Restrictions>
+              </OJPLocationInformationRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Contains first 4 StopPlaceRefs", function() {
+      expect(res.getBody()?.toString()).to.include("8591303");
+      expect(res.getBody()?.toString()).to.include("8591412");
+      expect(res.getBody()?.toString()).to.include("8591220");
+      expect(res.getBody()?.toString()).to.include("8591123");
+  });
+  
+  test("Contains first 4 Stop Texts", function() {
+      expect(res.getBody()?.toString()).to.include("Zürich, Platte");
+      expect(res.getBody()?.toString()).to.include("Zürich, Voltastrasse");
+      expect(res.getBody()?.toString()).to.include("Zürich, Kantonsschule");
+      expect(res.getBody()?.toString()).to.include("Zürich, ETH/Universitätsspital");
+  });
+  
+  test("PTMode muss enthalten sein", function () {
+      expect(res.getBody()?.toString()).to.include("<PtMode>");
+  });
+  
+  // Log DIDOK and StopName to console
+  var jsonData = xml2js(bru.res.body);
+  
+  // Extract values of StopPlaceRef and StopPlaceName
+  var stopPlaces = jsonData['OJP']['OJPResponse']['siri:ServiceDelivery']['OJPLocationInformationDelivery']['PlaceResult'].map(function(placeResult) {
+      return {
+          StopPlaceRef: placeResult['Place']['StopPlace']['StopPlaceRef'],
+          StopPlaceName: placeResult['Place']['StopPlace']['StopPlaceName']['Text']['_']
+      };
+  });
+  
+  // Log the values to the console, each key-value pair on a separate line
+  stopPlaces.forEach(function(stopPlace) {
+      console.log(+ stopPlace.StopPlaceRef, stopPlace.StopPlaceName);
+  });
+}
+
+settings {
+  encodeUrl: true
+}

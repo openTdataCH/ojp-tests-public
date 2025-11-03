@@ -1,0 +1,53 @@
+meta {
+  name: LIR-2a_Address 5 Buchstaben
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Accept: application/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPLocationInformationRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>LIR-2a</siri:MessageIdentifier>
+                  <InitialInput>
+                      <Name>Staff</Name>
+                  </InitialInput>
+                  <Restrictions>
+                      <Type>address</Type>
+                      <NumberOfResults>10</NumberOfResults>
+                  </Restrictions>
+              </OJPLocationInformationRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Body matches string <PlaceResult", function () {
+      expect(res.getBody()?.toString()).to.include("<PlaceResult");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

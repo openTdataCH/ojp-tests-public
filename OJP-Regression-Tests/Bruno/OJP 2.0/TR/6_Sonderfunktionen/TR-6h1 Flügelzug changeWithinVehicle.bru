@@ -1,0 +1,77 @@
+meta {
+  name: TR-6h1 Flügelzug changeWithinVehicle
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="utf-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.vdv.de/ojp" version="2.0">
+    <OJPRequest>
+      <siri:ServiceRequest>
+        <siri:ServiceRequestContext>
+          <siri:Language>de</siri:Language>
+        </siri:ServiceRequestContext>
+        <siri:RequestTimestamp>2025-01-13T16:08:25.479Z</siri:RequestTimestamp>
+        <siri:RequestorRef>OJP_JS_SDK_v0.15.1</siri:RequestorRef>
+        <OJPTripRequest>
+          <siri:RequestTimestamp>2025-01-13T16:08:25.479Z</siri:RequestTimestamp>
+          <Origin>
+            <PlaceRef>
+              <StopPlaceRef>8507000</StopPlaceRef>
+              <Name>
+                <Text>Bern (Bern)</Text>
+              </Name>
+            </PlaceRef>
+          <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+          </Origin>
+          <Destination>
+            <PlaceRef>
+              <StopPlaceRef>8507290</StopPlaceRef>
+              <Name>
+                <Text>Zweisimmen (Zweisimmen)</Text>
+              </Name>
+            </PlaceRef>
+          </Destination>
+          <Params>
+            <IncludeAllRestrictedLines>true</IncludeAllRestrictedLines>
+            <NumberOfResults>1</NumberOfResults>
+            <IncludeTrackSections>false</IncludeTrackSections>
+            <IncludeLegProjection>false</IncludeLegProjection>
+            <IncludeTurnDescription>false</IncludeTurnDescription>
+            <IncludeIntermediateStops>false</IncludeIntermediateStops>
+            <UseRealtimeData>none</UseRealtimeData>
+          </Params>
+        </OJPTripRequest>
+      </siri:ServiceRequest>
+    </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Body matches A__FL", function () {
+      expect(res.getBody()?.toString()).to.include("A__FL");
+  });
+  
+  test("Body matches <TransferType = ChangeWithinVehicle", function () {
+      expect(res.getBody()?.toString()).to.include("<TransferType>changeWithinVehicle</TransferType>");
+  });
+}
+
+settings {
+  encodeUrl: true
+}

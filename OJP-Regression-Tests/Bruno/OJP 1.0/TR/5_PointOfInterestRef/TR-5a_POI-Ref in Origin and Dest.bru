@@ -1,0 +1,69 @@
+meta {
+  name: TR-5a_POI-Ref in Origin and Dest
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPTripRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>TR-5a</MessageIdentifier>
+                  <ojp:Origin>
+                      <ojp:PlaceRef>
+                          <ojp:PointOfInterestRef>poiID:86859:23026261:-1:The Body Shop,:Zürich:The Body Shop,:ANY:POI:950529:5995872:MRCV:sbb</ojp:PointOfInterestRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Zürich</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                  </ojp:Origin>
+                  <ojp:Destination>
+                      <ojp:PlaceRef>
+                          <ojp:PointOfInterestRef>poiID:86744:23017939:-1:The Body Shop:Schaffhausen:The Body Shop:ANY:POI:961166:5943498:MRCV:sbb</ojp:PointOfInterestRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Schaffhausen</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                  </ojp:Destination>
+                  <ojp:Params>
+                      <ojp:NumberOfResults>3</ojp:NumberOfResults>
+                  </ojp:Params>
+              </ojp:OJPTripRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+  
+}
+
+script:post-response {
+  test("Body matches string PointOfInterestRef", function () {
+      expect(res.getBody()?.toString()).to.include("PointOfInterestRef");
+  });
+  test("Body matches string The Body Shop", function () {
+      expect(res.getBody()?.toString()).to.include("The Body Shop");
+  });
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,69 @@
+meta {
+  name: TR-6e2_UseRealtimeData=explanatory returned 500
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="utf-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.vdv.de/ojp" version="2.0">
+    <OJPRequest>
+      <siri:ServiceRequest>
+        <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+        <siri:RequestorRef>OJP_JS_SDK_v0.9.35</siri:RequestorRef>
+        <OJPTripRequest>
+          <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+          <Origin>
+            <PlaceRef>
+              <StopPlaceRef>8507492</StopPlaceRef>
+              <Name>
+                <Text>Interlaken Ost</Text>
+              </Name>
+            </PlaceRef>
+            <DepArrTime>{{isoTimestamp}}</DepArrTime>
+          </Origin>
+          <Destination>
+            <PlaceRef>
+              <StopPlaceRef>8508308</StopPlaceRef>
+              <Name>
+                <Text>Meiringen</Text>
+              </Name>
+            </PlaceRef>
+          </Destination>
+          <Params>
+            <NumberOfResults>5</NumberOfResults>
+            <UseRealtimeData>explanatory</UseRealtimeData>
+            <IncludeTrackSections>true</IncludeTrackSections>
+            <IncludeLegProjection>true</IncludeLegProjection>
+            <IncludeTurnDescription>true</IncludeTurnDescription>
+            <IncludeIntermediateStops>true</IncludeIntermediateStops>
+          </Params>
+        </OJPTripRequest>
+      </siri:ServiceRequest>
+    </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  // /* pm.test("<Cancelled>true", function () {
+  //     pm.expect(pm.response.text()).to.include("<Cancelled>true</Cancelled>");
+  }); */
+}
+
+settings {
+  encodeUrl: true
+}

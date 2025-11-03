@@ -1,0 +1,65 @@
+meta {
+  name: Shr-5c LIR Details zu Ladestationen
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>2022-02-23T07:54:06.780Z</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPLocationInformationRequest>
+                  <RequestTimestamp>2022-02-23T07:54:06.780Z</RequestTimestamp>
+                  <MessageIdentifier>Shr-5c</MessageIdentifier>
+                  <ojp:InitialInput>
+                      <!--<LocationName>1-1-1-CHEVPE331</LocationName> <!--Genève-->
+                      <LocationName>1-1-1-CH*SHE*E</LocationName>
+                  </ojp:InitialInput>
+                  <ojp:Restrictions>
+                      <ojp:Type>poi</ojp:Type>
+                      <ojp:PointOfInterestFilter>
+                          <ojp:PointOfInterestCategory>
+                              <ojp:OsmTag>
+                                  <ojp:Tag>amenity</ojp:Tag>
+                                  <ojp:Value>charging_station</ojp:Value>
+                              </ojp:OsmTag>
+                          </ojp:PointOfInterestCategory>
+                      </ojp:PointOfInterestFilter>
+                  </ojp:Restrictions>
+              </ojp:OJPLocationInformationRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Body matches string charging_station", function () {
+      expect(res.getBody()?.toString()).to.include("<ojp:Value>charging_station</ojp:Value>");
+  });
+  
+  test("Body matches string Status", function () {
+      expect(res.getBody()?.toString()).to.include("locationStatus");
+  });
+  
+  test("Body matches string Details", function () {
+      expect(res.getBody()?.toString()).to.include("CURRENT");
+      expect(res.getBody()?.toString()).to.include("PLUG");
+  });
+}
+
+settings {
+  encodeUrl: true
+}

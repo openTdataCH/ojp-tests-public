@@ -1,0 +1,63 @@
+meta {
+  name: SER-1j_Keine benachbarten Haltestellen
+  type: http
+  seq: 24
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPStopEventRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>SER-1a1</MessageIdentifier>
+                  <ojp:Location>
+                      <ojp:PlaceRef>
+                          <StopPointRef>8507786</StopPointRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Gopenstein, Bahnhof</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                  </ojp:Location>
+                  <ojp:Params>
+                      <ojp:NumberOfResults>5</ojp:NumberOfResults>
+                      <ojp:StopEventType>departure</ojp:StopEventType>
+                  </ojp:Params>
+              </ojp:OJPStopEventRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Verkehrsmittel Bus muss enthalten sein, RegioExpress nicht", function () {
+      expect(res.getBody()?.toString()).to.include("<ojp:PtMode>bus");
+      expect(res.getBody()?.toString()).to.not.include("<ojp:PtMode>rail");
+  });
+  
+  test("Response contains >= 5 of <ojp:ResultId>", function () {
+      var searchString = "<ojp:ResultId>";
+      var responseBody = res.getBody()?.toString();
+      var occurrencesCount = (responseBody.match(new RegExp(searchString, "g")) || []).length;
+      expect(occurrencesCount).to.be.at.least(5);
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,66 @@
+meta {
+  name: ATV_1a2_TR_97-1_Brig-IselleDiTrasquera_ohne-PrivateModeFilter
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPTripRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>ATV-1a2</MessageIdentifier>
+                  <ojp:Origin>
+                      <ojp:PlaceRef>
+                          <StopPointRef>8519606</StopPointRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Brig</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                  </ojp:Origin>
+                  <ojp:Destination>
+                      <ojp:PlaceRef>
+                          <StopPointRef>8511184</StopPointRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Iselle di Trasquera</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                  </ojp:Destination>
+                  <ojp:Params>
+                      <ojp:NumberOfResults>1</ojp:NumberOfResults>
+                      <ojp:IncludeTrackSections>false</ojp:IncludeTrackSections>
+                      <ojp:IncludeLegProjection>false</ojp:IncludeLegProjection>
+                      <ojp:IncludeTurnDescription>false</ojp:IncludeTurnDescription>
+                      <ojp:IncludeIntermediateStops>true</ojp:IncludeIntermediateStops>
+                  </ojp:Params>
+              </ojp:OJPTripRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Contains not specific LineRef>atv:97001:<", function() {
+      expect(res.getBody()?.toString()).to.not.include("LineRef>atv:97001:<");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

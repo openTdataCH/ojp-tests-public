@@ -1,0 +1,64 @@
+meta {
+  name: ATV_2a1_SER_Goppenstein
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+        <OJPStopEventRequest>
+          <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+          <Location>
+            <PlaceRef>
+              <StopPlaceRef>8519655</StopPlaceRef>
+              <LocationName>
+                <Text/>
+              </LocationName>
+            </PlaceRef>
+            <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+          </Location>
+          <Params>
+            <NumberOfResults>10</NumberOfResults>
+            <StopEventType>departure</StopEventType>
+            <IncludePreviousCalls>true</IncludePreviousCalls>
+            <IncludeOnwardCalls>true</IncludeOnwardCalls>
+            <IncludeRealtimeData>true</IncludeRealtimeData>
+          </Params>
+          <siri:Extensions>
+            <ParamsExtension>
+              <PrivateModeFilter>
+                <Exclude>false</Exclude>
+              </PrivateModeFilter>
+            </ParamsExtension>
+          </siri:Extensions>
+        </OJPStopEventRequest>
+      </siri:ServiceRequest>
+    </siri:OJPRequest>
+  </siri:OJP>
+}
+
+script:post-response {
+  test("Muss einen ATZ - Autozug enthalten", function() {
+      expect(res.getBody()?.toString()).to.include("ATZ</ojp:Text>");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

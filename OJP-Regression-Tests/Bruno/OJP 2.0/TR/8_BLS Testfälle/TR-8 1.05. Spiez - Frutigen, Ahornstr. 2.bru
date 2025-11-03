@@ -1,0 +1,73 @@
+meta {
+  name: TR-8 1.05. Spiez - Frutigen, Ahornstr. 2
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="utf-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.vdv.de/ojp" version="2.0">
+    <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>TR-8-BLS Testfälle</siri:MessageIdentifier>
+          <Origin>
+            <PlaceRef>
+              <StopPlaceRef>8507483</StopPlaceRef>
+              <Name>
+                <Text>Spiez</Text>
+              </Name>
+            </PlaceRef>
+            <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+          </Origin>
+          <Destination>
+            <PlaceRef>
+              <GeoPosition>
+                <siri:Longitude>7.63586</siri:Longitude>
+                <siri:Latitude>46.58574</siri:Latitude>
+              </GeoPosition>
+              <Name>
+                <Text>46.585740,7.635860</Text>
+              </Name>
+            </PlaceRef>
+          </Destination>
+          <Params>
+            <NumberOfResults>1</NumberOfResults>
+            <IncludeTrackSections>true</IncludeTrackSections>
+            <IncludeLegProjection>false</IncludeLegProjection>
+            <IncludeTurnDescription>true</IncludeTurnDescription>
+            <IncludeIntermediateStops>true</IncludeIntermediateStops>
+            <UseRealtimeData>explanatory</UseRealtimeData>
+          </Params>
+        </OJPTripRequest>
+      </siri:ServiceRequest>
+    </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Body contains <PersonalMode>foot</PersonalMode>", function () {
+      expect(res.getBody()?.toString()).to.include("<PersonalMode>foot</PersonalMode>");
+  });
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,80 @@
+meta {
+  name: ML-2c_TR_HstName_lang-it Ginevra
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:ServiceRequestContext>
+                  <siri:Language>it</siri:Language>
+              </siri:ServiceRequestContext>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>TR-1a1NOW</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <siri:StopPointRef>8591979</siri:StopPointRef>
+                          <Name>
+                              <Text>Lausanne, Alpes</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <siri:StopPointRef>8592780</siri:StopPointRef>
+                          <Name>
+                              <Text>Genève, Augustins</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <Params>
+                      <NumberOfResults>1</NumberOfResults>
+                      <IncludeIntermediateStops>false</IncludeIntermediateStops>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Contains 8500159 - Ginevra (de Genf)", function() {
+      expect(res.getBody()?.toString()).to.include('<Text xml:lang="it">Ginevra</Text>');
+      expect(res.getBody()?.toString()).to.include(">8501008<");
+  });
+  
+  test("Contains Bus and Treno (Mode)", function() {
+      expect(res.getBody()?.toString()).to.include('<Text xml:lang="it">Bus</Text>');
+      expect(res.getBody()?.toString()).to.include('<Text xml:lang="it">Treno</Text>');
+      
+  });
+  
+  test("Contains Attribute it", function() {
+      expect(res.getBody()?.toString()).to.include('<Text xml:lang="it">Carrozza famiglia con compartimento giochi</Text>');
+  });
+}
+
+settings {
+  encodeUrl: true
+}

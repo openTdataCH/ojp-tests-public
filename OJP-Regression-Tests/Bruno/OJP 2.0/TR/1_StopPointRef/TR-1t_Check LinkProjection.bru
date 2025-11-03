@@ -1,0 +1,202 @@
+meta {
+  name: TR-1t_Check LinkProjection
+  type: http
+  seq: 42
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>TR-1g</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <siri:StopPointRef>8506728</siri:StopPointRef>
+                          <Name>
+                              <Text>Niederuzwil Wespiwiese</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <siri:StopPointRef>8503000</siri:StopPointRef>
+                          <Name>
+                              <Text>Züri HB</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <Params>
+                      <NumberOfResults>1</NumberOfResults>
+                      <IncludeIntermediateStops>true</IncludeIntermediateStops>
+                      <IncludeLegProjection>true</IncludeLegProjection>
+                      <IncludeTrackSections>true</IncludeTrackSections>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  // Convert the XML response to JSON using Postman's built-in xml2Json function
+  var jsonObject = xml2js(bru.res.body);
+  
+  // Helper function to safely get nested properties
+  function getProp(obj, path) {
+      return path.split('.').reduce(function(prev, curr) {
+          return prev ? prev[curr] : undefined;
+      }, obj);
+  }
+  
+  // Navigate to the Trip element based on the expected JSON structure
+  var trip = getProp(jsonObject, "OJP.OJPResponse.siri:ServiceDelivery.OJPTripDelivery.TripResult.Trip");
+  test("Trip element exists", function() {
+      expect(trip).to.be.ok;
+  });
+  expect(trip.Leg, "Leg array exists").to.be.an('array');
+  expect(trip.Leg.length, "At least two Leg elements exist").to.be.at.least(2);
+  
+  // -------------------- Leg[2]: TransferLeg/PathGuidance --------------------
+  //var leg2 = trip.Leg[1];
+  // //pm.test("Leg[2] exists", function() {
+  // //    pm.expect(leg2).to.be.ok;
+  //});
+  //
+  //if (leg2) {
+  //    var transferLeg = leg2.TransferLeg;
+  // //    pm.test("TransferLeg in Leg[2] exists", function() {
+  // //        pm.expect(transferLeg).to.be.ok;
+  //    });
+  //    
+  //    if (transferLeg) {
+  //        var pathGuidance = transferLeg.PathGuidance;
+  // //        pm.test("PathGuidance in Leg[2] exists", function() {
+  // //            pm.expect(pathGuidance).to.be.ok;
+  //        });
+  //        
+  //        if (pathGuidance) {
+  //            var pgSection = pathGuidance.PathGuidanceSection;
+  // //            pm.test("PathGuidanceSection in Leg[2] exists", function() {
+  // //                pm.expect(pgSection).to.be.ok;
+  //            });
+  //            
+  //            if (pgSection) {
+  //                var trackSection = pgSection.TrackSection;
+  // //                pm.test("TrackSection in Leg[2] exists", function() {
+  // //                    pm.expect(trackSection).to.be.ok;
+  //                });
+  //                
+  //                if (trackSection) {
+  //                    var linkProjection = trackSection.LinkProjection;
+  // //                    pm.test("LinkProjection in Leg[2] exists", function() {
+  // //                        pm.expect(linkProjection).to.be.ok;
+  //                    });
+  //                    
+  //                    if (linkProjection) {
+  //                        var positionsLeg2 = linkProjection.Position;
+  // //                        pm.test("Position array in Leg[2] exists", function() {
+  // //                            pm.expect(positionsLeg2).to.be.an('array');
+  //                        });
+  // //                        pm.expect(positionsLeg2.length, "At least two Position elements in Leg[2]").to.be.at.least(2);
+  //                        
+  //                        if (positionsLeg2 && positionsLeg2.length >= 2) {
+  //                            var longitude1 = positionsLeg2[0]["siri:Longitude"];
+  // //                            pm.test("Leg[2] Position[1] siri:Longitude exists and starts with '9.'", function() {
+  // //                                pm.expect(longitude1, "siri:Longitude in Leg[2] Position[1]").to.be.a('string');
+  // //                                pm.expect(longitude1).to.match(/^9\./);
+  //                            });
+  //                            
+  //                            var longitude2 = positionsLeg2[1]["siri:Longitude"];
+  // //                            pm.test("Leg[2] Position[2] siri:Longitude exists and starts with '9.'", function() {
+  // //                                pm.expect(longitude2, "siri:Longitude in Leg[2] Position[2]").to.be.a('string');
+  // //                                pm.expect(longitude2).to.match(/^9\./);
+  //                            });
+  //                        }
+  //                    }
+  //                }
+  //            }
+  //        }
+  //    }
+  //}
+  
+  // -------------------- Leg[1]: TimedLeg/LegTrack --------------------
+  var leg1 = trip.Leg[0];
+  test("Leg[1] exists", function() {
+      expect(leg1).to.be.ok;
+  });
+  
+  if (leg1) {
+      var timedLeg = leg1.TimedLeg;
+      test("TimedLeg in Leg[1] exists", function() {
+          expect(timedLeg).to.be.ok;
+      });
+      
+      if (timedLeg) {
+          var legTrack = timedLeg.LegTrack;
+          test("LegTrack in Leg[1] exists", function() {
+              expect(legTrack).to.be.ok;
+          });
+          
+          if (legTrack) {
+              var trackSection2 = legTrack.TrackSection;
+              test("TrackSection in Leg[1] exists", function() {
+                  expect(trackSection2).to.be.ok;
+              });
+              
+              if (trackSection2) {
+                  var linkProjection2 = trackSection2.LinkProjection;
+                  test("LinkProjection in Leg[1] exists", function() {
+                      expect(linkProjection2).to.be.ok;
+                  });
+                  
+                  if (linkProjection2) {
+                      var positionsLeg1 = linkProjection2.Position;
+                      test("Position array in Leg[1] exists", function() {
+                          expect(positionsLeg1).to.be.an('array');
+                      });
+                      expect(positionsLeg1.length, "At least two Position elements in Leg[1]").to.be.at.least(2);
+                      
+                      if (positionsLeg1 && positionsLeg1.length >= 2) {
+                          var longitude3 = positionsLeg1[0]["siri:Longitude"];
+                          test("Leg[1] Position[1] siri:Longitude exists and starts with '9.'", function() {
+                              expect(longitude3, "siri:Longitude in Leg[1] Position[1]").to.be.a('string');
+                              expect(longitude3).to.match(/^9\./);
+                          });
+                          
+                          var longitude4 = positionsLeg1[1]["siri:Longitude"];
+                          test("Leg[1] Position[2] siri:Longitude exists and starts with '9.'", function() {
+                              expect(longitude4, "siri:Longitude in Leg[1] Position[2]").to.be.a('string');
+                              expect(longitude4).to.match(/^9\./);
+                          });
+                      }
+                  }
+              }
+          }
+      }
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+}

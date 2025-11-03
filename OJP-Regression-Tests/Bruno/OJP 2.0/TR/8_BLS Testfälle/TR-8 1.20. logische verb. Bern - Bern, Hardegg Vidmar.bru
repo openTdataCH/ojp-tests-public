@@ -1,0 +1,76 @@
+meta {
+  name: TR-8 1.20. logische verb. Bern - Bern, Hardegg Vidmar
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.vdv.de/ojp" version="2.0">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>TR-8-BLS Testfälle</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <GeoPosition>
+                              <siri:Longitude>7.439129</siri:Longitude>
+                              <siri:Latitude>46.948827</siri:Latitude>
+                          </GeoPosition>
+                          <Name>
+                              <Text>46.948827,7.439129</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <StopPlaceRef>ch:1:sloid:90073:0:1</StopPlaceRef>
+                          <Name>
+                              <Text>Hardegg Vidmar</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <Params>
+                      <IncludeAllRestrictedLines>true</IncludeAllRestrictedLines>
+                      <NumberOfResults>5</NumberOfResults>
+                      <IncludeTrackSections>true</IncludeTrackSections>
+                      <IncludeLegProjection>true</IncludeLegProjection>
+                      <IncludeTurnDescription>true</IncludeTurnDescription>
+                      <IncludeIntermediateStops>true</IncludeIntermediateStops>
+                      <UseRealtimeData>explanatory</UseRealtimeData>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Body contains PtMode=bus", function () {
+      expect(res.getBody()?.toString()).to.include("<PtMode>bus</PtMode>");
+  });
+  test("Body contains <PersonalMode>foot</PersonalMode>", function () {
+      expect(res.getBody()?.toString()).to.include("<PersonalMode>foot</PersonalMode>");
+  });
+}
+
+settings {
+  encodeUrl: true
+}

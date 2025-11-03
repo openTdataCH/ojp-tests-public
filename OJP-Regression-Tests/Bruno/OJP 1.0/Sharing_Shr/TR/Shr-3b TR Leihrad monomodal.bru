@@ -1,0 +1,76 @@
+meta {
+  name: Shr-3b TR Leihrad monomodal
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPTripRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>Shr-3b</MessageIdentifier>
+                  <ojp:Origin>
+                      <ojp:PlaceRef>
+                          <ojp:GeoPosition>
+                              <Longitude>7.022870</Longitude>
+                              <Latitude>47.008970</Latitude>
+                          </ojp:GeoPosition>
+                          <ojp:LocationName>
+                              <ojp:Text>47.008970,7.022870</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                  </ojp:Origin>
+                  <ojp:Destination>
+                      <ojp:PlaceRef>
+                          <StopPointRef>8504221</StopPointRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Neuchâtel (Neuchâtel)</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                  </ojp:Destination>
+                  <ojp:Params>
+                      <ojp:IncludeTrackSections>true</ojp:IncludeTrackSections> <!--Immer true: Ausgabe geografische Route (TrackSection)-->
+                      <ojp:IncludeLegProjection>true</ojp:IncludeLegProjection> <!--Optional: Ausgabe Koordinaten der Fahrstrecke (LinkProjection).--> 
+                      <ojp:IncludeTurnDescription>true</ojp:IncludeTurnDescription> <!--Optional: Ausgabe Abbiegeanweisungen (PathGuidance)--> 
+                      <ojp:IncludeIntermediateStops>true</ojp:IncludeIntermediateStops> <!--Optional: Ausgabe Zwischenhaltestellen der ÖV Route--> 
+                      <ojp:Extension>
+                          <ojp:ItModesToCover>bicycle_rental</ojp:ItModesToCover> <!--monomodal Leihrad-->
+                      </ojp:Extension>
+                  </ojp:Params>
+              </ojp:OJPTripRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+  
+}
+
+script:post-response {
+  test("Body matches string cycle ", function () {
+      expect(res.getBody()?.toString()).to.include("<ojp:IndividualMode>cycle</ojp:IndividualMode>");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

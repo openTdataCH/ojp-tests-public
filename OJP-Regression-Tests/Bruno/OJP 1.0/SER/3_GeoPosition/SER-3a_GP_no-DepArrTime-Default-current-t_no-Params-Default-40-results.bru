@@ -1,0 +1,65 @@
+meta {
+  name: SER-3a_GP_no-DepArrTime-Default-current-t_no-Params-Default-40-results
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPStopEventRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>SER-3a</MessageIdentifier>
+                  <ojp:Location>
+                      <ojp:PlaceRef>
+                          <ojp:GeoPosition>
+                              <Longitude>8.5545</Longitude>
+                              <Latitude>47.365</Latitude>
+                          </ojp:GeoPosition>
+                          <ojp:LocationName>
+                              <ojp:Text>Zürich Kreuzplatz</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                  </ojp:Location>
+              </ojp:OJPStopEventRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Response contains >= 40 of <ojp:ThisCall>", function () {
+      var searchString = "<ojp:ThisCall>";
+      var responseBody = res.getBody()?.toString();
+      var occurrencesCount = (responseBody.match(new RegExp(searchString, "g")) || []).length;
+      expect(occurrencesCount).to.be.at.least(40);
+  });
+  
+  test("Global Test. Contains ServiceDelivery, no ErrorCondition, Statuscode 200", function () {
+      expect(res.getBody()?.toString()).to.include("ServiceDelivery");
+      expect(res.getBody()?.toString()).to.not.include("ErrorCondition");
+      expect(res.getStatus()).to.equal(200);
+  });
+}
+
+settings {
+  encodeUrl: true
+}

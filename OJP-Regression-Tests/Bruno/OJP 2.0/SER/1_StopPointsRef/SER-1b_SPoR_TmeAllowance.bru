@@ -1,0 +1,79 @@
+meta {
+  name: SER-1b_SPoR_TmeAllowance
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPStopEventRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>SER-1b</siri:MessageIdentifier>
+                  <Location>
+                      <PlaceRef>
+                          <siri:StopPointRef>8530813</siri:StopPointRef>
+                          <Name>
+                              <Text>Zürich Kreuzplatz</Text>
+                          </Name>
+                      </PlaceRef>
+                      <TimeAllowance>PT2H10M</TimeAllowance>
+                  </Location>
+                  <Params>
+                      <NumberOfResults>5</NumberOfResults>
+                      <StopEventType>departure</StopEventType>
+                  </Params>
+              </OJPStopEventRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+  
+}
+
+script:post-response {
+  // Aktuelles Datum und Uhrzeit als Zeitstempel in Millisekunden
+  let currentTimeStamp = new Date().getTime();
+  
+  // Erzeugen der aktuellen Zeit plus 2 Stunden als Zeitstempel in Millisekunden
+  let twoHoursLaterTimeStamp = currentTimeStamp + 2 * 60 * 60 * 1000;
+  
+  // Überprüfe, ob TimetabledTime in der Response mehr als 2 Stunden nach der aktuellen Zeit ist
+  test('Überprüfe TimetabledTime ist mehr als 2 Stunden nach der aktuellen Zeit', function() {
+      let responseXml = res.getBody()?.toString(); // Annahme: Die Antwort ist als XML-Text verfügbar
+      let regex = new RegExp(`<TimetabledTime>(.*?)<\/TimetabledTime>`);
+      let match = responseXml.match(regex);
+  
+      if (match) {
+          let timetabledTimeString = match[1];
+          let timetabledTime = new Date(timetabledTimeString).getTime(); // Zeitstempel der TimetabledTime
+  
+          expect(timetabledTime).to.be.above(twoHoursLaterTimeStamp);
+      } else {
+          expect.fail('TimetabledTime wurde nicht gefunden.');
+      }
+  });
+  
+  
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,77 @@
+meta {
+  name: TR-8 1.04. Verbindung Fussweg, Steffisburg - Untere Wart 49
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.vdv.de/ojp" version="2.0">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:ServiceRequestContext>
+                  <siri:Language>de</siri:Language>
+              </siri:ServiceRequestContext>
+              <siri:RequestTimestamp>2024-12-04T13:03:55.768Z</siri:RequestTimestamp>
+              <siri:RequestorRef>OJP_JS_SDK_v0.13.2</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>2024-12-04T13:03:55.768Z</siri:RequestTimestamp>
+                  <Origin>
+                      <PlaceRef>
+                          <StopPlaceRef>8576581</StopPlaceRef>
+                          <Name>
+                              <Text>Bösbach</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <GeoPosition>
+                              <siri:Longitude>7.641455</siri:Longitude>
+                              <siri:Latitude>46.752637</siri:Latitude>
+                          </GeoPosition>
+                          <Name>
+                              <Text>46.752637,7.641455</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <Params>
+                      <PrivateModeFilter>
+                          <Exclude>false</Exclude>
+                      </PrivateModeFilter>
+                      <NumberOfResults>5</NumberOfResults>
+                      <IncludeTrackSections>true</IncludeTrackSections>
+                      <IncludeLegProjection>true</IncludeLegProjection>
+                      <IncludeTurnDescription>true</IncludeTurnDescription>
+                      <IncludeIntermediateStops>true</IncludeIntermediateStops>
+                      <UseRealtimeData>explanatory</UseRealtimeData>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Body contains <PersonalMode>foot</PersonalMode>", function () {
+      expect(res.getBody()?.toString()).to.include("<PersonalMode>foot</PersonalMode>");
+  });
+}
+
+settings {
+  encodeUrl: true
+}

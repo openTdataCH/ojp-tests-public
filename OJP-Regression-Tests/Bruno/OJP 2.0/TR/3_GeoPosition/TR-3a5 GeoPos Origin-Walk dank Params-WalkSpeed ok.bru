@@ -1,0 +1,79 @@
+meta {
+  name: TR-3a5 GeoPos Origin-Walk dank Params/WalkSpeed ok
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="utf-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.vdv.de/ojp" version="2.0">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:ServiceRequestContext>
+                  <siri:Language>de</siri:Language>
+              </siri:ServiceRequestContext>
+              <siri:RequestTimestamp>2024-09-17T10:52:58.171Z</siri:RequestTimestamp>
+              <siri:RequestorRef>OJP_JS_SDK_v0.11.1</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>2024-09-17T10:52:58.171Z</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>TR-3a5</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <GeoPosition>
+                              <siri:Longitude>8.54926</siri:Longitude>
+                              <siri:Latitude>47.772988</siri:Latitude>
+                          </GeoPosition>
+                          <Name>
+                              <Text>47.772988,8.549260</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <StopPlaceRef>8503486</StopPlaceRef>
+                          <Name>
+                              <Text>Siblingen</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <Params>
+                      <WalkSpeed>150</WalkSpeed>
+                      <NumberOfResults>1</NumberOfResults>
+                      <IncludeTrackSections>true</IncludeTrackSections>
+                      <IncludeLegProjection>true</IncludeLegProjection>
+                      <IncludeTurnDescription>false</IncludeTurnDescription>
+                      <IncludeIntermediateStops>true</IncludeIntermediateStops>
+                      <UseRealtimeData>full</UseRealtimeData>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Response contains >=5 of TripResult", function () {
+      var searchString = "<TimetabledTime>";
+      var responseBody = res.getBody()?.toString();
+      var occurrencesCount = (responseBody.match(new RegExp(searchString, "g")) || []).length;
+      expect(occurrencesCount).to.be.at.least(1);
+  });
+}
+
+settings {
+  encodeUrl: true
+}

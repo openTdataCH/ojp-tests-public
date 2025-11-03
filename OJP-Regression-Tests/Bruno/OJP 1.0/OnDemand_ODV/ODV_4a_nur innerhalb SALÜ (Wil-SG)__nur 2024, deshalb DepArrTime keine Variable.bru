@@ -1,0 +1,80 @@
+meta {
+  name: ODV_4a_nur innerhalb SALÜ (Wil-SG)__nur 2024, deshalb DepArrTime keine Variable
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPTripRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>ODV_4a</MessageIdentifier>
+                  <ojp:Origin>
+                      <ojp:PlaceRef>
+                          <ojp:GeoPosition>
+                              <Longitude>9.034391</Longitude>
+                              <Latitude>47.458653</Latitude>
+                          </ojp:GeoPosition>
+                          <ojp:LocationName>
+                              <ojp:Text>Bergholzstrasse</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                      <ojp:DepArrTime>{{Samstag0002UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                  </ojp:Origin>
+                  <ojp:Destination>
+                      <ojp:PlaceRef>
+                          <ojp:GeoPosition>
+                              <Longitude>9.055388</Longitude>
+                              <Latitude>47.474841</Latitude>
+                          </ojp:GeoPosition>
+                          <ojp:LocationName>
+                              <ojp:Text>Neugrubenstrasse</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                  </ojp:Destination>
+                  <ojp:Params>
+                      <ojp:NumberOfResults>2</ojp:NumberOfResults>
+                      <ojp:IncludeTrackSections>false</ojp:IncludeTrackSections>
+                      <ojp:IncludeLegProjection>true</ojp:IncludeLegProjection>
+                      <ojp:IncludeTurnDescription>false</ojp:IncludeTurnDescription>
+                      <ojp:IncludeIntermediateStops>false</ojp:IncludeIntermediateStops>
+                  </ojp:Params>
+              </ojp:OJPTripRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+  
+}
+
+script:post-response {
+  test("Body to include Innerhalb SALÜ", function () {
+      expect(res.getBody()?.toString()).to.include("SALÜ");
+  });
+  
+  test("Body to include <siri:LineRef>odv:", function () {
+      expect(res.getBody()?.toString()).to.include("<siri:LineRef>odv:");
+  });
+}
+
+settings {
+  encodeUrl: true
+}

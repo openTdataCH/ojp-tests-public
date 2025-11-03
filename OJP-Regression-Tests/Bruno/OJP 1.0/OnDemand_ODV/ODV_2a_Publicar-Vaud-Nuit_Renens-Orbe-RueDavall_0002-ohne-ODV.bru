@@ -1,0 +1,74 @@
+meta {
+  name: ODV_2a_Publicar-Vaud-Nuit_Renens-Orbe-RueDavall_0002-ohne-ODV
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPTripRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>ODV_2a</MessageIdentifier>
+                  <ojp:Origin>
+                      <ojp:PlaceRef>
+                          <StopPointRef>8501118</StopPointRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Renens VD (Renens VD)</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                      <ojp:DepArrTime>{{Samstag0002UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                  </ojp:Origin>
+                  <ojp:Destination>
+                      <ojp:PlaceRef>
+                          <ojp:GeoPosition>
+                              <Longitude>6.532931</Longitude>
+                              <Latitude>46.722742</Latitude>
+                          </ojp:GeoPosition>
+                          <ojp:LocationName>
+                              <ojp:Text>Rue Davall (Orbe)</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                  </ojp:Destination>
+                  <ojp:Params>
+                      <ojp:NumberOfResults>1</ojp:NumberOfResults>
+                      <ojp:IncludeTrackSections>false</ojp:IncludeTrackSections>
+                      <ojp:IncludeLegProjection>false</ojp:IncludeLegProjection>
+                      <ojp:IncludeTurnDescription>false</ojp:IncludeTurnDescription>
+                      <ojp:IncludeIntermediateStops>false</ojp:IncludeIntermediateStops>
+                  </ojp:Params>
+              </ojp:OJPTripRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+  
+}
+
+script:post-response {
+  test("Body to not include LineRef>odv", function () {
+      expect(res.getBody()?.toString()).to.not.include("LineRef>odv");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

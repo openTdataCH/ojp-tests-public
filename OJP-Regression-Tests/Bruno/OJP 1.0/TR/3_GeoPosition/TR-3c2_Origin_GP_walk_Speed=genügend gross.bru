@@ -1,0 +1,79 @@
+meta {
+  name: TR-3c2_Origin_GP_walk_Speed=genügend gross
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPTripRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>TR-3c2</MessageIdentifier>
+                  <ojp:Origin>
+                      <ojp:PlaceRef>
+                          <ojp:GeoPosition>
+                              <Longitude>8.567587</Longitude>
+                              <Latitude>47.773983</Latitude>
+                          </ojp:GeoPosition>
+                          <ojp:LocationName>
+                              <ojp:Text>Hagenturm</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                      <ojp:IndividualTransportOptions>
+                          <ojp:Mode>walk</ojp:Mode>
+                          <ojp:Speed>110</ojp:Speed>
+                      </ojp:IndividualTransportOptions>
+                  </ojp:Origin>
+                  <ojp:Destination>
+                      <ojp:PlaceRef>
+                          <StopPointRef>8503424</StopPointRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Schaffhausen</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                  </ojp:Destination>
+                  <ojp:Params>
+                      <ojp:NumberOfResults>3</ojp:NumberOfResults>
+                  </ojp:Params>
+              </ojp:OJPTripRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+  
+}
+
+script:post-response {
+  test("Body matches string StopPointRef", function () {
+      expect(res.getBody()?.toString()).to.include("StopPointRef");
+  });
+  
+  test("Global Test. Contains ServiceDelivery, no ErrorCondition, Statuscode 200", function () {
+      expect(res.getBody()?.toString()).to.include("ServiceDelivery");
+      expect(res.getBody()?.toString()).to.not.include("ErrorCondition");
+      expect(res.getStatus()).to.equal(200);
+  });
+}
+
+settings {
+  encodeUrl: true
+}

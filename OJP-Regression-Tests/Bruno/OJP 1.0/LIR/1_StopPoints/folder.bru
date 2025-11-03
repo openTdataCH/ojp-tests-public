@@ -1,0 +1,45 @@
+meta {
+  name: 1_StopPoints
+  seq: 1
+}
+
+auth {
+  mode: inherit
+}
+
+docs {
+  # **Parameter Geo**
+  
+  **GeoPosition** Coordinate where to look for locations. If given, the result should prefer location objects near to this GeoPosition.
+  
+  **GeoRestriction** Restricts the resulting location objects to the given geographical area.
+  
+  # Erlaubte Kombinationen
+  
+  **InitalInput** Darf und muss genau 1x vorkommen. Mögliche Werte
+  
+  - LocationName
+      
+  - GeoPosition
+      
+  - GeoRestriction
+      
+  
+  **PlaceRef** Als Ergänzung und weiteren Einschränkung von InitialInput. Mögliche Werte
+  
+  - LocationName
+      
+  - Others
+      
+      - GeoPosition
+          
+      - TopographicPlaceRef
+          
+      - PointOfInterestRef
+          
+      - AdressRef
+          
+      - StopPlaceRef
+          
+      - StopPOintRef
+}

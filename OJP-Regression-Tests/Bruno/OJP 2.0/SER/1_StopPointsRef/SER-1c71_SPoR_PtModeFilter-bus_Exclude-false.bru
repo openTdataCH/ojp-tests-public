@@ -1,0 +1,68 @@
+meta {
+  name: SER-1c71_SPoR_PtModeFilter-bus_Exclude-false
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPStopEventRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>SER-1c71</siri:MessageIdentifier>
+                  <Location>
+                      <PlaceRef>
+                          <siri:StopPointRef>8530813</siri:StopPointRef>
+                          <Name>
+                              <Text>Zürich Kreuzplatz</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                  </Location>
+                  <Params>
+                      <ModeFilter>
+                          <Exclude>false</Exclude>
+                          <PtMode>bus</PtMode>
+                      </ModeFilter>
+                      <NumberOfResults>5</NumberOfResults>
+                      <StopEventType>departure</StopEventType>
+                  </Params>
+              </OJPStopEventRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+  
+}
+
+script:post-response {
+  test("Darf kein tram enthalten", function () {
+      expect(res.getBody()?.toString()).to.not.include("<PtMode>tram</PtMode>");
+  });
+  
+  test("Muss bus enthalten", function () {
+      expect(res.getBody()?.toString()).to.include("<PtMode>bus</PtMode>");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

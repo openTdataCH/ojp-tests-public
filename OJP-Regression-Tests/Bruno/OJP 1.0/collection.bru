@@ -1,0 +1,30 @@
+meta {
+  name: OJP 1.0
+}
+
+auth {
+  mode: bearer
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+vars:pre-request {
+  Freitag12UhrVorFahrplanwechsel: 2025-12-12T11:00:00Z
+  Samstag0030VorFahrplanwechsel: 2025-12-12T23:30:00Z
+  JourneyRef: ojp:91001:D:H:j23:192:715
+  DatumFreitagVorFahrplanwechsel: 2025-12-12T
+  Freitag2345UhrVorFahrplanwechsel: 2025-12-12T22:45:00Z
+  letzter-ATV-Tag18Uhr30: 2025-09-27T16:30:00Z
+  Freitag12UhrVorFahrplanwechselStunde: 2025-12-12T11:
+  Samstag0003UhrVorFahrplanwechsel: 2025-12-12T23:03:00Z
+  Samstag0002UhrVorFahrplanwechsel: 2025-12-12T23:02:00Z
+  DatumFreitagVorFahrplanwechselohneT: 2025-12-12
+}
+
+script:pre-request {
+  const moment = require('moment');
+  const now = moment().format("yyyy-MM-DDTHH:mm:ssZ");
+  bru.setVar('isoTimestamp', now);
+}

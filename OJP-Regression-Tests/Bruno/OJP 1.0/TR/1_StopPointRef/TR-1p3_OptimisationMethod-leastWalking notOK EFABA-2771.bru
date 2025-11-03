@@ -1,0 +1,71 @@
+meta {
+  name: TR-1p3_OptimisationMethod-leastWalking notOK EFABA-2771
+  type: http
+  seq: 27
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPTripRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>TR-1p3</MessageIdentifier>
+                  <ojp:Origin>
+                      <ojp:PlaceRef>
+                          <StopPointRef>8503000</StopPointRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Zürich HB</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                      <ojp:DepArrTime>{{DatumFreitagVorFahrplanwechsel}}11:17:00Z</ojp:DepArrTime>
+                  </ojp:Origin>
+                  <ojp:Destination>
+                      <ojp:PlaceRef>
+                          <StopPointRef>8503091</StopPointRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Zürich Giesshübel</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                  </ojp:Destination>
+                  <ojp:Params>
+                      <ojp:NumberOfResults>5</ojp:NumberOfResults>
+                      <ojp:OptimisationMethod>leastWalking</ojp:OptimisationMethod>
+                  </ojp:Params>
+              </ojp:OJPTripRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+  
+}
+
+script:post-response {
+  test("Response body not contain <ojp:PtMode>tram</ojp:PtMode>", function () {
+      // Antwort darf kein Tram enthalten, da sonst Verbindungen kommmen, bei welchen man weit bis zur Starthaltestelle (von Zürich HB nach Zürich, Bahnhofstrasse/HB, 7min) laufen muss.
+      var forbiddenString = "<ojp:PtMode>tram</ojp:PtMode>";
+      var responseBody = res.getBody()?.toString();
+      expect(responseBody).not.include(forbiddenString);
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

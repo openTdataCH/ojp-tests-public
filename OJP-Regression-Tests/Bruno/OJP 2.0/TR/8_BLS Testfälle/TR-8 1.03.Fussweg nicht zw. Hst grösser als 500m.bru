@@ -1,0 +1,78 @@
+meta {
+  name: TR-8 1.03.Fussweg nicht zw. Hst grösser als 500m
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="utf-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.vdv.de/ojp" version="2.0">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>TR-8-BLS Testfälle</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <StopPlaceRef>8503508</StopPlaceRef>
+                          <Name>
+                              <Text>Dietikon</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                      <IndividualTransportOption>
+                          <MaxDuration>PT30M</MaxDuration>
+                          <MaxDistance>10000</MaxDistance>
+                      </IndividualTransportOption>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <GeoPosition>
+                              <siri:Longitude>8.41426</siri:Longitude>
+                              <siri:Latitude>47.39673</siri:Latitude>
+                          </GeoPosition>
+                          <Name>
+                              <Text>47.396730,8.414260</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <Params>
+                      <IncludeTrackSections>true</IncludeTrackSections>
+                      <IncludeLegProjection>true</IncludeLegProjection>
+                      <IncludeTurnDescription>true</IncludeTurnDescription>
+                      <ItModeToCover>
+                          <PersonalMode>foot</PersonalMode>
+                      </ItModeToCover>
+                      <UseRealtimeData>explanatory</UseRealtimeData>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Body contains <PersonalMode>foot</PersonalMode>", function () {
+      expect(res.getBody()?.toString()).to.include("<PersonalMode>foot</PersonalMode>");
+  });
+}
+
+settings {
+  encodeUrl: true
+}

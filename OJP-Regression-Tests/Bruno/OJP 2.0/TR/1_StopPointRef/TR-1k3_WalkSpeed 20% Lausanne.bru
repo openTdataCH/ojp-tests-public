@@ -1,0 +1,72 @@
+meta {
+  name: TR-1k3_WalkSpeed 20% Lausanne
+  type: http
+  seq: 23
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>TR-1k</siri:MessageIdentifier>
+                  <Origin>
+            <PlaceRef>
+              <StopPlaceRef>8501300</StopPlaceRef>
+              <Name>
+                <Text>Montreux (Montreux (CH))</Text>
+              </Name>
+            </PlaceRef>
+                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                  </Origin>
+                  <Destination>
+            <PlaceRef>
+              <StopPlaceRef>8591979</StopPlaceRef>
+              <Name>
+                <Text>Lausanne, Alpes (Lausanne)</Text>
+              </Name>
+            </PlaceRef>
+                  </Destination>
+                  <Params>
+                      <WalkSpeed>20</WalkSpeed>
+                      <NumberOfResults>1</NumberOfResults>
+                      <IncludeIntermediateStops>true</IncludeIntermediateStops>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Contians Transfer Duration 25min", function () {
+      expect(res.getBody()?.toString()).to.include("Duration>PT25M<");
+  });
+  
+  test("Contains not <ContinuousLeg>", function () {
+      expect(res.getBody()?.toString()).to.not.include("<ContinuousLeg>");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,59 @@
+meta {
+  name: SER-1a3_SPoR_no-Params-Default-NumberOfResults-40-Type-departure
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPStopEventRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>SER-1a3</siri:MessageIdentifier>
+                  <Location>
+                      <PlaceRef>
+                          <siri:StopPointRef>8530813</siri:StopPointRef>
+                          <Name>
+                              <Text>Zürich Kreuzplatz</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                  </Location>
+              </OJPStopEventRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+  
+}
+
+script:post-response {
+  test("Response contains >= 40 of <ThisCall>", function () {
+      var searchString = "<ThisCall>";
+      var responseBody = res.getBody()?.toString();
+      var occurrencesCount = (responseBody.match(new RegExp(searchString, "g")) || []).length;
+      expect(occurrencesCount).to.be.at.least(40);
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

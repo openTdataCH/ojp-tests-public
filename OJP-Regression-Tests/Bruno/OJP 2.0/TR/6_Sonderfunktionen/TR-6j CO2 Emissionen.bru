@@ -1,0 +1,89 @@
+meta {
+  name: TR-6j CO2 Emissionen
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>TR-6j</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <StopPlaceRef>8506269</StopPlaceRef>
+                          <Name>
+                              <Text>Säntis</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <GeoPosition>
+                              <siri:Longitude>9.483128</siri:Longitude>
+                              <siri:Latitude>47.65268</siri:Latitude>
+                          </GeoPosition>
+                          <Name>
+                              <Text>Friedrichshafen</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <Params>
+                      <NumberOfResults>1</NumberOfResults>
+                      <IncludeTrackSections>true</IncludeTrackSections>
+                      <IncludeLegProjection>false</IncludeLegProjection>
+                      <IncludeTurnDescription>false</IncludeTurnDescription>
+                      <IncludeIntermediateStops>false</IncludeIntermediateStops>
+                      <UseRealtimeData>none</UseRealtimeData>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("CO2 Emission Seilbahn 0.06", function () {
+      expect(res.getBody()?.toString()).to.include("<KilogramPerPersonKm>0.06</KilogramPerPersonKm>");
+  });
+  
+  test("CO2 Emission Bus 0.0918", function () {
+      expect(res.getBody()?.toString()).to.include("<KilogramPerPersonKm>0.0918</KilogramPerPersonKm>");
+  });
+  
+  test("CO2 Emission Zug 0.007", function () {
+      expect(res.getBody()?.toString()).to.include("<KilogramPerPersonKm>0.007</KilogramPerPersonKm>");
+  });
+  
+  test("CO2 Emission Schiff 0.1618", function () {
+      expect(res.getBody()?.toString()).to.include("<KilogramPerPersonKm>0.1618</KilogramPerPersonKm>");
+  });
+  
+  test("Fussweg am Ende 21xm", function () {
+      expect(res.getBody()?.toString()).to.include("<Length>21");
+  });
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,91 @@
+meta {
+  name: ATV-3d_TRIT_vehicleTunnel 4h Delémont-Domodossola
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>2023-11-02T10:12:55.403Z</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>2023-11-02T10:12:55.403Z</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>Autoverlad</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <StopPlaceRef>8500109</StopPlaceRef>
+                          <Name>
+                              <Text>Delémont (Delémont)</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <StopPlaceRef>8301003</StopPlaceRef>
+                          <Name>
+                              <Text>Domodossola (Domodossola)</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <Params>
+                      <ModeAndModeOfOperationFilter>
+                          <siri:WaterSubmode>localCarFerry</siri:WaterSubmode>
+                          <siri:RailSubmode>vehicleTunnelTransportRailService</siri:RailSubmode>>
+                      </ModeAndModeOfOperationFilter>
+                      <NumberOfResults>0</NumberOfResults>
+                      <ItModeToCover>
+                          <PersonalMode>car</PersonalMode>
+                      </ItModeToCover>
+                      <IncludeTrackSections>true</IncludeTrackSections>
+                      <IncludeLegProjection>true</IncludeLegProjection>
+                      <IncludeTurnDescription>false</IncludeTurnDescription>
+                      <IncludeIntermediateStops>false</IncludeIntermediateStops>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Body matches string vehicleTunnelTransportRailService", function () {
+      expect(res.getBody()?.toString()).to.include("vehicleTunnelTransportRailService");
+  });
+  test("Body matches string <PersonalMode>car", function () {
+      expect(res.getBody()?.toString()).to.include("<PersonalMode>car");
+  });
+  
+  // Get the XML response body
+  let xmlBody = res.getBody()?.toString();
+  // Count the occurrences of the string "vehicleTunnelTransportRailService"
+  let count = (xmlBody.match(/vehicleTunnelTransportRailService/g) || []).length;
+  // Check if the count is at least 2
+  test("Response contains at least two instances of 'vehicleTunnelTransportRailService'", function() {
+      expect(count).to.be.at.least(2);
+  });
+  
+  test("CO2 Emission IT Car 0.1864", function () {
+      expect(res.getBody()?.toString()).to.include("<KilogramPerPersonKm>0.1864");
+  });
+}
+
+settings {
+  encodeUrl: true
+}

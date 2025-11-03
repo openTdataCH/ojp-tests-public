@@ -1,0 +1,187 @@
+meta {
+  name: TIR-1f_Alle Params ON
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPTripInfoRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>TIR-1a</MessageIdentifier>
+                  <ojp:JourneyRef>ch:1:sjyid:100015:15358-001</ojp:JourneyRef>
+                  <ojp:OperatingDayRef>{{DatumFreitagVorFahrplanwechselohneT}}</ojp:OperatingDayRef>
+                  <ojp:Params>
+                      <ojp:IncludeTrackSections>true</ojp:IncludeTrackSections>
+                      <ojp:IncludeTrackProjection>true</ojp:IncludeTrackProjection>
+                      <ojp:UseTimetabledDataOnly>false</ojp:UseTimetabledDataOnly>
+                      <ojp:IncludeService>true</ojp:IncludeService>
+                      <ojp:IncludeCalls>true</ojp:IncludeCalls>
+                  </ojp:Params>
+              </ojp:OJPTripInfoRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:pre-request {
+  let today = new Date();
+  let formattedDate = today.toISOString().split('T')[0];  // Extract YYYY-MM-DD
+  bru.setGlobalEnvVar("current_date", formattedDate);
+  
+  
+  // Define the XML request body
+  const xmlRequest = `<?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>2023-11-02T10:12:55.403Z</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPStopEventRequest>
+                  <RequestTimestamp>2023-11-02T10:12:55.403Z</RequestTimestamp>
+                  <MessageIdentifier>ojp1_0</MessageIdentifier>
+                  <ojp:Location>
+                      <ojp:PlaceRef>
+                          <StopPointRef>8503000</StopPointRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Zürich HB</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                  </ojp:Location>
+                  <ojp:Params>
+                      <ojp:NumberOfResults>1</ojp:NumberOfResults>
+                      <ojp:StopEventType>departure</ojp:StopEventType>
+                      <ojp:IncludeRealtimeData>true</ojp:IncludeRealtimeData>
+                  </ojp:Params>
+              </ojp:OJPStopEventRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>`;
+  
+  
+  
+  
+  
+  // Send the POST request
+  await bru.sendRequest({
+      url: bru.getGlobalEnvVar('server'),
+      method: 'POST',
+      headers: {
+          'Authorization': `Bearer ${bru.getGlobalEnvVar('BearerToken')}`,
+          'Content-Type': 'text/xml',
+      },
+      data: xmlRequest,
+  }, async function(error, response) {
+      if (error) {
+          console.error('Request error:', error);
+      } else {
+          // Parse the XML response
+          const xmlResponse = response.data;
+  
+          // Use an XML parsing library like xml2js to parse the response
+          const xml2js = require('xml2js');
+          const parser = new xml2js.Parser({ explicitArray: false });
+  
+          parser.parseString(xmlResponse, function (err, result) {
+              if (err) {
+                  console.error('XML parsing error:', err);
+              } else {
+                  // Extract the ActiveJourneyRef value
+                  const activeJourneyRef = findPropertyValue(result, 'JourneyRef');
+                  
+                  // Extract the ActiveOperatingDayRef value
+                  const activeOperatingDayRef = findPropertyValue(result, 'OperatingDayRef');
+  
+                  // Set the ActiveJourneyRef variable
+                  bru.setGlobalEnvVar('ActiveJourneyRef', activeJourneyRef);
+                  
+                  // Set the ActiveOperatingDayRef variable
+                  bru.setGlobalEnvVar('ActiveOperatingDayRef', activeOperatingDayRef);
+  
+                  // Print to the console
+                  console.log('ActiveJourneyRef:', activeJourneyRef);
+                  console.log('ActiveOperatingDayRef:', activeOperatingDayRef);
+              }
+          });
+      }
+  });
+  
+  // Helper function to find property value in the response
+  function findPropertyValue(obj, propertyName) {
+      for (const key in obj) {
+          if (key.includes(propertyName)) {
+              return obj[key];
+          } else if (typeof obj[key] === 'object') {
+              const result = findPropertyValue(obj[key], propertyName);
+              if (result) {
+                  return result;
+              }
+          }
+      }
+      return null;
+  }
+  
+}
+
+script:post-response {
+  test("Body contains <ojp:OperatingDayRef>", function () {
+      expect(res.getBody()?.toString()).to.include("<ojp:OperatingDayRef>" + bru.getCollectionVar("DatumFreitagVorFahrplanwechselohneT"));
+  });
+  
+  
+  // Extract the XML response body
+  let responseBody = res.getBody()?.toString();
+  // Define the required text strings
+  let requiredStrings = [
+      '<ojp:Text xml:lang="de">S-Bahn</ojp:Text>',
+      '<ojp:Text xml:lang="de">15358</ojp:Text>',
+      '<ojp:Text xml:lang="de">BLS AG (bls)</ojp:Text>',
+      '<ojp:TrackSection>',
+      '<ojp:LinkProjection>',
+      '<ojp:Service>',
+      '<ojp:OnwardCall>',
+      '<ojp:JourneyRef>ch:1:sjyid:100015:15358-001</ojp:JourneyRef>',
+      '<siri:LineRef>ojp:91003:F</siri:LineRef>',
+      '<siri:DirectionRef>H</siri:DirectionRef>',
+      '<ojp:PtMode>rail</ojp:PtMode>',
+      '<siri:RailSubmode>regionalRail</siri:RailSubmode>',
+      '<ojp:Text xml:lang="de">Zug</ojp:Text>',
+      '<ojp:Text xml:lang="de">S</ojp:Text>',
+      '<ojp:Text xml:lang="de">S3</ojp:Text>',
+      '<ojp:OperatorRef>ojp:33</ojp:OperatorRef>',
+      '<ojp:OriginStopPointRef>ch:1:sloid:4300:5:9</ojp:OriginStopPointRef>',
+      '<ojp:Text xml:lang="de">Biel/Bienne</ojp:Text>',
+      '<ojp:DestinationStopPointRef>ch:1:sloid:7076:0:379687</ojp:DestinationStopPointRef>',
+      '<ojp:Text xml:lang="de">Belp</ojp:Text>'
+  ];
+  // Check if each required string is present in the response body
+  requiredStrings.forEach(function (str) {
+      test(`Body contains "${str}"`, function () {
+          expect(responseBody).to.include(str);
+      });
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,64 @@
+meta {
+  name: TR-1m5_NumberOfResults SBB
+  type: http
+  seq: 22
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPTripRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>TR-1s</MessageIdentifier>
+                  <ojp:Origin>
+                      <ojp:PlaceRef>
+                          <ojp:StopPlaceRef>8508399</ojp:StopPlaceRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Engelberg</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                  </ojp:Origin>
+                  <ojp:Destination>
+                      <ojp:PlaceRef>
+                          <ojp:StopPlaceRef>8503424</ojp:StopPlaceRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Schaffhausen</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                  </ojp:Destination>
+                  <ojp:Params>
+                      <ojp:NumberOfResultsAfter>1</ojp:NumberOfResultsAfter>
+                      <ojp:NumberOfResultsBefore>5</ojp:NumberOfResultsBefore>
+                      <ojp:IncludeTrackSections>false</ojp:IncludeTrackSections>
+                      <ojp:IncludeLegProjection>false</ojp:IncludeLegProjection>
+                      <ojp:IncludeTurnDescription>false</ojp:IncludeTurnDescription>
+                      <ojp:IncludeIntermediateStops>false</ojp:IncludeIntermediateStops>
+                  </ojp:Params>
+              </ojp:OJPTripRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+settings {
+  encodeUrl: true
+}

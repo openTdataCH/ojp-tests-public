@@ -1,0 +1,72 @@
+meta {
+  name: TR-1i1_LineFilter Exclude=true Züri-Uzwil
+  type: http
+  seq: 17
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>TR-1i1</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <siri:StopPointRef>8506208</siri:StopPointRef>
+                          <Name>
+                              <Text>Uzwil</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <siri:StopPointRef>8503000</siri:StopPointRef>
+                          <Name>
+                              <Text>Züri HB</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <Params>
+                      <LineFilter>
+                          <Line>
+                              <siri:LineRef>ojp:91001:C</siri:LineRef>
+                          </Line>
+                          <Exclude>true</Exclude>
+                      </LineFilter>
+                      <NumberOfResults>5</NumberOfResults>
+                      <IncludeIntermediateStops>true</IncludeIntermediateStops>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Linie ojp:91001:C (S-Bahn) darf nicht vorkommen, nur IR/IC Linien", function () {
+      expect(res.getBody()?.toString()).to.not.include("ojp:91001:C");
+  });
+}
+
+settings {
+  encodeUrl: true
+}

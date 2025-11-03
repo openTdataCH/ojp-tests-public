@@ -1,0 +1,64 @@
+meta {
+  name: SER-1c12_SPoR_PtModeFilter-rail_Exclude-true
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPStopEventRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>SER-1c12</siri:MessageIdentifier>
+                  <Location>
+                      <PlaceRef>
+                          <siri:StopPointRef>8530813</siri:StopPointRef>
+                          <Name>
+                              <Text>Zürich Kreuzplatz</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                  </Location>
+                  <Params>
+                      <ModeFilter>
+                          <Exclude>true</Exclude>
+                          <PtMode>rail</PtMode>
+                      </ModeFilter>
+                      <NumberOfResults>5</NumberOfResults>
+                      <StopEventType>departure</StopEventType>
+                  </Params>
+              </OJPStopEventRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+  
+}
+
+script:post-response {
+  test("Body matches string not <PtMode>rail<", function () {
+      expect(res.getBody()?.toString()).to.not.include("<PtMode>rail<");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

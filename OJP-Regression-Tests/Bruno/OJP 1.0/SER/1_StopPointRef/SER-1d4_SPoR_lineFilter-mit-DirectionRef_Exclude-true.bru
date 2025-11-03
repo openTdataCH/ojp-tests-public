@@ -1,0 +1,74 @@
+meta {
+  name: SER-1d4_SPoR_lineFilter-mit-DirectionRef_Exclude-true
+  type: http
+  seq: 14
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPStopEventRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>SER-1d4</MessageIdentifier>
+                  <ojp:Location>
+                      <ojp:PlaceRef>
+                          <StopPointRef>8592570</StopPointRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Schaffhausen, Quellenstrasse</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                  </ojp:Location>
+                  <ojp:Params>
+                      <ojp:LineFilter>
+                          <ojp:Line>
+                              <LineRef>ojp:92003:B</LineRef>
+                              <siri:DirectionRef>R</siri:DirectionRef>
+                          </ojp:Line>
+                          <ojp:Exclude>true</ojp:Exclude>
+                      </ojp:LineFilter>
+                      <ojp:NumberOfResults>10</ojp:NumberOfResults>
+                      <ojp:StopEventType>departure</ojp:StopEventType>
+                  </ojp:Params>
+              </ojp:OJPStopEventRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Body includes ojp:92003:B", function () {
+      expect(res.getBody()?.toString()).to.include("ojp:92003:B");
+  });
+  
+  test("Body includes DirectionRef H", function () {
+      expect(res.getBody()?.toString()).to.include("<siri:DirectionRef>H</siri:DirectionRef>");
+  });
+  
+  test("Body doesn't include DirectionRef R", function () {
+      expect(res.getBody()?.toString()).to.not.include("<siri:DirectionRef>R</siri:DirectionRef>");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

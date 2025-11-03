@@ -1,0 +1,60 @@
+meta {
+  name: LIR-1l2_Suche nach Globaler ID (Steig)
+  type: http
+  seq: 19
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Accept: application/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPLocationInformationRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>LIR-1l</siri:MessageIdentifier>
+                  <InitialInput>
+                      <Name>ch:1:sloid:7000:1:1</Name>
+                  </InitialInput>
+                  <Restrictions>
+                      <NumberOfResults>10</NumberOfResults>
+                  </Restrictions>
+                  <siri:Extensions>
+                      <ParamsExtension>
+                          <PrivateModeFilter>
+                              <Exclude>false</Exclude>
+                          </PrivateModeFilter>
+                      </ParamsExtension>
+                  </siri:Extensions>
+              </OJPLocationInformationRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Bern muss enthalten sein", function () {
+      expect(res.getBody()?.toString()).to.include("Bern");
+      expect(res.getBody()?.toString()).to.include("8507000");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

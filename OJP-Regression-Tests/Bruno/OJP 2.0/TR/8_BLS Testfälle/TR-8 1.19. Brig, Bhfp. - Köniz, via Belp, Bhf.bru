@@ -1,0 +1,77 @@
+meta {
+  name: TR-8 1.19. Brig, Bhfp. - Köniz, via Belp, Bhf
+  type: http
+  seq: 12
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.vdv.de/ojp" version="2.0">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>TR-8-BLS Testfälle</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <StopPlaceRef>8515296</StopPlaceRef>
+                          <Name>
+                              <Text>Brig Bahnhofplatz</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <StopPlaceRef>ch:1:sloid:7083:0:291332</StopPlaceRef>
+                          <Name>
+                              <Text>Köniz</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <Via>
+                      <ViaPoint>
+                          <StopPlaceRef>8571632</StopPlaceRef>
+                          <Name>
+                              <Text>Belp, Bahnhof</Text>
+                          </Name>
+                      </ViaPoint>
+                  </Via>
+                  <Params>
+                      <NumberOfResults>5</NumberOfResults>
+                      <IncludeTrackSections>false</IncludeTrackSections>
+                      <IncludeLegProjection>false</IncludeLegProjection>
+                      <IncludeTurnDescription>false</IncludeTurnDescription>
+                      <IncludeIntermediateStops>false</IncludeIntermediateStops>
+                      <UseRealtimeData>none</UseRealtimeData>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Body contains >Belp, Bahnhof< als Via", function () {
+      expect(res.getBody()?.toString()).to.include(">Belp, Bahnhof<");
+  });
+}
+
+settings {
+  encodeUrl: true
+}

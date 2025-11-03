@@ -1,0 +1,64 @@
+meta {
+  name: LIR-2e_Address_Circle
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPLocationInformationRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>LIR-2c</MessageIdentifier>
+                  <ojp:InitialInput>
+                      <ojp:GeoRestriction>
+                          <ojp:Circle>
+                              <ojp:Center>
+                                  <siri:Longitude>7.416356</siri:Longitude>
+                                  <siri:Latitude>46.926923</siri:Latitude>
+                              </ojp:Center>
+                              <ojp:Radius>200</Radius>
+                          </ojp:Circle>
+                      </ojp:GeoRestriction>
+                  </ojp:InitialInput>
+                  <ojp:Restrictions>
+                      <ojp:Type>address</ojp:Type>
+                      <ojp:NumberOfResults>1000</ojp:NumberOfResults>
+                  </ojp:Restrictions>
+              </ojp:OJPLocationInformationRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Response contains Könizstrasse", function() {
+      expect(res.getBody()?.toString()).to.include("Könizstrasse");
+  });
+  
+  test("Response contains Flurweg", function() {
+      expect(res.getBody()?.toString()).to.not.include("Flurweg");
+  });
+  
+  
+  
+  
+}
+
+settings {
+  encodeUrl: true
+}

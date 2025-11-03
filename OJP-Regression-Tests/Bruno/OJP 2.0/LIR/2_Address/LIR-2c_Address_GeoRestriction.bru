@@ -1,0 +1,69 @@
+meta {
+  name: LIR-2c_Address_GeoRestriction
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Accept: application/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+  	<OJPRequest>
+  		<siri:ServiceRequest>
+  			<siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+  			<siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+  			<OJPLocationInformationRequest>
+  				<siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+  				<siri:MessageIdentifier>LIR-2c</siri:MessageIdentifier>
+  				<InitialInput>
+  					<GeoRestriction>
+  						<Rectangle>
+  							<UpperLeft>
+  								<siri:Longitude>8.51889</siri:Longitude>
+  								<siri:Latitude>47.36261</siri:Latitude>
+  							</UpperLeft>
+  							<LowerRight>
+  								<siri:Longitude>8.52887</siri:Longitude>
+  								<siri:Latitude>47.35774</siri:Latitude>
+  							</LowerRight>
+  						</Rectangle>
+  					</GeoRestriction>
+  				</InitialInput>
+  				<Restrictions>
+  					<Type>address</Type>
+  					<NumberOfResults>10</NumberOfResults>
+  				</Restrictions>
+  			</OJPLocationInformationRequest>
+  		</siri:ServiceRequest>
+  	</OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Response contains specific AdressName", function() {
+      expect(res.getBody()?.toString()).to.include("Lessingstrasse");
+  });
+  
+  test("Response contains exactly 10 </Address>", function() {
+      const matches = res.getBody()?.toString().match(/<Address>/g);
+      expect(matches).to.have.lengthOf(10);
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

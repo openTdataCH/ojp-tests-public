@@ -1,0 +1,70 @@
+meta {
+  name: TR-1g_NoChangeAt.StopPlaceRef
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>TR-1g</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <siri:StopPointRef>8503016</siri:StopPointRef>
+                          <Name>
+                              <Text>Zürich Flughafen</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{DatumFreitagVorFahrplanwechsel}}14:23:00Z</DepArrTime>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <siri:StopPointRef>8503424</siri:StopPointRef>
+                          <Name>
+                              <Text>Schaffhausen</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <NoChangeAt>
+                      <StopPlaceRef>8506000</StopPlaceRef>
+                  </NoChangeAt>
+                  <Params>
+                      <NumberOfResults>1</NumberOfResults>
+                      <IncludeIntermediateStops>false</IncludeIntermediateStops>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test(" Fahrt darf nicht via TransferLeg Winterthur führen.", function () {
+      expect(res.getBody()?.toString()).to.not.include("Winterthur");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

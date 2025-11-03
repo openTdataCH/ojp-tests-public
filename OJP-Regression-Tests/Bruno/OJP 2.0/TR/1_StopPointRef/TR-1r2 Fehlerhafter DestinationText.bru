@@ -1,0 +1,68 @@
+meta {
+  name: TR-1r2 Fehlerhafter DestinationText
+  type: http
+  seq: 40
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Accept: application/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="utf-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.vdv.de/ojp" version="2.0">
+    <OJPRequest>
+      <siri:ServiceRequest>
+        <siri:RequestTimestamp>2024-07-03T08:04:36.000Z</siri:RequestTimestamp>
+        <siri:RequestorRef>OJP_JS_SDK_v0.9.35</siri:RequestorRef>
+        <OJPTripRequest>
+          <siri:RequestTimestamp>2024-07-03T08:04:36.000Z</siri:RequestTimestamp>
+          <Origin>
+            <PlaceRef>
+              <StopPlaceRef>8507000</StopPlaceRef>
+              <Name>
+                <Text>Bern</Text>
+              </Name>
+            </PlaceRef>
+            <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+          </Origin>
+          <Destination>
+            <PlaceRef>
+              <StopPlaceRef>8503000</StopPlaceRef>
+              <Name>
+                <Text>Zürich</Text>
+              </Name>
+            </PlaceRef>
+          </Destination>
+          <Params>
+            <NumberOfResultsAfter>1</NumberOfResultsAfter>
+            <IncludeTrackSections>false</IncludeTrackSections>
+            <IncludeLegProjection>false</IncludeLegProjection>
+            <IncludeTurnDescription>false</IncludeTurnDescription>
+            <IncludeIntermediateStops>false</IncludeIntermediateStops>
+          </Params>
+        </OJPTripRequest>
+      </siri:ServiceRequest>
+    </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("DestinationText Romanshorn", function () {
+      expect(res.getBody()?.toString()).to.include("Romanshorn");
+  });
+}
+
+settings {
+  encodeUrl: true
+}

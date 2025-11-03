@@ -1,0 +1,77 @@
+meta {
+  name: TR-1k2_WalkSpeed 400% Zürich HB
+  type: http
+  seq: 22
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>TR-1k</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <StopPlaceRef>8506105</StopPlaceRef>
+                          <Name>
+                              <Text>Weinfelden (Weinfelden)</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <StopPlaceRef>8503091</StopPlaceRef>
+                          <Name>
+                              <Text>Zürich Giesshübel</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <Params>
+                      <WalkSpeed>400</WalkSpeed>
+                      <NumberOfResults>1</NumberOfResults>
+                      <IncludeIntermediateStops>true</IncludeIntermediateStops>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Transfer Duration 1/4 von 7min gerundet = 2min", function () {
+      expect(res.getBody()?.toString()).to.include("Duration>PT2M");
+  });
+  
+  test("Contians S4, da diese so erreicht wird.", function () {
+      expect(res.getBody()?.toString()).to.include("S4");
+  });
+  
+  test("Contains no <ContinuousLeg>", function () {
+      expect(res.getBody()?.toString()).to.not.include("<ContinuousLeg>");
+  });
+  
+  
+}
+
+settings {
+  encodeUrl: true
+}

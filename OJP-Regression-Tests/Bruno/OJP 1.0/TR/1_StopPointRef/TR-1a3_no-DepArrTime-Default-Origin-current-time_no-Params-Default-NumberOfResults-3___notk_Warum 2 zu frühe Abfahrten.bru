@@ -1,0 +1,75 @@
+meta {
+  name: TR-1a3_no-DepArrTime-Default-Origin-current-time_no-Params-Default-NumberOfResults-3___notk_Warum 2 zu frühe Abfahrten
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPTripRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>TR-1a3</MessageIdentifier>
+                  <ojp:Origin>
+                      <ojp:PlaceRef>
+                          <StopPointRef>8507000</StopPointRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Bern</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                  </ojp:Origin>
+                  <ojp:Destination>
+                      <ojp:PlaceRef>
+                          <StopPointRef>8503424</StopPointRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Schaffhausen</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                  </ojp:Destination>
+              </ojp:OJPTripRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+  
+}
+
+script:post-response {
+  // Generiere das aktuelle Datum im Format "YYYY-MM-DD"
+  let currentDate = new Date().toISOString().split('T')[0];
+  let formattedDate = "TimetabledTime>" + currentDate;
+  
+  // Überprüfe, ob das heutige Datum im Format "YYYY-MM-DD" im String "TimetabledTime>YYYY-MM-DD" vorkommt
+  test('Überprüfe das heutige Datum im Format "YYYY-MM-DD"', function() {
+      expect(res.getBody()?.toString()).to.include(formattedDate);
+  });
+  
+  test("Response contains >= 3 of <ojp:ResultId>", function () {
+      var searchString = "<ojp:ResultId>";
+      var responseBody = res.getBody()?.toString();
+      var occurrencesCount = (responseBody.match(new RegExp(searchString, "g")) || []).length;
+      expect(occurrencesCount).to.be.at.least(3);
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

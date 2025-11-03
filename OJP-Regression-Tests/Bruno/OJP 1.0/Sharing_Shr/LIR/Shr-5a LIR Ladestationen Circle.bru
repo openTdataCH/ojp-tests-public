@@ -1,0 +1,72 @@
+meta {
+  name: Shr-5a LIR Ladestationen Circle
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPLocationInformationRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>Shr-5a</MessageIdentifier>
+                  <ojp:InitialInput>
+                      <ojp:GeoRestriction>
+                          <ojp:Circle><!--Anfrag mittels Circle oder Rectangle-->
+                              <ojp:Center> <!--Koordinate, zu welcher Objekte geliefert werden sollen-->
+                                  <Longitude>8.544</Longitude> <!--WGS84 Lon-->
+                                  <Latitude>47.367</Latitude> <!--WGS84 Lat-->
+                              </ojp:Center>
+                              <ojp:Radius>3000000</ojp:Radius> <!--Radius in Meter um Koordinate-->
+                          </ojp:Circle>
+                      </ojp:GeoRestriction>
+                  </ojp:InitialInput>
+                  <ojp:Restrictions>
+                      <ojp:Type>poi</ojp:Type>
+                      <ojp:PointOfInterestFilter>
+                          <ojp:PointOfInterestCategory>
+                              <ojp:OsmTag>
+                                  <ojp:Tag>amenity</ojp:Tag>
+                                  <ojp:Value>charging_station</ojp:Value>  <!--Ladestationen-->
+                              </ojp:OsmTag>
+                          </ojp:PointOfInterestCategory>
+                      </ojp:PointOfInterestFilter>
+                  </ojp:Restrictions>
+              </ojp:OJPLocationInformationRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+  
+}
+
+script:post-response {
+  test("Body matches string charging_station", function () {
+      expect(res.getBody()?.toString()).to.include("<ojp:Value>charging_station</ojp:Value>");
+  });
+  
+  test("Body matches string Status", function () {
+      expect(res.getBody()?.toString()).to.include("locationStatus");
+  });
+}
+
+settings {
+  encodeUrl: true
+}

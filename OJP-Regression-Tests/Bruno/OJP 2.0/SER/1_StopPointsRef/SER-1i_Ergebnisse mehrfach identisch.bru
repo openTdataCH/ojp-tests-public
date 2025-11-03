@@ -1,0 +1,89 @@
+meta {
+  name: SER-1i_Ergebnisse mehrfach identisch
+  type: http
+  seq: 25
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="utf-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.vdv.de/ojp" version="2.0">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>Buckmann</siri:RequestorRef>
+              <OJPStopEventRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <Location>
+                      <PlaceRef>
+                          <siri:StopPointRef>8500010</siri:StopPointRef>
+                          <Name>
+                              <Text>na</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Location>
+                  <Params>
+                      <NumberOfResults>20</NumberOfResults>
+                      <StopEventType>departure</StopEventType>
+                      <IncludePreviousCalls>true</IncludePreviousCalls>
+                      <IncludeOnwardCalls>true</IncludeOnwardCalls>
+                      <UseRealtimeData>none</UseRealtimeData>
+                  </Params>
+              </OJPStopEventRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  // Prüfe auf doppelte Zugnummern. Verhindert, dass Fahrten doppelt ausgegeben werden. War ein Problem am 21.2.2024 und März 2024.
+  // Convert XML response body to JSON
+  var jsonData = xml2js(bru.res.body);
+  
+  // Define namespaces
+  var namespaces = {
+      siri: "http://www.siri.org.uk/siri",
+      ojp: "http://www.vdv.de/ojp"
+  };
+  
+  // Extract StopEventResults from the response
+  var stopEventResults = jsonData.OJP.OJPResponse["siri:ServiceDelivery"].OJPStopEventDelivery.StopEventResult;
+  
+  // Check if stopEventResults is an array, if not, convert it to an array
+  if (!Array.isArray(stopEventResults)) {
+      stopEventResults = [stopEventResults];
+  }
+  
+  // Extract TrainNumbers from the StopEventResults
+  var trainNumbers = stopEventResults.map(result => result.StopEvent.Service.TrainNumber);
+  console.log("Zugnummern in Response: ",trainNumbers)
+  
+  // Check for duplicates
+  var duplicates = trainNumbers.filter((number, index) => trainNumbers.indexOf(number) !== index);
+  
+  // Log the duplicates, if any
+  if (duplicates.length > 0) {
+      console.log("Duplicate TrainNumbers found:", duplicates);
+      test("Duplicate TrainNumbers found", function() {
+          expect(Boolean(false)).to.be.true;
+      });
+  } else {
+      console.log("No Duplicate TrainNumbers found");
+      test("No Duplicate TrainNumbers found", function() {
+          expect(Boolean(true)).to.be.true;
+      });
+  }
+}
+
+settings {
+  encodeUrl: true
+}

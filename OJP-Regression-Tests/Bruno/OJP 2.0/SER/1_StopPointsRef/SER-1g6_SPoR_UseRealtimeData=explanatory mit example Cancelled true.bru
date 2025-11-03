@@ -1,0 +1,62 @@
+meta {
+  name: SER-1g6_SPoR_UseRealtimeData=explanatory mit example Cancelled true
+  type: http
+  seq: 24
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPStopEventRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>SER ohne DepArrTime</siri:MessageIdentifier>
+                  <Location>
+                      <PlaceRef>
+                          <siri:StopPointRef>8592321</siri:StopPointRef>
+                          <Name>
+                              <Text>Basel Bad Bf</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Location>
+                  <Params>
+                      <NumberOfResults>20</NumberOfResults>
+                      <StopEventType>departure</StopEventType>
+                      <IncludePreviousCalls>false</IncludePreviousCalls>
+                      <IncludeOnwardCalls>false</IncludeOnwardCalls>
+                      <IncludeOperatingDays>false</IncludeOperatingDays>
+                      <UseRealtimeData>explanatory</UseRealtimeData>
+                  </Params>
+              </OJPStopEventRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Muss EstimatedTime enthalten", function () {
+      expect(res.getBody()?.toString()).to.include("<EstimatedTime>");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

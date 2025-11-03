@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "OJP 2.0 2025 08 3rd",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

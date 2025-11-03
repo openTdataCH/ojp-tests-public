@@ -1,0 +1,60 @@
+meta {
+  name: LIR-5a_InitialInput Zermatt PtMode Only=rail
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPLocationInformationRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>LIR-5</siri:MessageIdentifier>
+                  <InitialInput>
+                      <Name>Zermatt</Name>
+                  </InitialInput>
+                  <Restrictions>
+                      <Modes>
+                          <Exclude>false</Exclude>
+                          <PtMode>rail</PtMode>
+                      </Modes>
+                  </Restrictions>
+              </OJPLocationInformationRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Contains 8501689 - Zermatt (rail)", function () {
+      expect(res.getBody()?.toString()).to.include("8501689");
+      expect(res.getBody()?.toString()).to.include("<PtMode>rail");
+  });
+  
+  test("Contains not Zermatt Schwarzsee", function () {
+      expect(res.getBody()?.toString()).to.not.include("8530208");
+  });
+  
+  test("Contains not Zermatt, Spiss (bus)", function () {
+      expect(res.getBody()?.toString()).to.not.include("8594565");
+      expect(res.getBody()?.toString()).to.not.include("<PtMode>bus");
+  });
+}
+
+settings {
+  encodeUrl: true
+}

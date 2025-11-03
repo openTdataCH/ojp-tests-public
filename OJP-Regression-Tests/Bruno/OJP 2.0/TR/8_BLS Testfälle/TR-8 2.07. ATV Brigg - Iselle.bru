@@ -1,0 +1,78 @@
+meta {
+  name: TR-8 2.07. ATV Brigg - Iselle
+  type: http
+  seq: 27
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.vdv.de/ojp" version="2.0">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>TR-8-BLS Testfälle</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <StopPlaceRef>8519606</StopPlaceRef>
+                          <Name>
+                              <Text>Brig Autoverlad (Brig-Glis)</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <StopPlaceRef>8511184</StopPlaceRef>
+                          <Name>
+                              <Text>Iselle, Iselle Autoverlad (Trasquera)</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <Params>
+                      <IncludeAllRestrictedLines>true</IncludeAllRestrictedLines>
+                      <NumberOfResults>5</NumberOfResults>
+                      <IncludeTrackSections>true</IncludeTrackSections>
+                      <IncludeLegProjection>false</IncludeLegProjection>
+                      <IncludeTurnDescription>true</IncludeTurnDescription>
+                      <IncludeIntermediateStops>true</IncludeIntermediateStops>
+                      <UseRealtimeData>explanatory</UseRealtimeData>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Body contains Autotunnelzug", function () {
+      expect(res.getBody()?.toString()).to.include("Autotunnelzug");
+  });
+  
+  test("Body contains <siri:LineRef>atv:", function () {
+      expect(res.getBody()?.toString()).to.include("<siri:LineRef>atv:");
+  });
+  
+  test("Body contains ATZ</Text>", function () {
+      expect(res.getBody()?.toString()).to.include("ATZ</Text>");
+  });
+}
+
+settings {
+  encodeUrl: true
+}

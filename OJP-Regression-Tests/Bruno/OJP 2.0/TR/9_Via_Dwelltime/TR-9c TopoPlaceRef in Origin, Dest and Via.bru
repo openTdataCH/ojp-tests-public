@@ -1,0 +1,78 @@
+meta {
+  name: TR-9c TopoPlaceRef in Origin, Dest and Via
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>2023-11-02T10:12:55.403Z</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>2023-11-02T10:12:55.403Z</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>TR-9</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <TopographicPlaceRef>23026261:27</TopographicPlaceRef>
+                          <Name>
+                              <Text>Zürich</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <TopographicPlaceRef>23017939:4</TopographicPlaceRef>
+                          <Name>
+                              <Text>Schaffhausen</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <Via>
+                      <ViaPoint>
+                          <siri:StopPointRef>8506000</siri:StopPointRef>
+                          <Name>
+                              <Text>Winterthur</Text>
+                          </Name>
+                      </ViaPoint>
+                      <DwellTime>PT0M</DwellTime>
+                  </Via>
+                  <Params>
+                      <NumberOfResults>3</NumberOfResults>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+  
+}
+
+script:post-response {
+  test("Body matches string TopographicPlaceRef", function () {
+      expect(res.getBody()?.toString()).to.include("TopographicPlaceRef");
+  });
+  test("Body matches string Winterthur", function () {
+      expect(res.getBody()?.toString()).to.include("Winterthur");
+  });
+}
+
+settings {
+  encodeUrl: true
+}

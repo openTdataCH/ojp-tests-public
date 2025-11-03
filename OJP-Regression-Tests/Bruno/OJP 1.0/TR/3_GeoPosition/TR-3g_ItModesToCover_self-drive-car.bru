@@ -1,0 +1,82 @@
+meta {
+  name: TR-3g_ItModesToCover_self-drive-car
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPTripRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>TR-3g</MessageIdentifier>
+                  <ojp:Origin>
+                      <ojp:PlaceRef>
+                          <ojp:GeoPosition>
+                              <Longitude>7.501134</Longitude>
+                              <Latitude>47.009451</Latitude>
+                          </ojp:GeoPosition>
+                          <ojp:LocationName>
+                              <ojp:Text>Urtenen-Schönbühl</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                  </ojp:Origin>
+                  <ojp:Destination>
+                      <ojp:PlaceRef>
+                          <ojp:GeoPosition>
+                              <Longitude>7.527653</Longitude>
+                              <Latitude>46.929008</Latitude>
+                          </ojp:GeoPosition>
+                          <ojp:LocationName>
+                              <ojp:Text>Rüfenacht BE</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                      <ojp:IndividualTransportOptions>
+                          <ojp:Mode>walk</ojp:Mode>
+                          <ojp:Speed>10000</ojp:Speed>
+                      </ojp:IndividualTransportOptions>
+                  </ojp:Destination>
+                  <ojp:Params>
+                      <ojp:NumberOfResults>3</ojp:NumberOfResults>
+                      <ojp:ItModesToCover>self-drive-car</ojp:ItModesToCover>
+                  </ojp:Params>
+              </ojp:OJPTripRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+  
+}
+
+script:post-response {
+  test("Body matches string", function () {
+      expect(res.getBody()?.toString()).to.include("self-drive-car");
+  });
+  test("Global Test. Contains ServiceDelivery, no ErrorCondition, Statuscode 200", function () {
+      expect(res.getBody()?.toString()).to.include("ServiceDelivery");
+      expect(res.getBody()?.toString()).to.not.include("ErrorCondition");
+      expect(res.getStatus()).to.equal(200);
+  });
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,77 @@
+meta {
+  name: TR-1i1_LineFilter-Exclude-false
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPTripRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>TR-1i1</MessageIdentifier>
+                  <ojp:Origin>
+                      <ojp:PlaceRef>
+                          <StopPointRef>8592588</StopPointRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Schaffhausen, Wiesli</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                  </ojp:Origin>
+                  <ojp:Destination>
+                      <ojp:PlaceRef>
+                          <StopPointRef>8503495</StopPointRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Schaffhausen, Bahnhof</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                  </ojp:Destination>
+                  <ojp:Params>
+                      <ojp:LineFilter>
+                          <ojp:Line>
+                              <LineRef>ojp:92007:D</LineRef>
+                          </ojp:Line>
+                          <ojp:Exclude>false</ojp:Exclude>
+                      </ojp:LineFilter>
+                      <ojp:NumberOfResults>5</ojp:NumberOfResults>
+                      <ojp:IncludeIntermediateStops>true</ojp:IncludeIntermediateStops>
+                  </ojp:Params>
+              </ojp:OJPTripRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+  
+}
+
+script:post-response {
+  test("Linie ojp:92007:D muss enhalten sein", function () {
+      expect(res.getBody()?.toString()).to.include("<siri:LineRef>ojp:92007:D</siri:LineRef>");
+  });
+  
+  test("Linie ojp:92003:B darf nicht enhalten sein", function () {
+      expect(res.getBody()?.toString()).to.not.include("ojp:92003:B");
+  });
+}
+
+settings {
+  encodeUrl: true
+}

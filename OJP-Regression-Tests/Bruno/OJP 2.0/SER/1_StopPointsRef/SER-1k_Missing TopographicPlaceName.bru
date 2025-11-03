@@ -1,0 +1,124 @@
+meta {
+  name: SER-1k_Missing TopographicPlaceName
+  type: http
+  seq: 27
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPStopEventRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>SER-1k</siri:MessageIdentifier>
+                  <Location>
+                      <PlaceRef>
+                          <StopPlaceRef>8507000</StopPlaceRef>
+                          <Name>
+                              <Text>Bern</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Location>
+                  <Params>
+                      <IncludeRealtimeData>true</IncludeRealtimeData>
+                      <IncludeOnwardCalls>false</IncludeOnwardCalls>
+                      <IncludePreviousCalls>false</IncludePreviousCalls>
+                      <UseRealtimeData>explanatory</UseRealtimeData>
+                      <StopEventType>departure</StopEventType>
+                      <NumberOfResults>100</NumberOfResults>
+                  </Params>
+              </OJPStopEventRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+  
+}
+
+script:post-response {
+  const xml2js = require('xml2js');
+  
+  // Antwort-XML aus der Postman-Antwort holen
+  const responseBody = res.getBody()?.toString();
+  
+  // Funktion zum Parsen der XML-Antwort
+  xml2js.parseString(responseBody, { explicitArray: false }, (err, result) => {
+      if (err) {
+          test("XML konnte nicht geparst werden", () => {
+              throw new Error("Fehler beim Parsen der XML-Antwort: " + err);
+          });
+          return;
+      }
+  
+      // Navigiere zu den Place-Elementen
+      const places = result?.OJP?.OJPResponse?.['siri:ServiceDelivery']?.OJPStopEventDelivery?.StopEventResponseContext?.Places?.Place;
+  
+      test("Alle Place-Elemente enthalten ein Name-Element", () => {
+          // Sicherstellen, dass das Place-Array vorhanden ist
+          expect(places).to.exist;
+          
+          // Wenn es nur ein Objekt gibt, sicherstellen, dass es in ein Array konvertiert wird
+          const placesArray = Array.isArray(places) ? places : [places];
+          
+          // Iteriere durch jedes Place-Element
+          placesArray.forEach((place, index) => {
+              const placeName = place?.Name;
+  
+              // Logge, wenn das Name-Element fehlt
+              if (!placeName) {
+                  console.log(`Place[${index}] hat kein Name-Element:`, place);
+              }
+  
+              // Test, ob das Name-Element vorhanden ist
+              expect(placeName).to.exist;
+          });
+      });
+  
+      test("Alle TopographicPlace-Elemente enthalten ein TopographicPlaceName/Text", () => {
+          // Sicherstellen, dass das Place-Array vorhanden ist
+          expect(places).to.exist;
+          
+          // Iteriere durch jedes Place-Element
+          const placesArray = Array.isArray(places) ? places : [places];
+  
+          placesArray.forEach((place, index) => {
+              const topographicPlace = place?.TopographicPlace;
+  
+              if (topographicPlace) {
+                  const placeName = topographicPlace?.TopographicPlaceName?.Text;
+  
+                  // Logge nur, wenn das Text-Element fehlt
+                  if (!placeName) {
+                      console.log(`TopographicPlace[${index}] hat keinen TopographicPlaceName/Text:`, topographicPlace);
+                  }
+  
+                  // Test, ob das Text-Element vorhanden ist
+                  expect(placeName).to.exist;
+              } else {
+                  console.warn(`Place[${index}] enthält kein TopographicPlace.`);
+              }
+          });
+      });
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

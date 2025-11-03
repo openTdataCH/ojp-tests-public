@@ -1,0 +1,16 @@
+meta {
+  name: 2_StopPlaceRef
+  seq: 2
+}
+
+auth {
+  mode: inherit
+}
+
+script:post-response {
+  test("Global Test. Contains ServiceDelivery, no ErrorCondition, Statuscode 200", function () {
+      expect(res.getBody()?.toString()).to.include("ServiceDelivery");
+      expect(res.getBody()?.toString()).to.not.include("ErrorCondition");
+      expect(res.getStatus()).to.equal(200);
+  });
+}

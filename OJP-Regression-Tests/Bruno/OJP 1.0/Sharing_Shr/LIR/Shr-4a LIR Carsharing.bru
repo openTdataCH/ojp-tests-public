@@ -1,0 +1,71 @@
+meta {
+  name: Shr-4a LIR Carsharing
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <OJP xmlns="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd" version="1.0">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPLocationInformationRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>Shr-4a</MessageIdentifier>
+                  <ojp:InitialInput>
+                      <ojp:GeoRestriction>
+                          <ojp:Circle> <!--Anfrag mittels Circle oder Rectangle-->
+                              <ojp:Center> <!--Koordinate, zu welcher Objekte geliefert werden sollen-->
+                                  <Longitude>7.5895</Longitude> <!--WGS84 Lon-->
+                                  <Latitude>47.5473</Latitude> <!--WGS84 Lat-->
+                              </ojp:Center>
+                              <ojp:Radius>2000</ojp:Radius> <!--Radius in Meter um Koordinate-->
+                          </ojp:Circle>
+                      </ojp:GeoRestriction>
+                  </ojp:InitialInput>
+                  <ojp:Restrictions>
+                      <ojp:Type>poi</ojp:Type>
+                      <ojp:PointOfInterestFilter>
+                          <ojp:PointOfInterestCategory>
+                              <ojp:OsmTag>
+                                  <ojp:Tag>amenity</ojp:Tag>
+                                  <ojp:Value>car_sharing</ojp:Value>  <!--CarSharer oder deren Stationen-->
+                              </ojp:OsmTag>
+                          </ojp:PointOfInterestCategory>
+                      </ojp:PointOfInterestFilter>
+                  </ojp:Restrictions>
+              </ojp:OJPLocationInformationRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Body matches string car_sharing", function () {
+      expect(res.getBody()?.toString()).to.include("<ojp:Value>car_sharing</ojp:Value>");
+  });
+  test("Body matches string num_docks and vehicles available", function () {
+      expect(res.getBody()?.toString()).to.include("ojp:num_vehicles_available")
+      expect(res.getBody()?.toString()).to.include("ojp:num_docks_available");;
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

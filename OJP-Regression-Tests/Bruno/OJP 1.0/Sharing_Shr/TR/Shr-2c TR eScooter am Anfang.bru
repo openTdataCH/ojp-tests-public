@@ -1,0 +1,104 @@
+meta {
+  name: Shr-2c TR eScooter am Anfang
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="utf-8"?>
+  <OJP xmlns="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd" version="1.0">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPTripRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>Shr-2c</MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <StopPlaceRef>8591327</StopPlaceRef>
+                          <LocationName>
+                              <Text>Zürich</Text>
+                          </LocationName>
+                      </PlaceRef>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <StopPlaceRef>8503091</StopPlaceRef>
+                          <LocationName>
+                              <Text>Zürich Giesshübel (Zürich)</Text>
+                          </LocationName>
+                      </PlaceRef>
+                  </Destination>
+                  <ojp:Params>
+                      <ojp:NumberOfResults>1</ojp:NumberOfResults>
+                      <!--Optional: Anzahl auszugebender, alternativer ÖV Verbindungen-->
+                      <ojp:IncludeTrackSections>true</ojp:IncludeTrackSections>
+                      <!--Immer true: Ausgabe geografische Route (TrackSection)-->
+                      <ojp:IncludeLegProjection>true</ojp:IncludeLegProjection>
+                      <!--Optional: Ausgabe Koordinaten der Fahrstrecke (LinkProjection)-->
+                      <ojp:IncludeTurnDescription>true</ojp:IncludeTurnDescription>
+                      <!--Optional: Ausgabe Abbiegeanweisungen (PathGuidance)-->
+                      <ojp:IncludeIntermediateStops>true</ojp:IncludeIntermediateStops>
+                      <!--Optional: Ausgabe Zwischenhaltestellen der ÖV Route-->
+                      <ojp:Extension>
+                          <ojp:Origin>
+                              <ojp:Mode>escooter_rental</ojp:Mode>
+                              <!--eScooter zu Beginn-->
+                              <ojp:MaxDuration>PT30M</ojp:MaxDuration>
+                              <!--Optional: maximale Fahrtdauer mit gewähltem Mode-->
+                              <ojp:MinDuration>PT2M</ojp:MinDuration>
+                              <!--Optional: minimale Fahrtdauer mit gewähltem Mode # -->
+                              <ojp:MaxDistance>20000</ojp:MaxDistance>
+                              <!--Optional: maximale Fahrdistanz mit gewähltem Mode # -->
+                              <ojp:MinDistance>100</ojp:MinDistance>
+                              <!--Optional: minimale Fahrdistanz mit gewähltem Mode #--> 
+                          </ojp:Origin>
+                      </ojp:Extension>
+                  </ojp:Params>
+              </ojp:OJPTripRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Body matches string cycle", function () {
+      expect(res.getBody()?.toString()).to.include("<ojp:IndividualMode>cycle</ojp:IndividualMode>");
+  });
+  test("Body matches <ojp:PtMode>", function () {
+      expect(res.getBody()?.toString()).to.include("<ojp:PtMode>");
+  });
+  
+  test("XML body contains 'tier', 'lime', or 'bird'", function () {
+      // Get response as text
+      const responseBody = res.getBody()?.toString();
+      
+      // Check if response contains any of the three substrings
+      const containsRequiredString = responseBody.includes("TIER") 
+          || responseBody.includes("Lime") 
+          || responseBody.includes("Bird");
+      
+      // Run the assertion
+      expect(containsRequiredString, "Response does not contain 'tier', 'lime' or 'bird'").to.be.true;
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

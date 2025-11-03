@@ -1,0 +1,18 @@
+meta {
+  name: TIR
+  seq: 4
+}
+
+auth {
+  mode: inherit
+}
+
+script:post-response {
+  test("Global Test. Contains ServiceDelivery, utf-8 encoding, no ErrorCondition, Statuscode 200", function () {
+      expect(res.getBody()?.toString()).to.include("ServiceDelivery");
+      expect(res.getBody()?.toString()).to.include("encoding=\"utf-8\"");
+      expect(res.getBody()?.toString()).to.not.include("ErrorCondition");
+      expect(res.getStatus()).to.equal(200);
+  });
+  
+}

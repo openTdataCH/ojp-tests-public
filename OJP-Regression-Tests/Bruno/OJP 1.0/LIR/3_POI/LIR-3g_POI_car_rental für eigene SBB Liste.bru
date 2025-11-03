@@ -1,0 +1,71 @@
+meta {
+  name: LIR-3g_POI_car_rental für eigene SBB Liste
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPLocationInformationRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>LIR-3f</MessageIdentifier>
+          <ojp:InitialInput>
+            <ojp:GeoRestriction>
+              <ojp:Rectangle>
+                <ojp:UpperLeft>
+                  <Longitude>7.445914</Longitude>
+                  <Latitude>46.947369</Latitude>
+                </ojp:UpperLeft>
+                <ojp:LowerRight>
+                  <Longitude>7.449751</Longitude>
+                  <Latitude>46.945751</Latitude>
+                </ojp:LowerRight>
+              </ojp:Rectangle>
+            </ojp:GeoRestriction>
+          </ojp:InitialInput>
+          <ojp:Restrictions>
+            <ojp:Type>poi</ojp:Type>
+            <ojp:PointOfInterestFilter>
+              <ojp:PointOfInterestCategory>
+                <ojp:OsmTag>
+                  <ojp:Tag>POI</ojp:Tag>
+                  <ojp:Value>service</ojp:Value>
+                </ojp:OsmTag>
+              </ojp:PointOfInterestCategory>
+            </ojp:PointOfInterestFilter>
+            <ojp:NumberOfResults>1000</ojp:NumberOfResults>
+          </ojp:Restrictions>
+              </ojp:OJPLocationInformationRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+  
+}
+
+script:post-response {
+  test("Response contains only POI Category service", function () {
+      expect(res.getBody()?.toString()).to.include("car_rental");
+      expect(res.getBody()?.toString()).to.include("service");
+      expect(res.getBody()?.toString()).to.include("Hertz Bundesterrasse  Bern");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

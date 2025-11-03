@@ -1,0 +1,145 @@
+meta {
+  name: TIR-1d_IncludeService-false
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPTripInfoRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>TIR-1d</MessageIdentifier>
+                  <ojp:JourneyRef>{{ActiveJourneyRef}}</ojp:JourneyRef>
+                  <ojp:OperatingDayRef>{{ActiveOperatingDayRef}}</ojp:OperatingDayRef>
+                  <ojp:Params>
+                      <ojp:IncludeService>false</ojp:IncludeService>  <!--Standardmässig aktiv. Service mit LineRef, PtMode, Zuggattung, Operator !-->
+                  </ojp:Params>
+              </ojp:OJPTripInfoRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:pre-request {
+  // Define the XML request body
+  const xmlRequest = `<?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>2023-11-02T10:12:55.403Z</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPStopEventRequest>
+                  <RequestTimestamp>2023-11-02T10:12:55.403Z</RequestTimestamp>
+                  <MessageIdentifier>ojp1_0</MessageIdentifier>
+                  <ojp:Location>
+                      <ojp:PlaceRef>
+                          <StopPointRef>8591381</StopPointRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Zürich Stauffacher</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                  </ojp:Location>
+                  <ojp:Params>
+                      <ojp:NumberOfResults>1</ojp:NumberOfResults>
+                      <ojp:StopEventType>departure</ojp:StopEventType>
+                      <ojp:IncludeRealtimeData>true</ojp:IncludeRealtimeData>
+                  </ojp:Params>
+              </ojp:OJPStopEventRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>`;
+  
+  
+  
+  
+  
+  // Send the POST request
+  await bru.sendRequest({
+      url: bru.getGlobalEnvVar('server'),
+      method: 'POST',
+      headers: {
+          'Authorization': `Bearer ${bru.getGlobalEnvVar('BearerToken')}`,
+          'Content-Type': 'text/xml',
+      },
+      data: xmlRequest,
+  }, async function(error, response) {
+      if (error) {
+          console.error('Request error:', error);
+      } else {
+          // Parse the XML response
+          const xmlResponse = response.data;
+  
+          // Use an XML parsing library like xml2js to parse the response
+          const xml2js = require('xml2js');
+          const parser = new xml2js.Parser({ explicitArray: false });
+  
+          parser.parseString(xmlResponse, function (err, result) {
+              if (err) {
+                  console.error('XML parsing error:', err);
+              } else {
+                  // Extract the ActiveJourneyRef value
+                  const activeJourneyRef = findPropertyValue(result, 'JourneyRef');
+                  
+                  // Extract the ActiveOperatingDayRef value
+                  const activeOperatingDayRef = findPropertyValue(result, 'OperatingDayRef');
+  
+                  // Set the ActiveJourneyRef variable
+                  bru.setGlobalEnvVar('ActiveJourneyRef', activeJourneyRef);
+                  
+                  // Set the ActiveOperatingDayRef variable
+                  bru.setGlobalEnvVar('ActiveOperatingDayRef', activeOperatingDayRef);
+  
+                  // Print to the console
+                  console.log('ActiveJourneyRef:', activeJourneyRef);
+                  console.log('ActiveOperatingDayRef:', activeOperatingDayRef);
+              }
+          });
+      }
+  });
+  
+  // Helper function to find property value in the response
+  function findPropertyValue(obj, propertyName) {
+      for (const key in obj) {
+          if (key.includes(propertyName)) {
+              return obj[key];
+          } else if (typeof obj[key] === 'object') {
+              const result = findPropertyValue(obj[key], propertyName);
+              if (result) {
+                  return result;
+              }
+          }
+      }
+      return null;
+  }
+  
+}
+
+script:post-response {
+  test("Body matches string not", function () {
+      expect(res.getBody()?.toString()).to.not.include("<ojp:Service>");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

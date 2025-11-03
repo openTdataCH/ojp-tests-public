@@ -1,0 +1,79 @@
+meta {
+  name: Shr-2b TR eScooter monomodal
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="utf-8"?>
+  <OJP xmlns="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd" version="1.0">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPTripRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>Shr-2b</MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <StopPlaceRef>8591327</StopPlaceRef>
+                          <LocationName>
+                              <Text>Zürich</Text>
+                          </LocationName>
+                      </PlaceRef>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <StopPlaceRef>8503091</StopPlaceRef>
+                          <LocationName>
+                              <Text>Zürich Giesshübel (Zürich)</Text>
+                          </LocationName>
+                      </PlaceRef>
+                  </Destination>
+                  <ojp:Params>
+                      <ojp:IncludeTrackSections>false</ojp:IncludeTrackSections>
+                      <!--Immer true: Ausgabe geografische Route (TrackSection)-->
+                      <ojp:IncludeLegProjection>false</ojp:IncludeLegProjection>
+                      <!--Optional: Ausgabe Koordinaten der Fahrstrecke (LinkProjection)-->
+                      <ojp:IncludeTurnDescription>false</ojp:IncludeTurnDescription>
+                      <!--Optional: Ausgabe Abbiegeanweisungen (PathGuidance)-->
+                      <ojp:IncludeIntermediateStops>false</ojp:IncludeIntermediateStops>
+                      <!--Optional: Ausgabe Zwischenhaltestellen der ÖV Route-->
+                      <ojp:Extension>
+                          <ojp:ItModesToCover>escooter_rental</ojp:ItModesToCover>
+                          <!--monomodal eScooter-->
+                      </ojp:Extension>
+                  </ojp:Params>
+              </ojp:OJPTripRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Body matches string Tier", function () {
+      expect(res.getBody()?.toString()).to.include("E-Scooter");
+  });
+  test("Body matches string cycle", function () {
+      expect(res.getBody()?.toString()).to.include("<ojp:IndividualMode>cycle</ojp:IndividualMode>");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

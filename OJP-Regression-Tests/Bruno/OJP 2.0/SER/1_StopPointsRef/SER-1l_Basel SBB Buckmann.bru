@@ -1,0 +1,76 @@
+meta {
+  name: SER-1l_Basel SBB Buckmann
+  type: http
+  seq: 28
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="utf-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0">
+    <OJPRequest>
+      <siri:ServiceRequest>
+        <siri:ServiceRequestContext>
+          <siri:Language>de</siri:Language>
+        </siri:ServiceRequestContext>
+        <siri:RequestTimestamp>2025-06-04T04:57:42.562Z</siri:RequestTimestamp>
+        <siri:RequestorRef>OJPv2.0_JS_SDK_v0.18.5</siri:RequestorRef>
+        <OJPStopEventRequest>
+          <siri:RequestTimestamp>2025-06-04T04:57:42.562Z</siri:RequestTimestamp>
+          <Location>
+            <PlaceRef>
+              <siri:StopPointRef>8500010</siri:StopPointRef>
+              <Name>
+                <Text>Basel SBB</Text>
+              </Name>
+            </PlaceRef>
+            <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+          </Location>
+          <Params>
+            <IncludeAllRestrictedLines>true</IncludeAllRestrictedLines>
+            <NumberOfResults>1</NumberOfResults>
+            <StopEventType>departure</StopEventType>
+            <IncludePreviousCalls>true</IncludePreviousCalls>
+            <IncludeOnwardCalls>true</IncludeOnwardCalls>
+            <IncludeRealtimeData>true</IncludeRealtimeData>
+            <UseRealtimeData>explanatory</UseRealtimeData>
+          </Params>
+          <siri:Extensions>
+            <ParamsExtension>
+              <PrivateModeFilter>
+                <Exclude>false</Exclude>
+              </PrivateModeFilter>
+            </ParamsExtension>
+          </siri:Extensions>
+        </OJPStopEventRequest>
+      </siri:ServiceRequest>
+    </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("ID darf nicht 0000 sein", function () {
+      expect(res.getBody()?.toString()).to.not.include("<Id>00000000-0000-0000-0000-000000000000</Id>");
+  });
+  
+  test("Muss Order für letzten Halt enthalten", function () {
+      expect(res.getBody()?.toString()).to.include("<Order>19</Order>");
+  });
+}
+
+settings {
+  encodeUrl: true
+}

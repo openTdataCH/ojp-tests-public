@@ -1,0 +1,140 @@
+meta {
+  name: TR
+  seq: 2
+}
+
+auth {
+  mode: inherit
+}
+
+script:post-response {
+  // Prüfe, ob die Zugnummernfolge innerhalb eines Trips über die ganze Response eindeutig ist. Hintergrund: es gab Fälle, in denen die identischen Trips zweimal ausgegeben wurden.
+  test("Check for unique JourneyRef sequences acrros Trips", function () {
+    const xml2js = require('xml2js');
+    const parser = new xml2js.Parser({ explicitArray: false, ignoreAttrs: true, xmlns: true });
+    parser.parseString(res.getBody()?.toString(), function (err, result) {
+      if (err) {
+        expect.fail(`Error parsing XML: ${err}`);
+        return;
+      }
+      // Navigate to TripResults
+      let tripResults = result.OJP.OJPResponse['siri:ServiceDelivery'].OJPTripDelivery.TripResult;
+      if (!Array.isArray(tripResults)) {
+        tripResults = [tripResults];
+      }
+      // Set to track unique JourneyRef sequences
+      let uniqueJourneyRefSequences = new Set();
+      tripResults.forEach((tripResult, tripResultIndex) => {
+        if (tripResult.Trip && tripResult.Trip.Leg) {
+          let legs = tripResult.Trip.Leg;
+          if (!Array.isArray(legs)) {
+            legs = [legs];
+          }
+          // Array to store JourneyRefs for the entire trip
+          let tripJourneyRefs = [];
+          legs.forEach((leg, legIndex) => {
+            if (leg.TimedLeg) {
+              let timedLegs = Array.isArray(leg.TimedLeg) ? leg.TimedLeg : [leg.TimedLeg];
+              timedLegs.forEach((timedLeg, timedLegIndex) => {
+                if (timedLeg.Service) {
+                  let services = Array.isArray(timedLeg.Service) ? timedLeg.Service : [timedLeg.Service];
+                  services.forEach(service => {
+                    let journeyRef = service.JourneyRef._;
+                    if (journeyRef) {
+                      tripJourneyRefs.push(journeyRef);
+                    }
+                  });
+                }
+              });
+            }
+          });
+          // Check for duplicate sequences after processing the entire trip
+          const journeyRefSequence = tripJourneyRefs.join(',');
+          // Log the JourneyRef sequence for this Trip
+          // console.log(`TripResult ${tripResultIndex}: JourneyRef Sequence: ${journeyRefSequence}`);
+          if (uniqueJourneyRefSequences.has(journeyRefSequence)) {
+            expect.fail(`Duplicate JourneyRef sequence found in TripResult ${tripResultIndex}: ${journeyRefSequence}`);
+          } else {
+            uniqueJourneyRefSequences.add(journeyRefSequence);
+          }
+        }
+      });
+    });
+  });
+  
+  // Prüfe, ob allenfalls vorhandene Störungsmeldungen auch mindestens 1x in Trips verwendet werden. Hintergrund: es gab Fälle, in denen im ResponseContext Störungsmeldungen vorhanden ware, auf welche keine Fahrt referenziert hatte.
+  test("Störungsmeldungen werden in Trips referenziert", function () {
+  // Include the cheerio library
+  var cheerio = require('cheerio');
+  // Load the XML response into cheerio
+  var $ = cheerio.load(res.getBody()?.toString(), { xmlMode: true });
+  var AnzahlStörungsmeldungen = 0
+  var AnzahlReferenzInTrips = 0
+  // Extract the PtSituation SituationNumbers
+  var ptSituationNumbers = [];
+  $('OJPResponse > siri\\:ServiceDelivery > OJPTripDelivery > TripResponseContext > Situations > PtSituation > siri\\:SituationNumber').each(function(i, elem) {
+      ptSituationNumbers.push($(this).text());
+      AnzahlStörungsmeldungen = AnzahlStörungsmeldungen+1
+  });
+  // Extract the SituationFullRef SituationNumbers
+  var situationFullRefNumbers = [];
+  $('OJPResponse > siri\\:ServiceDelivery > OJPTripDelivery > TripResult > Trip > Leg > TimedLeg > Service > SituationFullRefs > SituationFullRef > siri\\:SituationNumber').each(function(i, elem) {
+      situationFullRefNumbers.push($(this).text());
+      AnzahlReferenzInTrips = AnzahlReferenzInTrips+1
+  });
+  //console.log('SituationFullRef SituationNumbers:', situationFullRefNumbers);
+  // Combine both arrays
+  var combinedSituationNumbers = ptSituationNumbers.concat(situationFullRefNumbers);
+  // Helper function to check if all values occur at least twice in combined arrays
+  function checkOccurrences(arr) {
+      var occurrences = {};
+      // Count occurrences of each element
+      arr.forEach(function(num) {
+          occurrences[num] = (occurrences[num] || 0) + 1;
+      });
+      // Check if all elements occur at least twice
+      var allAtLeastTwice = true;
+      for (var num in occurrences) {
+          if (occurrences[num] < 2) {
+              console.log('SituationNumber "' + num + '" occurs less than twice across both arrays.');
+              allAtLeastTwice = false;
+              expect.fail(`Störungsmeldungen werden in Trips NICHT referenziert` +num);
+          }
+      }
+      if (allAtLeastTwice) {
+          if (AnzahlStörungsmeldungen > 0) {
+              console.log(AnzahlStörungsmeldungen + ' Störungsmeldung ' +AnzahlReferenzInTrips +'x in Trips referenziert');
+              console.log('PtSituation SituationNumbers:', ptSituationNumbers);
+          }
+          
+          
+      }
+  }
+  // Check combined arrays
+  checkOccurrences(combinedSituationNumbers);
+    });
+  
+  
+  test("no empty JourneyRef", function () {
+      expect(res.getBody()?.toString()).to.not.include("<JourneyRef />");
+      expect(res.getBody()?.toString()).to.not.include("<JourneyRef></JourneyRef>");
+  });
+  
+  test("no empty Context elements", function () {
+      expect(res.getBody()?.toString()).to.not.include("<TopographicPlaceRef>-1:-1</TopographicPlaceRef>");
+      expect(res.getBody()?.toString()).to.not.include("<StopPlaceRef/>");
+  });
+  
+  test("check for invalid Date/Time >0001-01-01T00:00:00<", function () {
+      expect(res.getBody()?.toString()).to.not.include(">0001-01-01T00:00:00<");
+  });
+  
+  test("Global Test. Contains ServiceDelivery, utf-8 encoding, no ErrorCondition, Statuscode 200", function () {
+      expect(res.getBody()?.toString()).to.include("ServiceDelivery");
+      expect(res.getBody()?.toString()).to.include("encoding=\"utf-8\"");
+      expect(res.getBody()?.toString()).to.not.include("ErrorCondition");
+      expect(res.getStatus()).to.equal(200);
+  });
+  
+  
+}

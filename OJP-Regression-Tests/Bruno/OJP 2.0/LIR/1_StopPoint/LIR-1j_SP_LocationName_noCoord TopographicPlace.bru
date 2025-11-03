@@ -1,0 +1,53 @@
+meta {
+  name: LIR-1j_SP_LocationName_noCoord TopographicPlace
+  type: http
+  seq: 15
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Accept: application/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPLocationInformationRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>LIR-1i</siri:MessageIdentifier>
+                  <InitialInput>
+                      <Name>Hof bei Uznach</Name>
+                  </InitialInput>
+                  <Restrictions>
+                      <NumberOfResults>1</NumberOfResults>
+                      <IncludePtModes>true</IncludePtModes>
+                  </Restrictions>
+              </OJPLocationInformationRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Hof bei Uznach darf nicht enthalten sein, da keine Koordianten", function () {
+      expect(res.getBody()?.toString()).to.not.include("Hof bei Uznach");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,38 @@
+meta {
+  name: OJP 2.0 2025 08
+}
+
+auth {
+  mode: none
+}
+
+vars:pre-request {
+  Freitag12UhrVorFahrplanwechsel: 2025-12-12T11:00:00Z
+  Freitag12UhrVorFahrplanwechselStunde: 2025-12-12T11:
+  Samstag0030VorFahrplanwechsel: 2025-12-12T23:30:00Z
+  JourneyRef: ojp:91001:D:H:j23:192:715
+  DatumFreitagVorFahrplanwechsel: 2025-12-12T
+  Freitag2345UhrVorFahrplanwechsel: 2025-12-12T22:45:00Z
+  letzter-ATV-Tag11Uhr40: 2025-10-11T10:40:00Z
+  DatumFreitagVorFahrplanwechselohneT: 2025-12-12
+  InputName: 
+  expectedNaA: 
+  expectedNaB: 
+  expectedPoA: 
+  expectedPoB: 
+  NeuesFahrplanjahr: 2025-10-01T23:30:00Z
+}
+
+script:pre-request {
+  const moment = require('moment');
+  const now = moment().format("yyyy-MM-DDTHH:mm:ssZ");
+  bru.setVar('isoTimestamp', now);
+}
+
+docs {
+  # To do
+  
+  - Bei allen Elementen (ausser ojp:) ein siri: hinzufügen
+      
+  - Bei allen Elementen ojp: entfernen
+}
