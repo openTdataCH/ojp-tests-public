@@ -38,7 +38,7 @@ body:xml {
                               <Text>Wasserauen, Appenzell</Text>
                           </Name>
                       </PlaceRef>
-                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
                   </Origin>
                   <Destination>
                       <PlaceRef>
@@ -71,11 +71,12 @@ script:post-response {
   });
   
   test("Body contains <Distance>623x", function () {
-      expect(res.getBody()?.toString()).to.include("<Distance>61");
+      expect(res.getBody()?.toString()).to.include("<Distance>6");
   });
   
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

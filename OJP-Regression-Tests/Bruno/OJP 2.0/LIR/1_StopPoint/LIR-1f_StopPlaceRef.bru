@@ -44,12 +44,10 @@ body:xml {
 script:post-response {
   test("Response contains </PlaceResult>", function() {
       expect(res.getBody()?.toString()).to.include("</PlaceResult>");
-  
   });
   
   test("Response contains Zürich", function() {
       expect(res.getBody()?.toString()).to.include("Zürich");
-  
   });
   
   test("PTMode muss enthalten sein", function () {
@@ -59,4 +57,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

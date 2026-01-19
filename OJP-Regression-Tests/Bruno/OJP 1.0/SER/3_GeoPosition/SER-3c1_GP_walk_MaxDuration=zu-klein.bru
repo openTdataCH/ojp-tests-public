@@ -34,7 +34,7 @@ body:xml {
                               <ojp:Text>Hagenturm</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
-                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                      <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
                       <ojp:IndividualTransportOptions>
                           <ojp:Mode>walk</ojp:Mode>
                           <ojp:MaxDuration>PT11M</ojp:MaxDuration>
@@ -59,4 +59,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

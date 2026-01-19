@@ -72,8 +72,10 @@ script:post-response {
       var occurrencesCount = (responseBody.match(new RegExp(searchString, "g")) || []).length;
       expect(occurrencesCount).to.be.at.least(5);
   });
+  
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

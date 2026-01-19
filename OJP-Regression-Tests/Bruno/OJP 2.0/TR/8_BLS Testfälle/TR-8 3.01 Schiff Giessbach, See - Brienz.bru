@@ -34,7 +34,7 @@ body:xml {
                               <Text>Giessbach See (Brienz BE)</Text>
                           </Name>
                       </PlaceRef>
-                      <DepArrTime>{{isoTimestamp}}</DepArrTime>
+                      <DepArrTime>2026-12-06T11:00:00Z</DepArrTime>
                   </Origin>
                   <Destination>
                       <PlaceRef>
@@ -58,16 +58,68 @@ body:xml {
   </OJP>
 }
 
+script:pre-request {
+  // // HINWEIS: pm.variables.get() sucht im gesamten Scope (Global, Collection, Environment)
+  const originalTime = bru.getCollectionVar
+  ("friday_timetable_change");
+  
+  if (originalTime) {
+      // 1. Erstellen eines Date-Objekts. (Behandelt ISO-Strings als UTC)
+      const dateObject = new Date(originalTime);
+  
+      // 2. Fünf Tage vom Datum abziehen.
+      dateObject.setDate(dateObject.getDate() - 5); 
+  
+      // 3. Manuelle Formatierung in das exakte OJP-Format YYYY-MM-DDTHH:mm:ssZ
+      
+      // Funktion zur Sicherstellung, dass Zahlen zweistellig sind (z.B. 01 statt 1)
+      const pad = (num) => (num < 10 ? '0' + num : num);
+  
+      // Datumskomponenten (holen die UTC-Werte, um die Zeitzone Z beizubehalten)
+      const year = dateObject.getUTCFullYear();
+      const month = pad(dateObject.getUTCMonth() + 1); // getUTCMonth() ist 0-basiert
+      const day = pad(dateObject.getUTCDate());
+  
+      // Zeitkomponenten
+      const hour = pad(dateObject.getUTCHours());
+      const minute = pad(dateObject.getUTCMinutes());
+      const second = pad(dateObject.getUTCSeconds());
+  
+      // Den String zusammensetzen
+      const timeMinus5Days = `${year}-${month}-${day}T${hour}:${minute}:${second}Z`;
+  
+      // 4. Den neuen Wert in der Originalvariable für DIESEN REQUEST speichern.
+  //     //    pm.variables.set() setzt den Wert nur temporär für die Ausführung.
+      bru.setVar("friday_timetable_change", timeMinus5Days);
+      
+      console.log(`Originalzeit: ${originalTime}`);
+      console.log(`Neuer Zeitstempel (-5 Tage): ${timeMinus5Days}`);
+  
+  } else {
+      // Die Variable ist nicht in Postman definiert oder kann nicht gefunden werden.
+      console.error("KRITISCHER FEHLER: Variable 'friday_timetable_change' konnte nicht gefunden werden.");
+  }
+}
+
 script:post-response {
   test("Body contains <PtMode>water</PtMode>", function () {
-      expect(res.getBody()?.toString()).to.include("<PtMode>water</PtMode>");
+      expect(res.getBody()?.toString()
+  
+  
+  
+  ).to.include("<PtMode>water</PtMode>");
   });
   
   test("Body contains >Schiff</Text>", function () {
-      expect(res.getBody()?.toString()).to.include(">Schiff</Text>");
+      expect(res.getBody()?.toString()
+  
+  
+  
+  ).to.include(">Schiff</Text>");
   });
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

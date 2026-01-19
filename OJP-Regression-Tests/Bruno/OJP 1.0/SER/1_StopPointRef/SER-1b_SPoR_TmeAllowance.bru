@@ -60,11 +60,9 @@ script:post-response {
       let responseXml = res.getBody()?.toString(); // Annahme: Die Antwort ist als XML-Text verfügbar
       let regex = new RegExp(`<ojp:TimetabledTime>(.*?)<\/ojp:TimetabledTime>`);
       let match = responseXml.match(regex);
-  
       if (match) {
           let timetabledTimeString = match[1];
           let timetabledTime = new Date(timetabledTimeString).getTime(); // Zeitstempel der TimetabledTime
-  
           expect(timetabledTime).to.be.above(twoHoursLaterTimeStamp);
       } else {
           expect.fail('TimetabledTime wurde nicht gefunden.');
@@ -75,4 +73,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

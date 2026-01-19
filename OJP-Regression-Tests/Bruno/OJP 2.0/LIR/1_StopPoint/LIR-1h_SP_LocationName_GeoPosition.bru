@@ -65,22 +65,23 @@ script:post-response {
   });
   
   // Log DIDOK and StopName to console
-  var jsonData = xml2js(bru.res.body);
+  //var jsonData = xml2Json(res.getBody());
   
   // Extract values of StopPlaceRef and StopPlaceName
-  var stopPlaces = jsonData['OJP']['OJPResponse']['siri:ServiceDelivery']['OJPLocationInformationDelivery']['PlaceResult'].map(function(placeResult) {
-      return {
-          StopPlaceRef: placeResult['Place']['StopPlace']['StopPlaceRef'],
-          StopPlaceName: placeResult['Place']['StopPlace']['StopPlaceName']['Text']['_']
-      };
-  });
+  //var stopPlaces = jsonData['OJP']['OJPResponse']['siri:ServiceDelivery']['OJPLocationInformationDelivery']['PlaceResult'].map(function(placeResult) {
+  //    return {
+  //        StopPlaceRef: placeResult['Place']['StopPlace']['StopPlaceRef'],
+  //        StopPlaceName: placeResult['Place']['StopPlace']['StopPlaceName']['Text']['_']
+  //    };
+  //});
   
   // Log the values to the console, each key-value pair on a separate line
-  stopPlaces.forEach(function(stopPlace) {
-      console.log(+ stopPlace.StopPlaceRef, stopPlace.StopPlaceName);
-  });
+  //stopPlaces.forEach(function(stopPlace) {
+  //    console.log(+ stopPlace.StopPlaceRef, stopPlace.StopPlaceName);
+  //});
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

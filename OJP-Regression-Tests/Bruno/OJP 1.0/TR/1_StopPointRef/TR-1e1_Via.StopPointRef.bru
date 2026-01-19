@@ -35,7 +35,7 @@ body:xml {
                               <ojp:Text>Zürich HB</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
-                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                      <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
                   </ojp:Origin>
                   <ojp:Destination>
                       <ojp:PlaceRef>
@@ -67,11 +67,13 @@ body:xml {
 
 script:post-response {
   test("Body matches string", function () {
-      expect(res.getBody()?.toString()).to.include("Winterthur");
+      expect(res.getBody()?.toString()
+  ).to.include("Winterthur");
   });
   
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

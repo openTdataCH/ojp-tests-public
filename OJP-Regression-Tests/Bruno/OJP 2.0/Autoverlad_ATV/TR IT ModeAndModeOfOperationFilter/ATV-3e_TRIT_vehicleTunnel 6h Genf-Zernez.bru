@@ -68,6 +68,7 @@ script:post-response {
   test("Body matches string vehicleTunnelTransportRailService", function () {
       expect(res.getBody()?.toString()).to.include("vehicleTunnelTransportRailService");
   });
+  
   test("Body matches string <PersonalMode>car", function () {
       expect(res.getBody()?.toString()).to.include("<PersonalMode>car");
   });
@@ -75,4 +76,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

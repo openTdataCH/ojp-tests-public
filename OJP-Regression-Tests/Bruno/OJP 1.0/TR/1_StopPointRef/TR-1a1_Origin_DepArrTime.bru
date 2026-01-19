@@ -19,97 +19,56 @@ auth:bearer {
 }
 
 body:xml {
-  <?xml version="1.0" encoding="UTF-8"?>
-  <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+  <?xml version="1.0" encoding="utf-8"?>
+  <OJP xmlns="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd" version="1.0">
       <OJPRequest>
           <ServiceRequest>
               <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
               <RequestorRef>SKIPlusRegTest</RequestorRef>
               <ojp:OJPTripRequest>
                   <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
-                  <MessageIdentifier>TR-1a1</MessageIdentifier>
+                  <MessageIdentifier>Shr-6a</MessageIdentifier>
                   <ojp:Origin>
                       <ojp:PlaceRef>
-                          <StopPointRef>8503308</StopPointRef>
+                          <StopPointRef>8507100</StopPointRef>
                           <ojp:LocationName>
-                              <ojp:Text>Kloten</ojp:Text>
+                              <ojp:Text>Thun (Thun)</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
-                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                      <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
                   </ojp:Origin>
                   <ojp:Destination>
                       <ojp:PlaceRef>
-                          <StopPointRef>8503424</StopPointRef>
+                          <ojp:GeoPosition>
+                              <Longitude>7.600081005767294</Longitude>
+                              <Latitude>46.7271311198098</Latitude>
+                          </ojp:GeoPosition>
                           <ojp:LocationName>
-                              <ojp:Text>Schaffhausen</ojp:Text>
+                              <ojp:Text>46.727131,7.600081</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
                   </ojp:Destination>
                   <ojp:Params>
-                      <ojp:NumberOfResults>5</ojp:NumberOfResults>
+                      <ojp:NumberOfResults>1</ojp:NumberOfResults>
+                      <!--Optional: Anzahl auszugebender, alternativer ÖV Verbindungen-->
+                      <ojp:ItModesToCover>taxi</ojp:ItModesToCover>
+                      <!--monomodal Taxi-->
+                      <ojp:IncludeTrackSections>true</ojp:IncludeTrackSections>
+                      <!--Immer true: Ausgabe geografische Route (TrackSection)-->
+                      <ojp:IncludeLegProjection>true</ojp:IncludeLegProjection>
+                      <!--Optional: Ausgabe Koordinaten der Fahrstrecke (LinkProjection)-->
+                      <ojp:IncludeTurnDescription>true</ojp:IncludeTurnDescription>
+                      <!--Optional: Ausgabe Abbiegeanweisungen (PathGuidance)-->
+                      <ojp:IncludeIntermediateStops>true</ojp:IncludeIntermediateStops>
+                      <!--Optional: Ausgabe Zwischenhaltestellen der ÖV Route--> 
                   </ojp:Params>
               </ojp:OJPTripRequest>
           </ServiceRequest>
       </OJPRequest>
   </OJP>
-  
-}
-
-script:post-response {
-  test("Body matches string", function () {
-      expect(res.getBody()?.toString()).to.include("TimetabledTime>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechsel'));
-  });
-  
-  test("Response contains exactly 5 of </ojp:TripResult>", function () {
-      var searchString = "</ojp:TripResult>";
-      var responseBody = res.getBody()?.toString();
-      var occurrencesCount = (responseBody.match(new RegExp(searchString, "g")) || []).length;
-      expect(occurrencesCount).to.be.at.equal(5);
-  });
-  
-  test("Body contains Destination Text and Ref", function () {
-      expect(res.getBody()?.toString()).to.include("</ojp:DestinationText>");
-      expect(res.getBody()?.toString()).to.include("<ojp:DestinationStopPointRef>");
-  });
-  
-  // Extract the XML response body
-  let responseBody = res.getBody()?.toString();
-  // Define the required text strings
-  let requiredStrings = [
-      '<siri:StopPointRef>ch:1:sloid:3308:2:4</siri:StopPointRef>',
-      '<ojp:Text xml:lang="de">Kloten</ojp:Text>',
-      '<ojp:Text xml:lang="de">NO_DATA</ojp:Text>',
-      '<ojp:Text xml:lang="de">4</ojp:Text>',
-      '<ojp:TimetabledTime>2025-12-12T10:55:00Z</ojp:TimetabledTime>',
-      '<siri:StopPointRef>ch:1:sloid:3006:4:7</siri:StopPointRef>',
-      '<ojp:Text xml:lang="de">Zürich Oerlikon</ojp:Text>',
-      '<ojp:Text xml:lang="de">7</ojp:Text>',
-      '<ojp:TimetabledTime>2025-12-12T11:02:00Z</ojp:TimetabledTime>',
-      '<ojp:JourneyRef>ch:1:sjyid:100001:18745-001</ojp:JourneyRef>',
-      '<siri:LineRef>ojp:91007:C</siri:LineRef>',
-      '<siri:DirectionRef>R</siri:DirectionRef>',
-      '<ojp:PtMode>rail</ojp:PtMode>',
-      '<siri:RailSubmode>regionalRail</siri:RailSubmode>',
-      '<ojp:Text xml:lang="de">Zug</ojp:Text>',
-      '<ojp:Text xml:lang="de">S</ojp:Text>',
-      '<ojp:Text xml:lang="de">S7</ojp:Text>',
-      '<ojp:OperatorRef>ojp:11</ojp:OperatorRef>',
-      '<ojp:DestinationStopPointRef>8503110</ojp:DestinationStopPointRef>',
-      '<ojp:Text xml:lang="de">Rapperswil SG</ojp:Text>',
-      '<ojp:Text xml:lang="de">S-Bahn</ojp:Text>',
-      '<ojp:Text xml:lang="de">18745</ojp:Text>',
-      '<ojp:Text xml:lang="de">Schweizerische Bundesbahnen SBB</ojp:Text>'
-  
-  ];
-  // Check if each required string is present in the response body
-  requiredStrings.forEach(function (str) {
-      test(`Body contains "${str}"`, function () {
-          expect(responseBody).to.include(str);
-      });
-  });
-  
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

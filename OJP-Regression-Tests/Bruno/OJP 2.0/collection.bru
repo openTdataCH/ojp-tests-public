@@ -1,5 +1,5 @@
 meta {
-  name: OJP 2.0 2025 08
+  name: OJP 2.0 2026 01
 }
 
 auth {
@@ -7,26 +7,47 @@ auth {
 }
 
 vars:pre-request {
-  Freitag12UhrVorFahrplanwechsel: 2025-12-12T11:00:00Z
-  Freitag12UhrVorFahrplanwechselStunde: 2025-12-12T11:
-  Samstag0030VorFahrplanwechsel: 2025-12-12T23:30:00Z
-  JourneyRef: ojp:91001:D:H:j23:192:715
-  DatumFreitagVorFahrplanwechsel: 2025-12-12T
-  Freitag2345UhrVorFahrplanwechsel: 2025-12-12T22:45:00Z
-  letzter-ATV-Tag11Uhr40: 2025-10-11T10:40:00Z
-  DatumFreitagVorFahrplanwechselohneT: 2025-12-12
-  InputName: 
-  expectedNaA: 
-  expectedNaB: 
-  expectedPoA: 
-  expectedPoB: 
-  NeuesFahrplanjahr: 2025-10-01T23:30:00Z
+  tomorrow: 2025-12-19
+  friday_timetable_change: 2026-12-11
+  saturday_timetable_change: 2026-12-12
+  new_timetable_date: 2026-12-12
 }
 
 script:pre-request {
-  const moment = require('moment');
-  const now = moment().format("yyyy-MM-DDTHH:mm:ssZ");
+  const mymoment = require('moment');
+  const now = mymoment().format("yyyy-MM-DDTHH:mm:ssZ");
   bru.setVar('isoTimestamp', now);
+}
+
+script:post-response {
+  //Folgendes Script sendet die Response an einen lokalen server.js Server. 
+  //dieser muss lokal auf dem Rechner ausgeführt werden, siehe Github: ServerForPostmanSaveResponse
+  // //pm.test("Sende Response an lokalen Server", () => {
+  // //    const responseBody = pm.response.text();
+  // //    const requestName = pm.info.requestName || "UnbenannterRequest";
+  // //    pm.sendRequest({
+  //        url: "http://localhost:3000/",
+  //        method: "POST",
+  //        header: {
+  //            "Content-Type": "application/xml",
+  //            "X-Request-Name": requestName
+  //        },
+  //        body: {
+  //            mode: "raw",
+  //            raw: responseBody
+  //        }
+  //    }, function (err, res) {
+  //        if (err) {
+  //            console.error("Fehler beim Senden an lokalen Server:", err);
+  //        } else {
+  //            console.log("Server-Antwort:", res.text());
+  //        }
+  //    });
+  // });
+  //
+  // //pm.test("Body contains not -PT (negative Zeiten)", function () {
+  // //    pm.expect(pm.response.text()).to.not.include("-PT");
+  //});
 }
 
 docs {

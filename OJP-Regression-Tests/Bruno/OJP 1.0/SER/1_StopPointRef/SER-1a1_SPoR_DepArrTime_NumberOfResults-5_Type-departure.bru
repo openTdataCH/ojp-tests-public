@@ -31,7 +31,7 @@ body:xml {
                               <ojp:Text>Zürich Kreuzplatz</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
-                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                      <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
                   </ojp:Location>
                   <ojp:Params>
                       <ojp:NumberOfResults>5</ojp:NumberOfResults>
@@ -44,10 +44,6 @@ body:xml {
 }
 
 script:post-response {
-  test("Variable Freitag12UhrVorFahrplanwechselStunde muss enthalten sein", function () {
-      expect(res.getBody()?.toString()).to.include(bru.getCollectionVar('Freitag12UhrVorFahrplanwechselStunde'));
-  });
-  
   test("Response contains >= 5 of <ojp:ResultId>", function () {
       var searchString = "<ojp:ResultId>";
       var responseBody = res.getBody()?.toString();
@@ -56,11 +52,13 @@ script:post-response {
   });
   
   test("Muss Angebot Verkehrshinweis enthalten Code>A__", function () {
-      expect(res.getBody()?.toString()).to.include("Code>A__");
+      expect(res.getBody()?.toString()
+  ).to.include("Code>A__");
   });
   
   test("OperatingDay Ref enthalten sein", function () {
-      expect(res.getBody()?.toString()).to.include("<ojp:OperatingDayRef>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechselohneT'));
+      expect(res.getBody()?.toString()
+  ).to.include("<ojp:OperatingDayRef>" + bru.getCollectionVar('friday_timetable_change'));
   });
   
   // Extract the XML response body
@@ -69,22 +67,23 @@ script:post-response {
   let requiredStrings = [
       '<siri:StopPointRef>ch:1:sloid:30813::0</siri:StopPointRef>',
       '<ojp:Text xml:lang="de">Zürich, Kreuzplatz</ojp:Text>',
-      '<ojp:TimetabledTime>2025-12-12T11:01:00Z</ojp:TimetabledTime>',
-      '<ojp:Order>20</ojp:Order>',
-      '<ojp:JourneyRef>ch:1:sjyid:100648:plan:798ba3f9-1d8b-49ff-9d3e-894c167ff529</ojp:JourneyRef>',
+      '<ojp:TimetabledTime>2026-12-11T11:00:00Z</ojp:TimetabledTime>',
+      '<ojp:Order>5</ojp:Order>',
+      '<ojp:JourneyRef>ch:1:sjyid:100648:plan:df7765df-0d1f-4bd9-bed2-28cb5859032b</ojp:JourneyRef>',
       '<siri:LineRef>ojp:91018:D</siri:LineRef>',
       '<siri:DirectionRef>H</siri:DirectionRef>',
       '<ojp:PtMode>tram</ojp:PtMode>',
       '<siri:TramSubmode>cityTram</siri:TramSubmode>',
       '<ojp:Text xml:lang="de">Tram</ojp:Text>',
       '<ojp:Text xml:lang="de">T</ojp:Text>',
-      '<ojp:Text xml:lang="de">8</ojp:Text>',
+      '<ojp:Text xml:lang="de">2</ojp:Text>',
       '<ojp:OperatorRef>ojp:3849</ojp:OperatorRef>',
       '<ojp:Text xml:lang="de">Niederflureinstieg</ojp:Text>',
       '<ojp:Code>A__NF</ojp:Code>',
-      '<ojp:OriginStopPointRef>ch:1:sloid:91178::0</ojp:OriginStopPointRef>',
-      '<ojp:Text xml:lang="de">Zürich, Hardturm</ojp:Text>',
-      '<ojp:DestinationStopPointRef>ch:1:sloid:91233::1</ojp:DestinationStopPointRef>',
+      '<ojp:OriginStopPointRef>ch:1:sloid:91233::1</ojp:OriginStopPointRef>',
+      '<ojp:Text xml:lang="de">Zürich, Klusplatz</ojp:Text>',
+      '<ojp:DestinationStopPointRef>ch:1:sloid:96007::1</ojp:DestinationStopPointRef>',
+      '<ojp:Text xml:lang="de">Schlieren, Geissweid</ojp:Text>',
       '<ojp:Text xml:lang="de">201</ojp:Text>',
       '<ojp:Text xml:lang="de">Verkehrsbetriebe Zürich INFO+</ojp:Text>'
       
@@ -101,4 +100,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

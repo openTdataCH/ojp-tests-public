@@ -1,7 +1,7 @@
 meta {
   name: TR-1r1 TransferMode=remainInVehicle (BLS Flügelzug Bern-Murten)
   type: http
-  seq: 39
+  seq: 44
 }
 
 post {
@@ -43,7 +43,7 @@ body:xml {
                               <Text>Murten/Morat</Text>
                           </Name>
                       </PlaceRef>
-                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
                   </Destination>
                   <Params>
                       <NumberOfResults>3</NumberOfResults>
@@ -63,4 +63,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

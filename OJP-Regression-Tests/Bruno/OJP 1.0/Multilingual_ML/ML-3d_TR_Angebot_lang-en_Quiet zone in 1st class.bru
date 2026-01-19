@@ -1,7 +1,7 @@
 meta {
   name: ML-3d_TR_Angebot_lang-en_Quiet zone in 1st class
   type: http
-  seq: 9
+  seq: 10
 }
 
 post {
@@ -38,7 +38,7 @@ body:xml {
                               <ojp:Text>Grenchen Süd</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
-                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                      <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
                   </ojp:Origin>
                   <ojp:Destination>
                       <ojp:PlaceRef>
@@ -79,4 +79,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

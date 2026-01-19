@@ -1,7 +1,7 @@
 meta {
   name: TR-1n2_UseRealtimeData=full
   type: http
-  seq: 34
+  seq: 39
 }
 
 post {
@@ -46,7 +46,7 @@ body:xml {
                       </PlaceRef>
                   </Destination>
                   <Params>
-                      <NumberOfResults>3</NumberOfResults>
+                      <NumberOfResults>5</NumberOfResults>
                       <UseRealtimeData>full</UseRealtimeData>
                       <IncludeTrackSections>false</IncludeTrackSections>
                       <IncludeLegProjection>false</IncludeLegProjection>
@@ -60,7 +60,7 @@ body:xml {
 }
 
 script:post-response {
-  test("Body matches string not", function () {
+  test("Body matches string EstimatedTime", function () {
       expect(res.getBody()?.toString()).to.include("EstimatedTime");
   });
   
@@ -68,4 +68,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

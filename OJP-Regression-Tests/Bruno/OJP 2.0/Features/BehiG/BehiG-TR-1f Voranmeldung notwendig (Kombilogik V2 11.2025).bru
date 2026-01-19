@@ -1,0 +1,101 @@
+meta {
+  name: BehiG-TR-1f Voranmeldung notwendig (Kombilogik V2 11.2025)
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>BehiG</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <StopPlaceRef>8507000</StopPlaceRef>
+                          <Name>
+                              <Text>Bern</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{tomorrow}}T11:00:00Z</DepArrTime>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <StopPlaceRef>8507093</StopPlaceRef>
+                          <Name>
+                              <Text>Kehrsatz Nord</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <Params>
+                      <NumberOfResults>3</NumberOfResults>
+                      <IncludeAllRestrictedLines>false</IncludeAllRestrictedLines>
+                      <IncludeTrackSections>false</IncludeTrackSections>
+                      <IncludeLegProjection>false</IncludeLegProjection>
+                      <IncludeTurnDescription>false</IncludeTurnDescription>
+                      <IncludeIntermediateStops>false</IncludeIntermediateStops>
+                      <UseRealtimeData>none</UseRealtimeData>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:pre-request {
+  // Moment.js laden (in Postman integriert)
+  const moment = require('moment');
+  
+  // Datum von heute nehmen, 1 Tag hinzufügen und formatieren
+  // 'YYYY-MM-DD' entspricht dem Format yyyy-MM-dd
+  let tomorrow = moment().add(1, 'days').format('YYYY-MM-DD');
+  
+  // Das Ergebnis in einer Variable speichern
+  // // Du kannst pm.environment, pm.collectionVariables oder pm.globals nutzen
+  bru.setVar("tomorrow", tomorrow);
+  
+  // Optional: Zur Überprüfung in der Konsole ausgeben
+  console.log("Datum für tomorrow: " + tomorrow);
+}
+
+script:post-response {
+  test("Status mit Voranmeldung", function () {
+      expect(res.getBody()?.toString()
+  
+  
+  
+  ).to.include("PLATFORM_ACCESS_WITH_ASSISTANCE_WHEN_NOTIFIED");
+  });
+  
+  test("S3 muss enthalten sein, da dieser PH und Voranmeldung hat", function () {
+      expect(res.getBody()?.toString()
+  
+  
+  
+  ).to.include("<PublicCode>S3</PublicCode>");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

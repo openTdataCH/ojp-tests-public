@@ -35,8 +35,8 @@ body:xml {
                               <ojp:Text>Zürich Kreuzplatz</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
-  <!--                    <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>-->
-                      <ojp:DepArrTime{{Freitag12UhrVorFahrplanwechsel}}/ojp:DepArrTime>
+  <!--                    <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>-->
+                      <ojp:DepArrTime{{friday_timetable_change}}T11:00:00Z/ojp:DepArrTime>
                   </ojp:Location>
                   <ojp:Params>
                       <ojp:PtModeFilter>
@@ -57,12 +57,9 @@ script:post-response {
       expect(res.getBody()?.toString()).to.not.include("<ojp:PtMode>tram</ojp:PtMode>");
   });
   
-  // //pm.test("Body matches string not", function () {
-  // //    pm.expect(pm.response.text()).to.not.include//("<ojp:PtMode>bus</ojp:PtMode>");
-  //});
-  
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

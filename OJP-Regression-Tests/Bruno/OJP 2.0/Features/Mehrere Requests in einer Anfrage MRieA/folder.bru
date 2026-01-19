@@ -1,0 +1,16 @@
+meta {
+  name: Mehrere Requests in einer Anfrage MRieA
+}
+
+auth {
+  mode: inherit
+}
+
+script:post-response {
+  test("Global Test. Contains ServiceDelivery, utf-8 encoding, no ErrorCondition, Statuscode 200", function () {
+      expect(res.getBody()?.toString()).to.include("ServiceDelivery");
+      expect(res.getBody()?.toString()).to.include("encoding=\"utf-8\"");
+      expect(res.getStatus()).to.equal(200);
+  });
+  
+}

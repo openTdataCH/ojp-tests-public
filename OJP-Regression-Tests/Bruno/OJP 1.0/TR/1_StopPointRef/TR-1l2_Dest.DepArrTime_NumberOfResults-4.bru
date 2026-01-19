@@ -43,7 +43,7 @@ body:xml {
                               <ojp:Text>Schaffhausen</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
-                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                      <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
                   </ojp:Destination>
                   <ojp:Params>
                       <ojp:NumberOfResults>4</ojp:NumberOfResults>
@@ -64,11 +64,12 @@ script:post-response {
   });
   
   test("Body matches string", function () {
-      expect(res.getBody()?.toString()).to.include("<ojp:StartTime>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechsel') + "08:02:00Z</ojp:StartTime>");
+      expect(res.getBody()?.toString()).to.include("<ojp:StartTime>" + bru.getCollectionVar('friday_timetable_change') + "T08:02:00Z</ojp:StartTime>");
   });
   
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

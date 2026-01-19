@@ -34,7 +34,7 @@ body:xml {
                               <Text>Thun (See) (Thun)</Text>
                           </Name>
                       </PlaceRef>
-                      <DepArrTime>2025-12-13T08:30:00.000Z</DepArrTime>
+                      <DepArrTime>{{saturday_timetable_change}}T08:30:00.000Z</DepArrTime>
                   </Origin>
                   <Destination>
                       <PlaceRef>
@@ -70,4 +70,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

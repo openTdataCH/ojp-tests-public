@@ -35,7 +35,7 @@ body:xml {
                               <ojp:Text>Oberdorf, Endhalt (Autonomie)</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
-                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                      <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
                   </ojp:Origin>
                   <ojp:Destination>
                       <ojp:PlaceRef>
@@ -59,52 +59,9 @@ script:post-response {
   test("Body matches string", function () {
       expect(res.getBody()?.toString()).to.include(">PLATFORM_ACCESS_WITHOUT_ASSISTANCE<");
   });
-  
-  // Parse the XML response
-  const xmlResponse = res.getBody()?.toString();
-  
-  // Use an XML parsing library like xml2js to parse the response
-  const xml2js = require('xml2js');
-  const parser = new xml2js.Parser({ explicitArray: false });
-  
-  parser.parseString(xmlResponse, function (err, result) {
-      if (err) {
-          console.error('XML parsing error:', err);
-      } else {
-          // Extract the ActiveJourneyRef value
-          const activeJourneyRef = findPropertyValue(result, 'JourneyRef');
-  
-          // Extract the ActiveOperatingDayRef value
-          const activeOperatingDayRef = findPropertyValue(result, 'OperatingDayRef');
-  
-          // Set the ActiveJourneyRef variable
-          bru.setGlobalEnvVar('ActiveJourneyRef', activeJourneyRef);
-  
-          // Set the ActiveOperatingDayRef variable
-          bru.setGlobalEnvVar('ActiveOperatingDayRef', activeOperatingDayRef);
-  
-          // Print to the console
-          console.log('ActiveJourneyRef:', activeJourneyRef);
-          console.log('ActiveOperatingDayRef:', activeOperatingDayRef);
-      }
-  });
-  
-  // Helper function to find property value in the response
-  function findPropertyValue(obj, propertyName) {
-      for (const key in obj) {
-          if (key.includes(propertyName)) {
-              return obj[key];
-          } else if (typeof obj[key] === 'object') {
-              const result = findPropertyValue(obj[key], propertyName);
-              if (result) {
-                  return result;
-              }
-          }
-      }
-      return null;
-  }
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

@@ -20,8 +20,8 @@ body:xml {
               <ojp:OJPTripInfoRequest>
                   <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
                   <MessageIdentifier>BehiG-TIR-1</MessageIdentifier>
-                  <ojp:JourneyRef>{{ActiveJourneyRef}}</ojp:JourneyRef>
-                  <ojp:OperatingDayRef>{{DatumFreitagVorFahrplanwechselohneT}}</ojp:OperatingDayRef>
+                  <ojp:JourneyRef>ch:1:sjyid:100648:plan:9dcb38cf-ed78-47d6-947b-0d609b74c98c</ojp:JourneyRef>
+                  <ojp:OperatingDayRef>{{friday_timetable_change}}T11:00:00Z</ojp:OperatingDayRef>
               </ojp:OJPTripInfoRequest>
           </ServiceRequest>
       </OJPRequest>
@@ -36,4 +36,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

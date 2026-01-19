@@ -71,10 +71,12 @@ script:pre-request {
   
   // Send the POST request
   await bru.sendRequest({
-      url: bru.getGlobalEnvVar('server'),
+      url: bru.getGlobalEnvVar
+  ('server'),
       method: 'POST',
       headers: {
-          'Authorization': `Bearer ${bru.getGlobalEnvVar('BearerToken')}`,
+          'Authorization': `Bearer ${bru.getGlobalEnvVar
+  ('BearerToken')}`,
           'Content-Type': 'text/xml',
       },
       data: xmlRequest,
@@ -151,4 +153,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

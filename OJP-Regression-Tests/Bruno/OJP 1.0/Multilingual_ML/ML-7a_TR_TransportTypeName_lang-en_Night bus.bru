@@ -1,7 +1,7 @@
 meta {
   name: ML-7a_TR_TransportTypeName_lang-en_Night bus
   type: http
-  seq: 13
+  seq: 14
 }
 
 post {
@@ -38,7 +38,7 @@ body:xml {
                               <ojp:Text>St. Gallenkappel, Kronenwiese</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
-                      <ojp:DepArrTime>{{Samstag0030VorFahrplanwechsel}}</ojp:DepArrTime>
+                      <ojp:DepArrTime>{{saturday_timetable_change}}T01:30:00Z</ojp:DepArrTime>
                   </ojp:Origin>
                   <ojp:Destination>
                       <ojp:PlaceRef>
@@ -70,4 +70,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

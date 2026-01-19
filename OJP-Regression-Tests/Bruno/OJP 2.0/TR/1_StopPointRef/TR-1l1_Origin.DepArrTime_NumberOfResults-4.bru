@@ -1,7 +1,7 @@
 meta {
   name: TR-1l1_Origin.DepArrTime_NumberOfResults-4
   type: http
-  seq: 24
+  seq: 29
 }
 
 post {
@@ -35,7 +35,7 @@ body:xml {
                               <Text>Bern</Text>
                           </Name>
                       </PlaceRef>
-                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
                   </Origin>
                   <Destination>
                       <PlaceRef>
@@ -64,15 +64,12 @@ script:post-response {
   });
   
   test("Abfahrt nach 11:00 Uhr UTC", function () {
-      expect(res.getBody()?.toString()).to.include("StartTime>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechsel') + "11:02:00");
+      expect(res.getBody()?.toString()).to.include("StartTime>" + bru.getCollectionVar
+  ('friday_timetable_change') + "T11:02:00");
   });
-  
-  // //const responseJson = xml2Json(pm.response.text());//fetch xml data in text
-  //const Duration=responseJson.OJP.OJPResponse['siri:ServiceDelivery'].//OJPTripDelivery.TripResult[1].Trip[1].Duration//fetch the desired city value
-  //console.log(Duration);//logging to pm console
-  
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

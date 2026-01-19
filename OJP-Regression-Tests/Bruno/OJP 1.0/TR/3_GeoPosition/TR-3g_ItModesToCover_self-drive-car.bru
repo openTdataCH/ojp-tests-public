@@ -1,7 +1,7 @@
 meta {
   name: TR-3g_ItModesToCover_self-drive-car
   type: http
-  seq: 8
+  seq: 9
 }
 
 post {
@@ -38,7 +38,7 @@ body:xml {
                               <ojp:Text>Urtenen-Schönbühl</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
-                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                      <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
                   </ojp:Origin>
                   <ojp:Destination>
                       <ojp:PlaceRef>
@@ -79,4 +79,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

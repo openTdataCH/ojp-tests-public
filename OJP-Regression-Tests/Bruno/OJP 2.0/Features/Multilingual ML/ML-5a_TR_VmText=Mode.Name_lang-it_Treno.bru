@@ -1,0 +1,75 @@
+meta {
+  name: ML-5a_TR_VmText=Mode.Name_lang-it_Treno
+  type: http
+  seq: 16
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+  	<OJPRequest>
+          <siri:ServiceRequest>
+              <siri:ServiceRequestContext>
+                  <siri:Language>it</siri:Language>
+              </siri:ServiceRequestContext>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>ML-5a</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <siri:StopPointRef>8509000</siri:StopPointRef>
+                          <Name>
+                              <Text>Chur</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <siri:StopPointRef>8503424</siri:StopPointRef>
+                          <Name>
+                              <Text>Schaffhausen</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <Params>
+                      <NumberOfResults>1</NumberOfResults>
+                      <IncludeTrackSections>false</IncludeTrackSections>
+                      <IncludeLegProjection>false</IncludeLegProjection>
+                      <IncludeTurnDescription>false</IncludeTurnDescription>
+                      <IncludeIntermediateStops>false</IncludeIntermediateStops>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+  
+}
+
+script:post-response {
+  test("Body matches string", function () {
+      expect(res.getBody()?.toString()).to.include(">Treno<");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

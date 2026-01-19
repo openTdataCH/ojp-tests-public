@@ -1,0 +1,65 @@
+meta {
+  name: Shr-2c LIR eScooter Winti
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Accept: application/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPLocationInformationRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>Shr</siri:MessageIdentifier>
+                  <InitialInput>
+                      <GeoRestriction>
+                          <Circle>
+                              <Center>
+                                  <siri:Longitude>8.725666</siri:Longitude>
+                                  <siri:Latitude>47.503992</siri:Latitude>
+                              </Center>
+                              <Radius>2000</Radius>
+                          </Circle>
+                      </GeoRestriction>
+                  </InitialInput>
+                  <Restrictions>
+                      <Modes>
+                          <PersonalMode>scooter</PersonalMode>
+                      </Modes>
+                      <NumberOfResults>30</NumberOfResults>
+                  </Restrictions>
+              </OJPLocationInformationRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Response contains bicycle", function () {
+      expect(res.getBody()?.toString()).to.include("escooter_rental");
+      expect(res.getBody()?.toString()).to.include(">Voi<");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

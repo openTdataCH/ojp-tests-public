@@ -1,7 +1,7 @@
 meta {
   name: TR-u2 missing StopPlace in Context
   type: http
-  seq: 44
+  seq: 49
 }
 
 post {
@@ -35,7 +35,7 @@ body:xml {
                               <Text>Bern, Viktoriaplatz (Bern)</Text>
                           </Name>
                       </PlaceRef>
-                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
                   </Origin>
                   <Destination>
                       <PlaceRef>
@@ -60,8 +60,10 @@ script:post-response {
       expect(res.getBody()?.toString()).to.include("PlannedQuay");
   });
   
+  
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

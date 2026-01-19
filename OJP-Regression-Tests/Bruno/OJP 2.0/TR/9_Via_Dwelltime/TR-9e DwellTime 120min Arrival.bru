@@ -43,7 +43,7 @@ body:xml {
                               <Text>Schaffhausen</Text>
                           </Name>
                       </PlaceRef>
-                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
                   </Destination>
                   <Via>
                       <ViaPoint>
@@ -71,11 +71,12 @@ script:post-response {
   });
   
   test("Body Datum Freitag Vor Fahplanwechsel", function () {
-      expect(res.getBody()?.toString()).to.include("TimetabledTime>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechsel') + "11");
+      expect(res.getBody()?.toString()).to.include("TimetabledTime>" + bru.getCollectionVar('friday_timetable_change') + "T11");
   });
   
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

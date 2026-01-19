@@ -41,7 +41,7 @@ body:xml {
                 <Text>47.696993,8.629415</Text>
               </Name>
             </PlaceRef>
-            <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+            <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
           </Origin>
           <Destination>
             <PlaceRef>
@@ -84,15 +84,15 @@ script:post-response {
   });
   
   test("Trip startet nach 12:00", function () {
-      expect(res.getBody()?.toString()).to.include("<StartTime>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechsel') + "11:");
+      expect(res.getBody()?.toString()).to.include("<StartTime>" + bru.getCollectionVar('friday_timetable_change') + "T11:");
   });
   
-  
   test("TimedLeg startet nach 12:00", function () {
-      expect(res.getBody()?.toString()).to.include("<TimetabledTime>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechsel') + "11:");
+      expect(res.getBody()?.toString()).to.include("<TimetabledTime>" + bru.getCollectionVar('friday_timetable_change') + "T11:");
   });
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

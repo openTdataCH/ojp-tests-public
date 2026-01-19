@@ -1,0 +1,130 @@
+meta {
+  name: MRieA-4_mehrere LIR in einer Anfrage
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="utf-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:ServiceRequestContext>
+                  <siri:Language>de</siri:Language>
+              </siri:ServiceRequestContext>
+              <siri:RequestTimestamp>2025-09-17T09:34:17.386Z</siri:RequestTimestamp>
+              <siri:RequestorRef>OJP_DemoApp_Beta_OJP2.0</siri:RequestorRef>
+              <OJPLocationInformationRequest>
+                  <siri:RequestTimestamp>2025-09-17T09:34:17.386Z</siri:RequestTimestamp>
+                  <InitialInput>
+                      <Name>Bern, z</Name>
+                  </InitialInput>
+                  <Restrictions>
+                      <NumberOfResults>10</NumberOfResults>
+                  </Restrictions>
+                  <siri:Extensions>
+                      <ParamsExtension>
+                          <PrivateModeFilter>
+                              <Exclude>false</Exclude>
+                          </PrivateModeFilter>
+                      </ParamsExtension>
+                  </siri:Extensions>
+              </OJPLocationInformationRequest>
+              <OJPLocationInformationRequest>
+                  <siri:RequestTimestamp>2025-09-17T09:34:53.019Z</siri:RequestTimestamp>
+                  <InitialInput>
+                      <Name>züri</Name>
+                  </InitialInput>
+                  <Restrictions>
+                      <NumberOfResults>10</NumberOfResults>
+                  </Restrictions>
+                  <siri:Extensions>
+                      <ParamsExtension>
+                          <PrivateModeFilter>
+                              <Exclude>false</Exclude>
+                          </PrivateModeFilter>
+                      </ParamsExtension>
+                  </siri:Extensions>
+              </OJPLocationInformationRequest>
+              <OJPLocationInformationRequest>
+                  <siri:RequestTimestamp>2025-09-17T09:34:53.019Z</siri:RequestTimestamp>
+                  <InitialInput>
+                      <Name>Thun, allmendh</Name>
+                  </InitialInput>
+                  <Restrictions>
+                      <NumberOfResults>10</NumberOfResults>
+                  </Restrictions>
+                  <siri:Extensions>
+                      <ParamsExtension>
+                          <PrivateModeFilter>
+                              <Exclude>false</Exclude>
+                          </PrivateModeFilter>
+                      </ParamsExtension>
+                  </siri:Extensions>
+              </OJPLocationInformationRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  // 1. Import the built-in xml2js library
+  const xml2js = require('xml2js');
+  
+  // 2. Get the XML response as text
+  const responseXml = res.getBody()?.toString();
+  
+  // 3. Parse the XML string.
+  xml2js.parseString(responseXml, (err, result) => {
+      // First, handle any potential parsing errors
+      if (err) {
+          console.error("Fehler beim Parsen des XML:", err);
+          test("XML-Parsing war erfolgreich", () => {
+              throw new Error("XML konnte nicht geparst werden.");
+          });
+          return;
+      }
+  
+      // Access the list of OJPStopEventDelivery blocks
+      const deliveries = result.OJP.OJPResponse[0]['siri:ServiceDelivery'][0].OJPLocationInformationDelivery;
+  
+      // --- Tests ---
+  
+      test("ThisCall Block 1 = 'Bern'", function () {
+          // KORREKTUR: ._ hinzugefügt, um den Textwert des Objekts zu erhalten
+          const stopPointName = deliveries[0].PlaceResult[0].Place[0].StopPlace[0].StopPlaceName[0].Text[0]._;
+          expect(stopPointName).to.include("Bern", "StopPointName im ersten Block sollte 'Bern' sein.");
+      });
+      
+      test("ThisCall Block 2 = 'Uzwil'", function () {
+          // KORREKTUR: ._ hinzugefügt
+          const stopPointName = deliveries[1].PlaceResult[0].Place[0].StopPlace[0].StopPlaceName[0].Text[0]._;
+          expect(stopPointName).to.include("Züri", "StopPointName im zweiten Block, drittes Ergebnis, sollte 'Züri' sein.");
+      });
+      
+      test("ThisCall Block 3 = 'Thun, Allmendhof'", function () {
+          // KORREKTUR: ._ hinzugefügt
+          const stopPointName = deliveries[2].PlaceResult[0].Place[0].StopPlace[0].StopPlaceName[0].Text[0]._;
+          expect(stopPointName).to.include("Thun, Allmendhof", "StopPointName im dritten Block, drittes Ergebnis, sollte 'Thun, Allmendhof' sein.");
+      });
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

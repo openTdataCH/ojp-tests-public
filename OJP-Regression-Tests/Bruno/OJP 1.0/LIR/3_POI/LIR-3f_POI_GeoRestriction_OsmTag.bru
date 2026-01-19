@@ -56,11 +56,13 @@ script:post-response {
   test("Response contains only POI Category service", function () {
       expect(res.getBody()?.toString()).to.not.include("<ojp:Value>restaurant</ojp:Value>");
       expect(res.getBody()?.toString()).to.not.include("<ojp:Value>catering</ojp:Value>");
-      expect(res.getBody()?.toString()).to.include("service");
+      expect(res.getBody()?.toString()
+  ).to.include("service");
   });
   
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

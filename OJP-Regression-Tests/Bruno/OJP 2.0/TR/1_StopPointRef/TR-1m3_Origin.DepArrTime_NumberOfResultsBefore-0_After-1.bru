@@ -1,7 +1,7 @@
 meta {
   name: TR-1m3_Origin.DepArrTime_NumberOfResultsBefore-0_After-1
   type: http
-  seq: 28
+  seq: 33
 }
 
 post {
@@ -35,7 +35,7 @@ body:xml {
                               <Text>Schaffhausen</Text>
                           </Name>
                       </PlaceRef>
-                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
                   </Origin>
                   <Destination>
                       <PlaceRef>
@@ -61,11 +61,12 @@ body:xml {
 
 script:post-response {
   test("Abfahrt nach 11:00", function () {
-      expect(res.getBody()?.toString()).to.include("StartTime>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechsel') + "11:");
+      expect(res.getBody()?.toString()).to.include("StartTime>" + bru.getCollectionVar('friday_timetable_change') + "T11:");
   });
   
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

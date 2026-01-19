@@ -38,7 +38,7 @@ body:xml {
                               <ojp:Text>Bergholzstrasse</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
-                      <ojp:DepArrTime>{{Samstag0002UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                      <ojp:DepArrTime>{{saturday_timetable_change}}T00:00:00Z</ojp:DepArrTime>
                   </ojp:Origin>
                   <ojp:Destination>
                       <ojp:PlaceRef>
@@ -77,4 +77,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

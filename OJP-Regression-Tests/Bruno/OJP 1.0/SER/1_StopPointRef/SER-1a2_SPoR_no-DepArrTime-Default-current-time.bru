@@ -49,11 +49,13 @@ script:post-response {
   
   // Überprüfe, ob das heutige Datum im Format "YYYY-MM-DD" im String "TimetabledTime>YYYY-MM-DD" vorkommt
   test('Überprüfe das heutige Datum im Format "YYYY-MM-DD"', function() {
-      expect(res.getBody()?.toString()).to.include(formattedDate);
+      expect(res.getBody()?.toString()
+  ).to.include(formattedDate);
   });
   
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

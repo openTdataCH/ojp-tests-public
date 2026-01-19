@@ -35,10 +35,10 @@ body:xml {
                               <Latitude>47.773983</Latitude>
                           </ojp:GeoPosition>
                           <ojp:LocationName>
-                              <ojp:Text>Hagenturm</ojp:Text>
+                              <ojp:Text>Hagenturmli</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
-                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                      <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
                       <ojp:IndividualTransportOptions>
                           <ojp:Mode>walk</ojp:Mode>
                           <ojp:MaxDistance>800</ojp:MaxDistance>
@@ -75,4 +75,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

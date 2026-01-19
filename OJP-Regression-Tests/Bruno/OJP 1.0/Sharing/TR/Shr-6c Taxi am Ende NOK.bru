@@ -1,0 +1,84 @@
+meta {
+  name: Shr-6c Taxi am Ende NOK
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="utf-8"?>
+  <OJP xmlns="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd" version="1.0">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPTripRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>Shr-6c</MessageIdentifier>
+                  <ojp:Origin>
+                      <ojp:PlaceRef>
+                          <StopPointRef>8590042</StopPointRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Bern, Schlossmatte (Bern)</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                      <ojp:DepArrTime>{{friday_timetable_change}}</ojp:DepArrTime>
+                  </ojp:Origin>
+                  <ojp:Destination>
+                      <ojp:PlaceRef>
+                          <StopPointRef>8507151</StopPointRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Hilterfingen (See) (Hilterfingen)</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                      <ojp:IndividualTransportOptions>
+                          <ojp:Mode>taxi</ojp:Mode>
+                          <!--Taxi am Ende-->
+                          <ojp:MinDistance>500</ojp:MinDistance>
+                          <!--Optional: minimale Fahrdistanz mit gewähltem Mode #-->
+                          <ojp:MinDuration>PT3M</ojp:MinDuration>
+                          <!--Optional: minimale Fahrtdauer mit gewähltem Mode # -->
+                      </ojp:IndividualTransportOptions>
+                  </ojp:Destination>
+                  <ojp:Params>
+                      <ojp:NumberOfResults>1</ojp:NumberOfResults>
+                      <!--Optional: Anzahl auszugebender, alternativer ÖV Verbindungen-->
+                      <ojp:IncludeTrackSections>true</ojp:IncludeTrackSections>
+                      <!--Immer true: Ausgabe geografische Route (TrackSection)-->
+                      <ojp:IncludeLegProjection>true</ojp:IncludeLegProjection>
+                      <!--Optional: Ausgabe Koordinaten der Fahrstrecke (LinkProjection)-->
+                      <ojp:IncludeTurnDescription>true</ojp:IncludeTurnDescription>
+                      <!--Optional: Ausgabe Abbiegeanweisungen (PathGuidance)-->
+                      <ojp:IncludeIntermediateStops>true</ojp:IncludeIntermediateStops>
+                      <!--Optional: Ausgabe Zwischenhaltestellen der ÖV Route--> 
+                  
+                  </ojp:Params>
+              </ojp:OJPTripRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Body matches string taxi", function () {
+      expect(res.getBody()?.toString()).to.include("taxi");
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

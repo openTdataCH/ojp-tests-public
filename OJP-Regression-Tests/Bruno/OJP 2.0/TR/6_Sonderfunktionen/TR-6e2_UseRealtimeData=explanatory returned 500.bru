@@ -59,11 +59,12 @@ body:xml {
 }
 
 script:post-response {
-  // /* pm.test("<Cancelled>true", function () {
-  //     pm.expect(pm.response.text()).to.include("<Cancelled>true</Cancelled>");
-  }); */
+  //test("Enthält <Cancelled>true</Cancelled>", function () {
+  //    expect(res.getBody()?.toString()).to.include("<Cancelled>true</Cancelled>");
+  //});
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

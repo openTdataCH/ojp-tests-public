@@ -1,0 +1,104 @@
+meta {
+  name: Shr-2b LIR eScooter Zürich HB
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Accept: application/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPLocationInformationRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>Shr</siri:MessageIdentifier>
+                  <InitialInput>
+                      <GeoRestriction>
+                          <Circle>
+                              <Center>
+                                  <siri:Longitude>8.540262</siri:Longitude>
+                                  <siri:Latitude>47.377887</siri:Latitude>
+                              </Center>
+                              <Radius>2000</Radius>
+                          </Circle>
+                      </GeoRestriction>
+                  </InitialInput>
+                  <Restrictions>
+                      <Modes>
+                          <PersonalMode>scooter</PersonalMode>
+                      </Modes>
+                      <NumberOfResults>30</NumberOfResults>
+                  </Restrictions>
+              </OJPLocationInformationRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  // Wir holen uns die gesamte Antwort als einen langen Text-String
+  var responseText = res.getBody()?.toString();
+  
+  // Liste der relevanten Text-Fragmente (Zeilen), die wir erwarten.
+  // Wir lassen führende Leerzeichen weg, damit die Einrückung im Body egal ist.
+  var expectedSnippets = [
+      "<PublicCode>",
+      '<Text xml:lang="de">',
+      "<PointOfInterestClassification>escooter_rental</PointOfInterestClassification>",
+      "<System>EFA</System>",
+      "<Value>sharingID:",
+      "<Key>IsVehicle</Key>",
+      "<Value>true</Value>",
+      "<Key>VehicleType</Key>",
+      "<Value>VEHICLE_TYPE_MINIVEHICLE</Value>",
+      "<Key>VehicleReturnLocationType</Key>",
+      "<Value>VEHICLE_RETURN_LOCATION_TYPE_OPERATING_AREA_ANY_POSITION</Value>",
+      "<Key>OPERATOR_NAME</Key>",
+      "<Value>Voi</Value>",
+      "<Key>OPERATING_AREA_NAME</Key>",
+      "<Value>Voi Technology AB</Value>",
+      '<Text xml:lang="de">Voi</Text>',
+      "<siri:Longitude>8.5",
+      "<siri:Latitude>47.3"
+  ];
+  
+  // URLs separat prüfen (wegen potenzieller Sonderzeichen-Probleme oft sicherer, nur den Start zu prüfen)
+  var expectedUrlPart = "https://lqfa.adj.st/closest_vehicle?adj_t=b2hnabv";
+  
+  test("Status code is 200", function () {
+      expect(res.getStatus()).to.equal(200);
+  });
+  
+  // Schleife durch alle definierten Text-Schnipsel
+  expectedSnippets.forEach(function(snippet) {
+      test("Body enthält: " + snippet, function () {
+          expect(responseText).to.include(snippet);
+      });
+  });
+  
+  // Separater Test für die URL
+  test("Body enthält Rental URL", function () {
+      expect(responseText).to.include(expectedUrlPart);
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

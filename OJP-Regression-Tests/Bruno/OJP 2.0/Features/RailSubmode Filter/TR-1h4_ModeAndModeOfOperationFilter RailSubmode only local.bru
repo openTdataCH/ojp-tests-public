@@ -1,0 +1,75 @@
+meta {
+  name: TR-1h4_ModeAndModeOfOperationFilter RailSubmode only local
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>TR-1h3</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <siri:StopPointRef>8503091</siri:StopPointRef>
+                          <Name>
+                              <Text>Giesshübel</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <siri:StopPointRef>8503000</siri:StopPointRef>
+                          <Name>
+                              <Text>Zürich HB</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+  				<Params>
+  					<ModeAndModeOfOperationFilter>
+  						<Exclude>false</Exclude>
+  						<siri:RailSubmode>local</siri:RailSubmode>
+  					</ModeAndModeOfOperationFilter>
+  					<NumberOfResults>5</NumberOfResults>
+  				</Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Darf nur regionalRail enthalten", function () {
+      expect(res.getBody()?.toString()).to.include("<siri:RailSubmode>local</siri:RailSubmode>");
+  });
+  
+  test("Darf kein tram enthalten", function () {
+      expect(res.getBody()?.toString()).to.not.include("<PtMode>tram</PtMode>");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

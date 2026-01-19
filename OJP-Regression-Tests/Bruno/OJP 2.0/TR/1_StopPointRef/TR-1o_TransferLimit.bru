@@ -1,7 +1,7 @@
 meta {
   name: TR-1o_TransferLimit
   type: http
-  seq: 35
+  seq: 40
 }
 
 post {
@@ -35,7 +35,7 @@ body:xml {
                               <Text>Neuhausen, Rheinstrasse</Text>
                           </Name>
                       </PlaceRef>
-                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
                   </Origin>
                   <Destination>
                       <PlaceRef>
@@ -64,8 +64,248 @@ script:post-response {
       expect(res.getBody()?.toString()).to.not.include("Transfers>1<");
   });
   
+  // 🟥🟥🟥 1. SETUP & CONFIGURATION 🟥🟥🟥
+  var xml2js = require('xml2js');
+  
+  var parser = new xml2js.Parser({
+      explicitArray: false,
+      mergeAttrs: true,
+      stripPrefix: true, 
+      async: false       
+  });
+  
+  // 🟦🟦🟦 2. HILFSFUNKTIONEN 🟦🟦🟦
+  
+  function toArray(val) {
+      if (!val) return [];
+      return Array.isArray(val) ? val : [val];
+  }
+  
+  function getText(val) {
+      if (!val) return "";
+      if (typeof val === 'string') return val;
+      if (val._) return val._;
+      if (val['#text']) return val['#text'];
+      return "";
+  }
+  
+  function findDeepKey(obj, keyToFind) {
+      var found = [];
+      function search(node) {
+          if (!node || typeof node !== 'object') return;
+          if (node[keyToFind]) {
+              var res = node[keyToFind];
+              Array.isArray(res) ? found.push(...res) : found.push(res);
+          }
+          for (var k in node) {
+              if (Object.prototype.hasOwnProperty.call(node, k) && typeof node[k] === 'object') {
+                  search(node[k]);
+              }
+          }
+      }
+      search(obj);
+      return found;
+  }
+  
+  function extractAllCoordsInLeg(legNode) {
+      var coords = [];
+      function traverse(node) {
+          if (!node || typeof node !== 'object') return;
+          
+          var lat = node.Latitude || node['siri:Latitude'];
+          var lon = node.Longitude || node['siri:Longitude'];
+  
+          if (lat && lon) {
+              coords.push([parseFloat(lat), parseFloat(lon)]);
+              return;
+          }
+          if (node.Position) {
+              var posArray = toArray(node.Position);
+              posArray.forEach(p => traverse(p));
+              return;
+          }
+          for (var k in node) {
+              if (typeof node[k] === 'object') traverse(node[k]);
+          }
+      }
+      traverse(legNode);
+      return coords;
+  }
+  
+  // 🟩🟩🟩 3. HAUPTLOGIK 🟩🟩🟩
+  
+  parser.parseString(res.getBody()?.toString(), function (err, result) {
+      if (err) { console.error("XML Error", err); return; }
+  
+      var mapSegments = [];
+      var mapMarkers = [];
+  
+      var tripResults = findDeepKey(result, 'TripResult');
+  
+      tripResults.forEach((tripRes, idx) => {
+          if (!tripRes.Trip || !tripRes.Trip.Leg) return;
+  
+          var legs = toArray(tripRes.Trip.Leg);
+  
+          legs.forEach(leg => {
+              var segment = {
+                  coords: [],
+                  mode: "unknown",
+                  label: "Abschnitt",
+                  color: "#999",
+                  dashed: false
+              };
+  
+              // --- A: TIMED LEG ---
+              if (leg.TimedLeg) {
+                  var tl = leg.TimedLeg;
+                  if (tl.Service && tl.Service.Mode && tl.Service.Mode.PtMode) {
+                      segment.mode = getText(tl.Service.Mode.PtMode);
+                      var line = getText(tl.Service.PublishedServiceName?.Text);
+                      segment.label = segment.mode + " " + line;
+                  }
+                  
+                  // Helle, leuchtende Farben für Darkmode
+                  if (segment.mode === 'rail') segment.color = '#FF5252'; // Neon Rot
+                  else if (segment.mode === 'tram') segment.color = '#FFD740'; // Helles Gelb
+                  else if (segment.mode === 'bus') segment.color = '#FFAB40'; // Helles Orange
+                  else segment.color = '#448AFF'; // Helles Blau
+  
+                  if (tl.LegTrack) {
+                      segment.coords = extractAllCoordsInLeg(tl.LegTrack);
+                  }
+  
+                  if(tl.LegBoard && tl.LegBoard.StopPointName) {
+                      var name = getText(tl.LegBoard.StopPointName.Text);
+                      if(segment.coords.length > 0) {
+                          mapMarkers.push({lat: segment.coords[0][0], lon: segment.coords[0][1], name: name});
+                      }
+                  }
+              } 
+              // --- B: TRANSFER LEG ---
+              else if (leg.TransferLeg) {
+                  var tr = leg.TransferLeg;
+                  segment.mode = "walk";
+                  segment.label = "Fussweg";
+                  // Hellgrau für Sichtbarkeit auf dunkler Karte
+                  segment.color = "#ccc"; 
+                  segment.dashed = true;
+                  segment.coords = extractAllCoordsInLeg(tr);
+              }
+  
+              if (segment.coords.length > 0) {
+                  mapSegments.push(segment);
+              }
+          });
+      });
+  
+      // 🟨🟨🟨 4. VISUALISIERUNG (DARK MODE) 🟨🟨🟨
+      var template = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+          <meta charset="utf-8" />
+          <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+          <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+          <style>
+              body { margin: 0; font-family: 'Helvetica Neue', Arial, sans-serif; background: #222; }
+              #map { height: 100vh; width: 100%; }
+              
+              /* Dark Mode Info Box */
+              .info {
+                  position: absolute; bottom: 20px; left: 20px; z-index: 1000;
+                  background: rgba(30, 30, 30, 0.85); 
+                  color: #eee;
+                  padding: 12px; border-radius: 8px;
+                  border: 1px solid #444;
+                  box-shadow: 0 0 15px rgba(0,0,0,0.5); 
+                  font-size: 13px;
+                  backdrop-filter: blur(5px);
+              }
+              .item { margin-bottom: 6px; display: flex; align-items: center; }
+              .line { display: inline-block; width: 25px; height: 3px; margin-right: 8px; border-radius: 2px;}
+              
+              /* Popup Styling */
+              .leaflet-popup-content-wrapper, .leaflet-popup-tip {
+                  background: #333;
+                  color: #fff;
+              }
+          </style>
+      </head>
+      <body>
+          <div id="map"></div>
+          <div class="info" id="legend"><strong>Legende</strong><br><hr style="border:0; border-top:1px solid #555; margin: 5px 0;"></div>
+  
+          <script>
+              var segments = ${JSON.stringify(mapSegments)};
+              var markers = ${JSON.stringify(mapMarkers)};
+  
+              var map = L.map('map');
+  
+              // --- CARTO DARK MATTER TILE LAYER ---
+              L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                  subdomains: 'abcd',
+                  maxZoom: 20
+              }).addTo(map);
+  
+              var bounds = [];
+              var usedModes = new Set();
+  
+              // Linien zeichnen
+              segments.forEach(seg => {
+                  usedModes.add(JSON.stringify({m: seg.mode, c: seg.color, d: seg.dashed}));
+                  
+                  var poly = L.polyline(seg.coords, {
+                      color: seg.color,
+                      weight: seg.dashed ? 3 : 5,
+                      opacity: 0.9,
+                      dashArray: seg.dashed ? '5, 10' : null,
+                      lineCap: 'round'
+                  }).addTo(map);
+                  
+                  poly.bindTooltip(seg.label, { sticky: true, direction: 'top' });
+                  seg.coords.forEach(p => bounds.push(p));
+              });
+  
+              // Marker zeichnen
+              markers.forEach(m => {
+                  L.circleMarker([m.lat, m.lon], {
+                      radius: 4, 
+                      color: '#fff', 
+                      fillColor: '#000', 
+                      fillOpacity: 1, 
+                      weight: 2
+                  }).bindPopup('<b>' + m.name + '</b>').addTo(map);
+              });
+  
+              // Legende
+              var legHtml = '<strong>Route Info</strong><br><div style="margin-top:5px"></div>';
+              if(segments.length === 0) legHtml += "Keine Daten";
+              
+              Array.from(usedModes).forEach(json => {
+                  var item = JSON.parse(json);
+                  var style = 'background:' + item.c + ';';
+                  if(item.d) style += ' border-bottom: 2px dashed ' + item.c + '; background: transparent; height: 0px; margin-top:2px;';
+                  legHtml += '<div class="item"><span class="line" style="' + style + '"></span>' + item.m + '</div>';
+              });
+              document.getElementById('legend').innerHTML = legHtml;
+  
+              if (bounds.length > 0) {
+                  map.fitBounds(bounds, { padding: [50, 50] });
+              } else {
+                  map.setView([47.3769, 8.5417], 13);
+              }
+          </script>
+      </body>
+      </html>
+      `;
+  
+  //     pm.visualizer.set(template);
+  });
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

@@ -1,0 +1,58 @@
+meta {
+  name: ML_1a_LIR_HstName_lang-fr_Bâc findet Bâche
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Accept: application/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:ServiceRequestContext>
+                  <siri:Language>fr</siri:Language>
+              </siri:ServiceRequestContext>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPLocationInformationRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>ML_1a</siri:MessageIdentifier>
+                  <InitialInput>
+                      <Name>Bâc</Name>
+                  </InitialInput>
+                  <Restrictions>
+                      <Type>stop</Type>
+                      <NumberOfResults>20</NumberOfResults>
+                      <IncludePtModes>true</IncludePtModes>
+                  </Restrictions>
+              </OJPLocationInformationRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Contains specific StopPlaceRefs", function() {
+      expect(res.getBody()?.toString()).to.include(">Bâche<");
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

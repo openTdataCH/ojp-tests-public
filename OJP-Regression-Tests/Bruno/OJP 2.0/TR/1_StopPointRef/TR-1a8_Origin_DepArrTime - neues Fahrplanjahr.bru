@@ -35,7 +35,7 @@ body:xml {
                               <Text>Kloten</Text>
                           </Name>
                       </PlaceRef>
-                      <DepArrTime>{{NeuesFahrplanjahr}}</DepArrTime>
+                      <DepArrTime>{{new_timetable_date}}T21:30:00Z</DepArrTime>
                   </Origin>
                   <Destination>
                       <PlaceRef>
@@ -64,4 +64,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

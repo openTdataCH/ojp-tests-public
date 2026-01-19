@@ -1,0 +1,82 @@
+meta {
+  name: TR-1h6_ModeAndModeOfOperationFilter öv-info Exclude=true alle ausser rail
+  type: http
+  seq: 19
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0"?>
+  <OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.vdv.de/ojp" version="2.0" xsi:schemaLocation="http://www.vdv.de/ojp">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:ServiceRequestContext>
+                  <siri:Language>de</siri:Language>
+              </siri:ServiceRequestContext>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>TR-1h6</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <StopPlaceRef>8503423</StopPlaceRef>
+                          <Name>
+                              <Text>Neuhausen</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <StopPlaceRef>8503424</StopPlaceRef>
+                          <Name>
+                              <Text>Schaffhausen</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <Params>
+                      <ModeAndModeOfOperationFilter>
+                          <Exclude>true</Exclude>
+                          <PtMode>urbanRail</PtMode>
+                          <PtMode>tram</PtMode>
+                          <PtMode>metro</PtMode>
+                          <PtMode>bus</PtMode>
+                          <PtMode>water</PtMode>
+                          <PtMode>funicular</PtMode>
+                          <PtMode>telecabin</PtMode>
+                      </ModeAndModeOfOperationFilter>
+                      <NumberOfResults>10</NumberOfResults>
+                      <UseRealtimeData>full</UseRealtimeData>
+                      <IncludeIntermediateStops>false</IncludeIntermediateStops>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Darf nur PtMode Rail enthalten", function () {
+      expect(res.getBody()?.toString()).to.include("<PtMode>rail</PtMode>");
+      expect(res.getBody()?.toString()).to.not.include("<PtMode>tram</PtMode>");
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

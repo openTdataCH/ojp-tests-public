@@ -35,7 +35,7 @@ body:xml {
                               <ojp:Text>Zürich HB</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
-                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                      <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
                   </ojp:Origin>
                   <ojp:Destination>
                       <ojp:PlaceRef>
@@ -72,15 +72,16 @@ script:post-response {
   });
   
   test("Body matches string", function () {
-      expect(res.getBody()?.toString()).to.include("TimetabledTime>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechsel') + "11");
+      expect(res.getBody()?.toString()).to.include("TimetabledTime>" + bru.getCollectionVar('friday_timetable_change') + "T11");
   });
   
   test("Body matches string", function () {
-      expect(res.getBody()?.toString()).to.include("TimetabledTime>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechsel') + "13");
+      expect(res.getBody()?.toString()).to.include("TimetabledTime>" + bru.getCollectionVar('friday_timetable_change') + "T13");
   });
   
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

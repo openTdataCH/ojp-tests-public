@@ -30,12 +30,12 @@ body:xml {
                   <siri:MessageIdentifier>TR-6j</siri:MessageIdentifier>
                   <Origin>
                       <PlaceRef>
-                          <StopPlaceRef>8506269</StopPlaceRef>
+                          <StopPlaceRef>8506265</StopPlaceRef>
                           <Name>
-                              <Text>Säntis</Text>
+                              <Text>Kronberg</Text>
                           </Name>
                       </PlaceRef>
-                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
                   </Origin>
                   <Destination>
                       <PlaceRef>
@@ -48,6 +48,15 @@ body:xml {
                           </Name>
                       </PlaceRef>
                   </Destination>
+                  <Via>
+                      <ViaPoint>
+                          <StopPlaceRef>8583201</StopPlaceRef>
+                          <Name>
+                              <Text>Appenzell, Sonnhalde</Text>
+                          </Name>
+                      </ViaPoint>
+                      <DwellTime>PT0M</DwellTime>
+                  </Via>
                   <Params>
                       <NumberOfResults>1</NumberOfResults>
                       <IncludeTrackSections>true</IncludeTrackSections>
@@ -86,4 +95,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

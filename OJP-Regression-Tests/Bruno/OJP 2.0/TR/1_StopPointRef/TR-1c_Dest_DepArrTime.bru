@@ -43,7 +43,7 @@ body:xml {
                               <Text>Schaffhausen</Text>
                           </Name>
                       </PlaceRef>
-                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
                   </Destination>
                   <Params>
                       <NumberOfResults>3</NumberOfResults>
@@ -57,13 +57,13 @@ body:xml {
 
 script:post-response {
   test("Ankunftszeit vor 12 Uhr an Destination", function () {
-      const expectedValue = "EndTime>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechsel') + "10";
+      const expectedValue = "EndTime>" + bru.getCollectionVar('friday_timetable_change') + "T10";
   
       expect(res.getBody()?.toString()).to.include(expectedValue);
   });
   
   test("keine Ankunftszeit nach 12 Uhr an Destination", function () {
-      const expectedValue = "EndTime>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechsel') + "11";
+      const expectedValue = "EndTime>" + bru.getCollectionVar('friday_timetable_change') + "T11";
   
       expect(res.getBody()?.toString()).to.not.include(expectedValue);
   });
@@ -72,4 +72,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

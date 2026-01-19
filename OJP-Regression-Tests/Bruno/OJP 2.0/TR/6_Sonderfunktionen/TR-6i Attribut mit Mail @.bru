@@ -37,7 +37,7 @@ body:xml {
                 <Text>Zweisimmen (Zweisimmen)</Text>
               </Name>
             </PlaceRef>
-          <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+          <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
           </Origin>
           <Destination>
             <PlaceRef>
@@ -72,4 +72,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

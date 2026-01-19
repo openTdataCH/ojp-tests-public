@@ -1,7 +1,7 @@
 meta {
   name: TR-1j2_OperatorFilter-Exclude-true
   type: http
-  seq: 20
+  seq: 25
 }
 
 post {
@@ -35,7 +35,7 @@ body:xml {
                               <Text>Neuhausen, Rheinstrasse</Text>
                           </Name>
                       </PlaceRef>
-                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
                   </Origin>
                   <Destination>
                       <PlaceRef>
@@ -69,4 +69,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

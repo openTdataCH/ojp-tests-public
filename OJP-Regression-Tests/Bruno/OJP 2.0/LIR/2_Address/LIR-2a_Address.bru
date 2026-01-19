@@ -42,13 +42,17 @@ body:xml {
 }
 
 script:post-response {
-  test("Response contains multiple Address", function() {
-  //     //pm.expect(pm.response.text()).to.include("Zürich, Staffelstrasse 12");
-      expect(res.getBody()?.toString()).to.include("Wettingen, Staffelstrasse 12");
-  });
+  test("Prüfe, ob Adresse in Wettingen enthalten ist", function () {
+      var responseBody = res.getBody()?.toString();
+      var string1 = "Wettingen AG, Staffelstrasse 12";
+      var string2 = "Wettingen, Staffelstrasse 12";
   
+      // Prüft, ob String 1 ODER (||) String 2 enthalten ist
+      expect(responseBody.includes(string1) || responseBody.includes(string2)).to.be.true;
+  });
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

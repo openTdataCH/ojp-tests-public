@@ -31,7 +31,7 @@ body:xml {
                               <ojp:Text>Zürich Kreuzplatz</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
-                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                      <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
                   </ojp:Location>
                   <ojp:Params>
                       <ojp:TimeWindow>PT30M</ojp:TimeWindow>
@@ -45,7 +45,8 @@ body:xml {
 
 script:post-response {
   test("Body matches string", function () {
-      expect(res.getBody()?.toString()).to.include(bru.getCollectionVar('DatumFreitagVorFahrplanwechsel'));
+      expect(res.getBody()?.toString()
+  ).to.include(bru.getCollectionVar('friday_timetable_change'));
   });
   
   test("Response contains <= 25 of <ojp:ResultId>", function () {
@@ -59,4 +60,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

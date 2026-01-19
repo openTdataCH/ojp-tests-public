@@ -1,7 +1,7 @@
 meta {
   name: ML-4a_TR_Infotext_lang-it_Biciclette regolamento
   type: http
-  seq: 10
+  seq: 11
 }
 
 post {
@@ -38,7 +38,7 @@ body:xml {
                               <ojp:Text>Ronco sopra Ascona</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
-                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                      <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
                   </ojp:Origin>
                   <ojp:Destination>
                       <ojp:PlaceRef>
@@ -71,4 +71,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

@@ -35,7 +35,7 @@ body:xml {
                               <Text>Bettens, village (Bettens)</Text>
                           </LocationName>
                       </ojp:PlaceRef>
-                      <ojp:DepArrTime>{{Samstag0003UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                      <ojp:DepArrTime>{{saturday_timetable_change}}T01:00:00Z</ojp:DepArrTime>
                   </ojp:Origin>
                   <Destination>
                       <PlaceRef>
@@ -63,8 +63,16 @@ script:post-response {
       expect(res.getBody()?.toString()).to.include("LineRef>odv");
   });
   
+  test("include Publicar Vaud", function () {
+      expect(res.getBody()?.toString()).to.include(">Publicar Vaud</ojp:Text>");
+  });
+  
+  test("Body to include demandResponsive", function () {
+      expect(res.getBody()?.toString()).to.include("<siri:BusSubmode>demandAndResponseBus");
+  });
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

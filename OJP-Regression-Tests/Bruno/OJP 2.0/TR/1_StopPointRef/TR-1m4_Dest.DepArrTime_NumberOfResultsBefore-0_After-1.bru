@@ -1,7 +1,7 @@
 meta {
   name: TR-1m4_Dest.DepArrTime_NumberOfResultsBefore-0_After-1
   type: http
-  seq: 29
+  seq: 34
 }
 
 post {
@@ -43,7 +43,7 @@ body:xml {
                               <Text>Winterthur</Text>
                           </Name>
                       </PlaceRef>
-                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
                   </Destination>
                   <Params>
                       <NumberOfResultsBefore>0</NumberOfResultsBefore>
@@ -61,11 +61,12 @@ body:xml {
 
 script:post-response {
   test("Ankunft nach 12:00", function () {
-      expect(res.getBody()?.toString()).to.include("EndTime>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechsel') + "11:");
+      expect(res.getBody()?.toString()).to.include("EndTime>" + bru.getCollectionVar('friday_timetable_change') + "T11:");
   });
   
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

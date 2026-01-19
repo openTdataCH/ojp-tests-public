@@ -1,6 +1,5 @@
 meta {
   name: TR
-  seq: 2
 }
 
 auth {
@@ -105,9 +104,7 @@ script:post-response {
           if (AnzahlStörungsmeldungen > 0) {
               console.log(AnzahlStörungsmeldungen + ' Störungsmeldung ' +AnzahlReferenzInTrips +'x in Trips referenziert');
               console.log('PtSituation SituationNumbers:', ptSituationNumbers);
-          }
-          
-          
+          }       
       }
   }
   // Check combined arrays

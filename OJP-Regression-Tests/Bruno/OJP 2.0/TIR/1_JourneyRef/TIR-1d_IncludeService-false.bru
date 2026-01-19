@@ -67,16 +67,16 @@ script:pre-request {
       </OJPRequest>
   </OJP>`;
   
-  
- 
-
-  
   // Send the POST request
   await bru.sendRequest({
-      url: bru.getGlobalEnvVar('server2'),
+      url: bru.getGlobalEnvVar
+  
+  ('server2'),
       method: 'POST',
       headers: {
-          'Authorization': `Bearer ${bru.getGlobalEnvVar('BearerToken')}`,
+          'Authorization': `Bearer ${bru.getGlobalEnvVar
+  
+  ('BearerToken')}`,
           'Content-Type': 'text/xml',
       },
       data: xmlRequest,
@@ -102,10 +102,16 @@ script:pre-request {
                   const activeOperatingDayRef = findPropertyValue(result, 'OperatingDayRef');
   
                   // Set the ActiveJourneyRef variable
-                  bru.setGlobalEnvVar('ActiveJourneyRef', activeJourneyRef);
+                  bru.setGlobalEnvVar
+  
+  
+  ('ActiveJourneyRef', activeJourneyRef);
                   
                   // Set the ActiveOperatingDayRef variable
-                  bru.setGlobalEnvVar('ActiveOperatingDayRef', activeOperatingDayRef);
+                  bru.setGlobalEnvVar
+  
+  
+  ('ActiveOperatingDayRef', activeOperatingDayRef);
   
                   // Print to the console
                   console.log('ActiveJourneyRef:', activeJourneyRef);
@@ -141,4 +147,747 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
+}
+
+example {
+  name: TIR-1d_IncludeService-false
+  
+  request: {
+    url: {{server2}}
+    method: POST
+    mode: xml
+    headers: {
+      Content-Type: text/xml
+    }
+  
+    body:xml: {
+      <?xml version="1.0" encoding="UTF-8"?>
+      <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+          <OJPRequest>
+              <siri:ServiceRequest>
+                  <siri:RequestTimestamp>2024-11-07T12:38:01.161Z</siri:RequestTimestamp>
+                  <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+                  <OJPTripInfoRequest>
+                      <siri:RequestTimestamp>2024-11-07T12:38:01.161Z</siri:RequestTimestamp>
+                      <siri:MessageIdentifier>TIR-1d</siri:MessageIdentifier>
+                      <JourneyRef>ch:1:sjyid:100648:plan:08814707-47fd-4974-8455-534c65f3a652</JourneyRef>
+                      <OperatingDayRef>2024-11-07</OperatingDayRef>
+                      <Params>
+                          <IncludeService>false</IncludeService><!--Standardmässig aktiv. Service mit LineRef, PtMode, Zuggattung, Operator !-->
+                      </Params>
+                  </OJPTripInfoRequest>
+              </siri:ServiceRequest>
+          </OJPRequest>
+      </OJP>
+    }
+  }
+  
+  response: {
+    headers: {
+      Date: Thu, 07 Nov 2024 15:47:31 GMT
+      Content-Type: application/xml
+      Transfer-Encoding: chunked
+      Connection: keep-alive
+      Content-Encoding: gzip
+      Vary: Origin
+      Vary: Accept-Encoding
+      X-Ratelimit-Limit: -1
+      X-Ratelimit-Remaining: 0
+      X-Ratelimit-Reset: 0
+      Strict-Transport-Security: max-age=15724800; includeSubDomains
+    }
+  
+    status: {
+      code: OK
+      text: 200
+    }
+  
+    body: {
+      type: xml
+      content: '''
+        <?xml version="1.0" encoding="utf-8"?>
+        <OJP xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns="http://www.vdv.de/ojp">
+            <OJPResponse>
+                <siri:ServiceDelivery>
+                    <siri:ResponseTimestamp>2024-11-07T16:47:31.5574109+01:00</siri:ResponseTimestamp>
+                    <siri:ProducerRef>MENTZ</siri:ProducerRef>
+                    <OJPTripInfoDelivery>
+                        <siri:ResponseTimestamp>2024-11-07T16:47:31.5574889+01:00</siri:ResponseTimestamp>
+                        <siri:RequestMessageRef>104a5f42-26e5-4224-9a96-e16b5913e713</siri:RequestMessageRef>
+                        <siri:DefaultLanguage>de</siri:DefaultLanguage>
+                        <CalcTime>17</CalcTime>
+                        <TripInfoResponseContext>
+                            <Places>
+                                <Place>
+                                    <StopPlace>
+                                        <StopPlaceRef>8591194</StopPlaceRef>
+                                        <StopPlaceName>
+                                            <Text xml:lang="de">Zürich, Hirzenbach</Text>
+                                        </StopPlaceName>
+                                        <PrivateCode>
+                                            <System>EFA</System>
+                                            <Value>128320</Value>
+                                        </PrivateCode>
+                                        <TopographicPlaceRef>23026261:27</TopographicPlaceRef>
+                                    </StopPlace>
+                                    <Name>
+                                        <Text xml:lang="de">Zürich, Hirzenbach</Text>
+                                    </Name>
+                                    <GeoPosition>
+                                        <siri:Longitude>8.59116</siri:Longitude>
+                                        <siri:Latitude>47.40325</siri:Latitude>
+                                    </GeoPosition>
+                                </Place>
+                                <Place>
+                                    <StopPoint>
+                                        <siri:StopPointRef>8591194</siri:StopPointRef>
+                                        <StopPointName>
+                                            <Text xml:lang="de">Zürich, Hirzenbach</Text>
+                                        </StopPointName>
+                                        <PrivateCode>
+                                            <System>EFA</System>
+                                            <Value>128320</Value>
+                                        </PrivateCode>
+                                        <ParentRef>8591194</ParentRef>
+                                        <TopographicPlaceRef>23026261:27</TopographicPlaceRef>
+                                    </StopPoint>
+                                    <Name>
+                                        <Text xml:lang="de">Hirzenbach</Text>
+                                    </Name>
+                                    <GeoPosition>
+                                        <siri:Longitude>8.59116</siri:Longitude>
+                                        <siri:Latitude>47.40325</siri:Latitude>
+                                    </GeoPosition>
+                                </Place>
+                                <Place>
+                                    <TopographicPlace>
+                                        <TopographicPlaceCode>23026261:27</TopographicPlaceCode>
+                                        <TopographicPlaceName>
+                                            <Text xml:lang="de">Zürich</Text>
+                                        </TopographicPlaceName>
+                                    </TopographicPlace>
+                                    <Name>
+                                        <Text xml:lang="de">Hirzenbach</Text>
+                                    </Name>
+                                    <GeoPosition>
+                                        <siri:Longitude>8.59116</siri:Longitude>
+                                        <siri:Latitude>47.40325</siri:Latitude>
+                                    </GeoPosition>
+                                </Place>
+                                <Place>
+                                    <StopPlace>
+                                        <StopPlaceRef>8591190</StopPlaceRef>
+                                        <StopPlaceName>
+                                            <Text xml:lang="de">Zürich, Heuried</Text>
+                                        </StopPlaceName>
+                                        <PrivateCode>
+                                            <System>EFA</System>
+                                            <Value>128316:0:10001</Value>
+                                        </PrivateCode>
+                                        <TopographicPlaceRef>23026261:27</TopographicPlaceRef>
+                                    </StopPlace>
+                                    <Name>
+                                        <Text xml:lang="de">Zürich, Heuried</Text>
+                                    </Name>
+                                    <GeoPosition>
+                                        <siri:Longitude>8.50608</siri:Longitude>
+                                        <siri:Latitude>47.36944</siri:Latitude>
+                                    </GeoPosition>
+                                </Place>
+                                <Place>
+                                    <StopPoint>
+                                        <siri:StopPointRef>ch:1:sloid:91190::0</siri:StopPointRef>
+                                        <StopPointName>
+                                            <Text xml:lang="de">Zürich, Heuried</Text>
+                                        </StopPointName>
+                                        <PrivateCode>
+                                            <System>EFA</System>
+                                            <Value>128316:0:10001</Value>
+                                        </PrivateCode>
+                                        <ParentRef>8591190</ParentRef>
+                                        <TopographicPlaceRef>23026261:27</TopographicPlaceRef>
+                                    </StopPoint>
+                                    <Name>
+                                        <Text xml:lang="de">Heuried</Text>
+                                    </Name>
+                                    <GeoPosition>
+                                        <siri:Longitude>8.50608</siri:Longitude>
+                                        <siri:Latitude>47.36944</siri:Latitude>
+                                    </GeoPosition>
+                                </Place>
+                            </Places>
+                            <Situations>
+                                <PtSituation>
+                                    <siri:CreationTime>2024-11-07T12:33:00Z</siri:CreationTime>
+                                    <siri:ParticipantRef>ski-ddip-out-sx_int</siri:ParticipantRef>
+                                    <siri:SituationNumber>ch:1:sstid:100411:mediator-ums-prod-IMPORTED_HIM_FREETEXT_21861-0</siri:SituationNumber>
+                                    <siri:Version>6</siri:Version>
+                                    <siri:Source>
+                                        <siri:SourceType>other</siri:SourceType>
+                                    </siri:Source>
+                                    <siri:ValidityPeriod>
+                                        <siri:StartTime>2024-11-07T12:30:00Z</siri:StartTime>
+                                        <siri:EndTime>2024-11-07T23:00:00Z</siri:EndTime>
+                                    </siri:ValidityPeriod>
+                                    <siri:AlertCause>unknown</siri:AlertCause>
+                                    <siri:UnknownReason>unknown</siri:UnknownReason>
+                                    <siri:Priority>3</siri:Priority>
+                                    <siri:ScopeType>line</siri:ScopeType>
+                                    <siri:Language>de</siri:Language>
+                                    <siri:Affects>
+                                        <siri:StopPoints />
+                                        <siri:VehicleJourneys>
+                                            <siri:AffectedVehicleJourney>
+                                                <siri:LineRef>ojp:91009:I</siri:LineRef>
+                                            </siri:AffectedVehicleJourney>
+                                            <siri:AffectedVehicleJourney>
+                                                <siri:LineRef>ojp:91009:I</siri:LineRef>
+                                            </siri:AffectedVehicleJourney>
+                                            <siri:AffectedVehicleJourney>
+                                                <siri:LineRef>ojp:91014:E</siri:LineRef>
+                                            </siri:AffectedVehicleJourney>
+                                            <siri:AffectedVehicleJourney>
+                                                <siri:LineRef>ojp:91014:E</siri:LineRef>
+                                            </siri:AffectedVehicleJourney>
+                                        </siri:VehicleJourneys>
+                                    </siri:Affects>
+                                    <siri:Consequences>
+                                        <siri:Consequence>
+                                            <siri:Blocking>
+                                                <siri:JourneyPlanner>true</siri:JourneyPlanner>
+                                            </siri:Blocking>
+                                        </siri:Consequence>
+                                    </siri:Consequences>
+                                    <siri:PublishingActions>
+                                        <siri:PublishingAction>
+                                            <siri:PassengerInformationAction>
+                                                <siri:RecordedAtTime>2024-11-07T12:33:00Z</siri:RecordedAtTime>
+                                                <siri:TextualContent>
+                                                    <siri:DescriptionContent />
+                                                    <siri:ConsequenceContent />
+                                                    <siri:RecommendationContent />
+                                                    <siri:RemarkContent />
+                                                </siri:TextualContent>
+                                            </siri:PassengerInformationAction>
+                                        </siri:PublishingAction>
+                                    </siri:PublishingActions>
+                                </PtSituation>
+                            </Situations>
+                        </TripInfoResponseContext>
+                        <TripInfoResult>
+                            <PreviousCall>
+                                <siri:StopPointRef>8591194</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Hirzenbach</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITH_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T11:59:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>1</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:87652::0</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Altried</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITHOUT_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:00:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:00:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>2</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:91263::0</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Luchswiesen</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITHOUT_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:01:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:02:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>3</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:91264::0</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Luegisland</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITHOUT_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:02:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:03:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>4</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:91181::0</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Heerenwiesen</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITHOUT_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:04:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:04:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>5</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:91349::0</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Schwamendingerplatz</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITHOUT_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:05:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:05:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>6</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:91343::0</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Ueberlandpark</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITHOUT_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:06:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:07:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>7</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:91420::0</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Waldgarten</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITHOUT_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:08:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:08:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>8</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:91393::0</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Tierspital</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITHOUT_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:09:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:09:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>9</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:91276::0</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Milchbuck</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITHOUT_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:11:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:11:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>10</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:91406::0</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Universität Irchel</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITHOUT_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:12:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:13:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>11</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:91244::0</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Langmauerstrasse</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITHOUT_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:14:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:14:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>12</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:91255::0</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Letzistrasse</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITHOUT_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:15:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:15:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>13</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:91229::0</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Kinkelstrasse</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITHOUT_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:15:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:16:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>14</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:91362::0</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Seilbahn Rigiblick</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITH_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:17:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:17:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>15</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:91433::0</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Winkelriedstrasse</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITHOUT_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:18:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:18:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>16</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:91173::0</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Haldenbach</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITH_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:19:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:19:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>17</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>8591123</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, ETH/Universitätsspital</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITH_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:20:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:21:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>18</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:91220::0</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Kantonsschule</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITHOUT_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:22:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:22:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>19</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:91239::2</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Kunsthaus</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">ALTERNATIVE_TRANSPORT</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:23:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:24:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>20</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:76193::4</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Bellevue</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITHOUT_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:26:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:26:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>21</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:91105::1</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Bürkliplatz</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITHOUT_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:28:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:28:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>22</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:91093::1</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Kantonalbank</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITHOUT_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:29:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:29:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>23</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:91299::1</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Paradeplatz</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITH_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:30:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:31:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>24</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:91369::1</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Sihlstrasse</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITHOUT_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:32:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:32:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>25</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:91381::1</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Stauffacher</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITHOUT_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:34:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:35:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>26</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:91427::0</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Werd</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITH_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:36:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:37:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>27</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:73710::0</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich Wiedikon, Bahnhof</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITH_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:38:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:38:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>28</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:91341::0</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Schmiede Wiedikon</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITH_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:39:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:40:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>29</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:2572::0</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Goldbrunnenplatz</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITH_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:41:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:41:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>30</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:91390::0</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Talwiesenstrasse</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITHOUT_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:42:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <ServiceDeparture>
+                                    <TimetabledTime>2024-11-07T12:42:00Z</TimetabledTime>
+                                </ServiceDeparture>
+                                <Order>31</Order>
+                            </PreviousCall>
+                            <PreviousCall>
+                                <siri:StopPointRef>ch:1:sloid:91190::0</siri:StopPointRef>
+                                <StopPointName>
+                                    <Text xml:lang="de">Zürich, Heuried</Text>
+                                </StopPointName>
+                                <NameSuffix>
+                                    <Text xml:lang="de">PLATFORM_ACCESS_WITHOUT_ASSISTANCE</Text>
+                                </NameSuffix>
+                                <ServiceArrival>
+                                    <TimetabledTime>2024-11-07T12:43:00Z</TimetabledTime>
+                                </ServiceArrival>
+                                <Order>32</Order>
+                            </PreviousCall>
+                        </TripInfoResult>
+                    </OJPTripInfoDelivery>
+                </siri:ServiceDelivery>
+            </OJPResponse>
+        </OJP>
+      '''
+    }
+  }
 }

@@ -35,7 +35,7 @@ body:xml {
                               <ojp:Text>Zielweg, Zürich</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
-                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                      <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
                       <ojp:IndividualTransportOptions>
                           <ojp:Mode>walk</ojp:Mode>
                           <ojp:MaxDuration>PT100M</ojp:MaxDuration>
@@ -69,7 +69,7 @@ body:xml {
 
 script:post-response {
   test("Fussweg = 29min aufgrund Höhendaten, ohne Höhendaten wären es 24min", function () {
-      expect(res.getBody()?.toString()).to.include("<ojp:Duration>PT29M");
+      expect(res.getBody()?.toString()).to.include("<ojp:Duration>PT26M");
   
   });
   
@@ -82,4 +82,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

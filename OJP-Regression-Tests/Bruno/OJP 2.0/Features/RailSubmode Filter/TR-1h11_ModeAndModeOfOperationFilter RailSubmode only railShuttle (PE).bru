@@ -1,0 +1,82 @@
+meta {
+  name: TR-1h11_ModeAndModeOfOperationFilter RailSubmode only railShuttle (PE)
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>TR-1h3</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <StopPlaceRef>8501300</StopPlaceRef>
+                          <Name>
+                              <Text>Montreux</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <StopPlaceRef>8507483</StopPlaceRef>
+                          <Name>
+                              <Text>Spiez (Spiez)</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <Params>
+                      <ModeAndModeOfOperationFilter>
+                          <Exclude>false</Exclude>
+                          <siri:RailSubmode>railShuttle</siri:RailSubmode>
+                      </ModeAndModeOfOperationFilter>
+                      <NumberOfResults>10</NumberOfResults>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Darf kein international enthalten", function () {
+      expect(res.getBody()?.toString()).to.not.include("<siri:RailSubmode>international</siri:RailSubmode>");
+  });
+  
+  test("Darf kein interregionalRail enthalten", function () {
+      expect(res.getBody()?.toString()).to.not.include("<siri:RailSubmode>interregionalRail</siri:RailSubmode>");
+  });
+  
+  test("Muss railShuttle enthalten", function () {
+      expect(res.getBody()?.toString()).to.include("<siri:RailSubmode>railShuttle</siri:RailSubmode>");
+  });
+  
+  test("Es darf kein demandResponsive vorhanden sein.", function () {
+      expect(res.getBody()?.toString()).to.not.include("<ConventionalModeOfOperation>demandResponsive</ConventionalModeOfOperation>");
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

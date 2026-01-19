@@ -43,7 +43,7 @@ body:xml {
                               <ojp:Text>Winterthur</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
-                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                      <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
                   </ojp:Destination>
                   <ojp:Params>
                       <ojp:NumberOfResultsBefore>0</ojp:NumberOfResultsBefore>
@@ -62,11 +62,12 @@ body:xml {
 
 script:post-response {
   test("Body matches string", function () {
-      expect(res.getBody()?.toString()).to.include("<ojp:EndTime>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechsel') + "11:19:00Z</ojp:EndTime>");
+      expect(res.getBody()?.toString()).to.include("<ojp:EndTime>" + bru.getCollectionVar('friday_timetable_change') + "T11:19:00Z</ojp:EndTime>");
   });
   
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

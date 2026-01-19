@@ -1,7 +1,7 @@
 meta {
   name: TR-3f_Dest_GP_walk_Speed=genügend gross
   type: http
-  seq: 7
+  seq: 8
 }
 
 post {
@@ -46,7 +46,7 @@ body:xml {
                               <ojp:Text>Hagenturm</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
-                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                      <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
                       <ojp:IndividualTransportOptions>
                           <ojp:Mode>walk</ojp:Mode>
                           <ojp:Speed>20</ojp:Speed>
@@ -74,4 +74,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

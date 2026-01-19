@@ -35,7 +35,7 @@ body:xml {
                               <ojp:Text>Zürich Flughafen</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
-                      <ojp:DepArrTime>{{DatumFreitagVorFahrplanwechsel}}14:23:00Z</ojp:DepArrTime>
+                      <ojp:DepArrTime>{{friday_timetable_change}}T14:23:00Z</ojp:DepArrTime>
                   </ojp:Origin>
                   <ojp:Destination>
                       <ojp:PlaceRef>
@@ -67,4 +67,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

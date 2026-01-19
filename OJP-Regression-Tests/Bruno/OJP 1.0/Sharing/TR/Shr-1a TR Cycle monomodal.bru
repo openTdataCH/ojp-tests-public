@@ -1,0 +1,74 @@
+meta {
+  name: Shr-1a TR Cycle monomodal
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{server}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="utf-8"?>
+  <OJP xmlns="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd" version="1.0">
+      <OJPRequest>
+          <ServiceRequest>
+              <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+              <RequestorRef>SKIPlusRegTest</RequestorRef>
+              <ojp:OJPTripRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <MessageIdentifier>Shr-1a</MessageIdentifier>
+                  <ojp:Origin>
+                      <ojp:PlaceRef>
+                          <StopPointRef>8507100</StopPointRef>
+                          <ojp:LocationName>
+                              <ojp:Text>Thun (Thun)</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                      <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
+                  </ojp:Origin>
+                  <ojp:Destination>
+                      <ojp:PlaceRef>
+                          <ojp:GeoPosition>
+                              <Longitude>7.62535</Longitude>
+                              <Latitude>46.72602</Latitude>
+                          </ojp:GeoPosition>
+                          <ojp:LocationName>
+                              <ojp:Text>46.726020,7.625350 Thun Camping</ojp:Text>
+                          </ojp:LocationName>
+                      </ojp:PlaceRef>
+                  </ojp:Destination>
+                  <ojp:Params>
+                      <ojp:NumberOfResults>1</ojp:NumberOfResults> <!--Optional: Anzahl auszugebender, alternativer ÖV Verbindungen-->
+                      <ojp:ItModesToCover>cycle</ojp:ItModesToCover> <!--monomodal Fahrrad-->
+                      <ojp:IncludeTrackSections>true</ojp:IncludeTrackSections> <!--Immer true: Ausgabe geografische Route (TrackSection)-->
+                      <ojp:IncludeLegProjection>true</ojp:IncludeLegProjection> <!--Optional: Ausgabe Koordinaten der Fahrstrecke (LinkProjection)--> 
+                      <ojp:IncludeTurnDescription>true</ojp:IncludeTurnDescription> <!--Optional: Ausgabe Abbiegeanweisungen (PathGuidance)--> 
+                      <ojp:IncludeIntermediateStops>true</ojp:IncludeIntermediateStops> <!--Optional: Ausgabe Zwischenhaltestellen der ÖV Route--> 
+                  </ojp:Params>
+              </ojp:OJPTripRequest>
+          </ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Contains cycle", function () {
+      expect(res.getBody()?.toString()).to.include("<ojp:IndividualMode>cycle</ojp:IndividualMode>");
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

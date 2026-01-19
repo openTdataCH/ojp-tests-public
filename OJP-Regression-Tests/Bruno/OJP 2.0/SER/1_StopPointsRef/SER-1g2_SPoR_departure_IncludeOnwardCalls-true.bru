@@ -35,7 +35,7 @@ body:xml {
                               <Text>Zürich Kreuzplatz</Text>
                           </Name>
                       </PlaceRef>
-                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
                   </Location>
                   <Params>
                       <NumberOfResults>1</NumberOfResults>
@@ -66,8 +66,8 @@ script:post-response {
       expect(res.getBody()?.toString()).to.not.include("Förrlibuckstrasse");
   });
   
-  test("Response contains >=2 of Zürich, Klusplatz, auch als letzter OnwardCall", function () {
-      var searchString = "Zürich, Klusplatz";
+  test("Response contains >=2 of Zürich Stadelhofen, Bahnhof, auch als letzter OnwardCall", function () {
+      var searchString = "Zürich Stadelhofen, Bahnhof";
       var responseBody = res.getBody()?.toString();
       var occurrencesCount = (responseBody.match(new RegExp(searchString, "g")) || []).length;
       expect(occurrencesCount).to.be.at.least(2);
@@ -76,4 +76,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

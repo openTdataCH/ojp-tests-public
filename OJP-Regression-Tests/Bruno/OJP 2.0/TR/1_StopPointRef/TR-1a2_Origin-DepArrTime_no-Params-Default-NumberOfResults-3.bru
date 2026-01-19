@@ -43,7 +43,7 @@ body:xml {
                               <Text>Schaffhausen</Text>
                           </Name>
                       </PlaceRef>
-                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
                   </Destination>
                   <Params>
                       <NumberOfResults>3</NumberOfResults>
@@ -56,7 +56,8 @@ body:xml {
 
 script:post-response {
   test("Body matches string", function () {
-      expect(res.getBody()?.toString()).to.include("TimetabledTime>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechsel'));
+      expect(res.getBody()?.toString()).to.include("TimetabledTime>" + bru.getCollectionVar
+  ('friday_timetable_change'));
   });
   
   test("Response contains exactly 3 of </TripResult>", function () {
@@ -66,27 +67,9 @@ script:post-response {
       expect(occurrencesCount).to.be.equal(3);
   });
   
-  
-  //// Log to console
-  //// Convert XML response body to JSON using xml2Json library
-  //var jsonData = xml2js(bru.res.body);
-  //
-  //// Define namespaces
-  //var namespaces = {
-  //    siri: "http://www.siri.org.uk/siri",
-  //    ojp: "http://www.vdv.de/ojp"
-  //};
-  //
-  //// Extract values from the JSON structure
-  //var stopPointName = jsonData['OJPResponse']['siri:ServiceDelivery']//['OJPTripDelivery']['TripResult']['Trip']['Leg'][0]['TimedLeg']['LegBoard']//['StopPointName']['Text'];
-  //var timetabledTime = jsonData['OJPResponse']['siri:ServiceDelivery']//['OJPTripDelivery']['TripResult']['Trip']['Leg'][0]['TimedLeg']['LegBoard']//['ServiceDeparture']['TimetabledTime'];
-  //
-  //// Log the values to the console
-  //console.log('Stop Point Name:', stopPointName);
-  //console.log('Timetabled Time:', timetabledTime);
-  
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

@@ -1,0 +1,66 @@
+meta {
+  name: Shr-1c LIR Leihrad Muralto
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPLocationInformationRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>Shr-3a</siri:MessageIdentifier>
+                  <InitialInput>
+                      <GeoRestriction>
+                          <Circle> <!--Anfrag mittels Circle oder Rectangle-->
+                              <Center> <!--Koordinate, zu welcher Objekte geliefert werden sollen-->
+                                  <siri:Longitude>8.800828</siri:Longitude> <!--WGS84 Lon-->
+                                  <siri:Latitude>46.172306</siri:Latitude> <!--WGS84 Lat-->
+                              </Center>
+                              <Radius>20</Radius>  <!--Radius in Meter um Koordinate-->
+                          </Circle>
+                      </GeoRestriction>
+                  </InitialInput>
+                  <Restrictions>
+                      <Modes>
+                          <PersonalMode>bicycle</PersonalMode>
+                      </Modes>
+                  </Restrictions>
+              </OJPLocationInformationRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("Body matches string bicycle_rental", function () {
+      expect(res.getBody()?.toString()).to.include("<PointOfInterestClassification>bicycle_rental</PointOfInterestClassification></PointOfInterestCategory>");
+  });
+  
+  test("Contains Velospot", function () {
+      expect(res.getBody()?.toString()).to.include("Velospot")
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -68,15 +68,16 @@ script:pre-request {
   </OJP>`;
   
   
- 
-
-  
   // Send the POST request
   await bru.sendRequest({
-      url: bru.getGlobalEnvVar('server2'),
+      url: bru.getGlobalEnvVar
+  
+  ('server2'),
       method: 'POST',
       headers: {
-          'Authorization': `Bearer ${bru.getGlobalEnvVar('BearerToken')}`,
+          'Authorization': `Bearer ${bru.getGlobalEnvVar
+  
+  ('BearerToken')}`,
           'Content-Type': 'text/xml',
       },
       data: xmlRequest,
@@ -102,10 +103,16 @@ script:pre-request {
                   const activeOperatingDayRef = findPropertyValue(result, 'OperatingDayRef');
   
                   // Set the ActiveJourneyRef variable
-                  bru.setGlobalEnvVar('ActiveJourneyRef', activeJourneyRef);
+                  bru.setGlobalEnvVar
+  
+  
+  ('ActiveJourneyRef', activeJourneyRef);
                   
                   // Set the ActiveOperatingDayRef variable
-                  bru.setGlobalEnvVar('ActiveOperatingDayRef', activeOperatingDayRef);
+                  bru.setGlobalEnvVar
+  
+  
+  ('ActiveOperatingDayRef', activeOperatingDayRef);
   
                   // Print to the console
                   console.log('ActiveJourneyRef:', activeJourneyRef);
@@ -141,4 +148,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

@@ -35,7 +35,7 @@ body:xml {
                               <Text>Zürich</Text>
                           </Name>
                       </PlaceRef>
-                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
                   </Origin>
                   <Destination>
                       <PlaceRef>
@@ -68,6 +68,7 @@ script:post-response {
   test("Body matches string TopographicPlaceRef", function () {
       expect(res.getBody()?.toString()).to.include("TopographicPlaceRef");
   });
+  
   test("Body matches string Winterthur", function () {
       expect(res.getBody()?.toString()).to.include("Winterthur");
   });
@@ -75,4 +76,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

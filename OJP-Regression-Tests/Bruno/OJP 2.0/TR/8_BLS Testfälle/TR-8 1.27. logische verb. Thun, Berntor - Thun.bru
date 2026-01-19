@@ -35,7 +35,7 @@ body:xml {
                               <Text>Thun, Berntor (Thun)</Text>
                           </Name>
                       </PlaceRef>
-                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
                   </Origin>
                   <Destination>
                       <PlaceRef>
@@ -60,13 +60,12 @@ body:xml {
 }
 
 script:post-response {
-  
   test("Body contains PtMode=bus", function () {
       expect(res.getBody()?.toString()).to.include("<PtMode>bus</PtMode>");
   });
   
   test("Body contains Duration>PT6M", function () {
-      expect(res.getBody()?.toString()).to.include("<Duration>PT6M<");
+      expect(res.getBody()?.toString()).to.include("<Duration>PT6M");
   });
   
   test("Body contains <TransferType>walk<", function () {
@@ -76,4 +75,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

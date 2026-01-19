@@ -28,16 +28,16 @@ body:xml {
                       <ojp:PlaceRef>
                           <StopPointRef>8519606</StopPointRef>
                           <ojp:LocationName>
-                              <ojp:Text>Brig</ojp:Text>
+                              <ojp:Text>Brig Autoverlad</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
-                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                      <ojp:DepArrTime>2026-10-10T12:00:00Z</ojp:DepArrTime>
                   </ojp:Origin>
                   <ojp:Destination>
                       <ojp:PlaceRef>
                           <StopPointRef>8511184</StopPointRef>
                           <ojp:LocationName>
-                              <ojp:Text>Iselle di Trasquera</ojp:Text>
+                              <ojp:Text>Iselle, Iselle Autoverlad</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
                   </ojp:Destination>
@@ -63,4 +63,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

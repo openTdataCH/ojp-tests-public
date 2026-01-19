@@ -37,6 +37,13 @@ body:xml {
   </OJP>
 }
 
+script:pre-request {
+  console.log("Variable new_timetable_date: " + bru.getCollectionVar("new_timetable_date"));
+  console.log("Variable saturday_timetable_change: " + bru.getCollectionVar("saturday_timetable_change"));
+  console.log("Variable friday_timetable_change: " + bru.getCollectionVar("friday_timetable_change"));
+  
+}
+
 script:post-response {
   test("Contains Schaffhausen", function() {
       expect(res.getBody()?.toString()).to.include("Schaffhausen");
@@ -66,4 +73,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

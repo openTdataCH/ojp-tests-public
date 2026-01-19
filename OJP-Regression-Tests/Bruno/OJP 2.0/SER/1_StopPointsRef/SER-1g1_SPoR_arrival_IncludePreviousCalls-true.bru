@@ -35,7 +35,7 @@ body:xml {
                               <Text>Zürich Kreuzplatz</Text>
                           </Name>
                       </PlaceRef>
-                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
                   </Location>
                   <Params>
                       <NumberOfResults>1</NumberOfResults>
@@ -66,7 +66,7 @@ script:post-response {
   });
   
   test("Response contains >=2 of Zürich, Hardturm, auch als erster OnwardCall", function () {
-      var searchString = "Zürich, Hardturm";
+      var searchString = "Zürich, Bahnhofstrasse/HB";
       var responseBody = res.getBody()?.toString();
       var occurrencesCount = (responseBody.match(new RegExp(searchString, "g")) || []).length;
       expect(occurrencesCount).to.be.at.least(2);
@@ -75,4 +75,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

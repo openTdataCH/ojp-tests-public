@@ -49,6 +49,7 @@ script:post-response {
   
   // Log DIDOK and StopName to console
   //var jsonData = xml2js(bru.res.body);
+  
   //
   //// Extract values of StopPlaceRef and StopPlaceName
   //var stopPlaces = jsonData['OJP']['OJPResponse']['siri:ServiceDelivery']['OJPLocationInformationDelivery']['PlaceResult'].map(function(placeResult) {
@@ -66,4 +67,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

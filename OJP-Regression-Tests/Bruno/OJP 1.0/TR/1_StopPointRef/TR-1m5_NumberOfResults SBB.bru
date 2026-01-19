@@ -43,7 +43,7 @@ body:xml {
                               <ojp:Text>Schaffhausen</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
-                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                      <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
                   </ojp:Destination>
                   <ojp:Params>
                       <ojp:NumberOfResultsAfter>1</ojp:NumberOfResultsAfter>
@@ -61,4 +61,5 @@ body:xml {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

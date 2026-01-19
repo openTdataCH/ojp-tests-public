@@ -37,7 +37,7 @@ body:xml {
                 <Text>Basel SBB</Text>
               </Name>
             </PlaceRef>
-            <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+            <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
           </Location>
           <Params>
             <IncludeAllRestrictedLines>true</IncludeAllRestrictedLines>
@@ -73,4 +73,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

@@ -35,7 +35,7 @@ body:xml {
                               <ojp:Text>Bern Matte</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
-                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                      <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
                   </ojp:Origin>
                   <ojp:Destination>
                       <ojp:PlaceRef>
@@ -47,7 +47,7 @@ body:xml {
                   </ojp:Destination>
                   <ojp:Params>
                       <ojp:PtModeFilter>
-                          <ojp:Exclude>false</ojp:Exclude>
+                          <ojp:Exclude>true</ojp:Exclude>
                           <ojp:PtMode>telecabin</ojp:PtMode>
                       </ojp:PtModeFilter>
                       <ojp:NumberOfResults>3</ojp:NumberOfResults>
@@ -68,4 +68,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

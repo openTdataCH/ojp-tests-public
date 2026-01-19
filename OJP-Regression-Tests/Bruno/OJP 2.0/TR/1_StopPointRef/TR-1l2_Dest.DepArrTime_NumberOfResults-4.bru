@@ -1,7 +1,7 @@
 meta {
   name: TR-1l2_Dest.DepArrTime_NumberOfResults-4
   type: http
-  seq: 25
+  seq: 30
 }
 
 post {
@@ -43,7 +43,7 @@ body:xml {
                               <Text>Schaffhausen</Text>
                           </Name>
                       </PlaceRef>
-                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
                   </Destination>
                   <Params>
                       <NumberOfResults>4</NumberOfResults>
@@ -64,18 +64,17 @@ script:post-response {
   });
   
   test("Ankunftszeit vor 12 Uhr an Destination", function () {
-      const expectedValue = "EndTime>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechsel') + "10";
-  
+      const expectedValue = "EndTime>" + bru.getCollectionVar('friday_timetable_change') + "T10";
       expect(res.getBody()?.toString()).to.include(expectedValue);
   });
   
   test("keine Ankunftszeit nach 12 Uhr an Destination", function () {
-      const expectedValue = "EndTime>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechsel') + "11";
-  
+      const expectedValue = "EndTime>" + bru.getCollectionVar('friday_timetable_change') + "T11";
       expect(res.getBody()?.toString()).to.not.include(expectedValue);
   });
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

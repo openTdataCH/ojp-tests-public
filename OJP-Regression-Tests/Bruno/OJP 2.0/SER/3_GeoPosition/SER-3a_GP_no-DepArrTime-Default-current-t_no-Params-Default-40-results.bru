@@ -49,7 +49,11 @@ body:xml {
 script:post-response {
   test("Response contains >= 40 of <ThisCall>", function () {
       var searchString = "<ThisCall>";
-      var responseBody = res.getBody()?.toString();
+      var responseBody = res.getBody()?.toString()
+  
+  
+  
+  ;
       var occurrencesCount = (responseBody.match(new RegExp(searchString, "g")) || []).length;
       expect(occurrencesCount).to.be.at.least(40);
   });
@@ -58,4 +62,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

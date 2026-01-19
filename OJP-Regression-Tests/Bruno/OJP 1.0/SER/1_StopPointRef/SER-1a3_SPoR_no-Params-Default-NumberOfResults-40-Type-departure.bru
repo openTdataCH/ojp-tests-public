@@ -31,7 +31,7 @@ body:xml {
                               <ojp:Text>Zürich Kreuzplatz</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
-                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                      <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
                   </ojp:Location>
               </ojp:OJPStopEventRequest>
           </ServiceRequest>
@@ -59,4 +59,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

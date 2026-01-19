@@ -1,0 +1,178 @@
+meta {
+  name: MRieA-5 mehrere TR in einer Anfrage
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>TR-1a1NOW</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <siri:StopPointRef>8503308</siri:StopPointRef>
+                          <Name>
+                              <Text>Kloten</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <siri:StopPointRef>8503424</siri:StopPointRef>
+                          <Name>
+                              <Text>Schaffhausen</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <Params>
+                      <NumberOfResults>3</NumberOfResults>
+                      <IncludeIntermediateStops>true</IncludeIntermediateStops>
+                  </Params>
+              </OJPTripRequest>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>TR-1a2</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <StopPlaceRef>8507000</StopPlaceRef>
+                          <Name>
+                              <Text>Bern</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <StopPlaceRef>8593943</StopPlaceRef>
+                          <Name>
+                              <Text>Montreux (CH)</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
+                  </Destination>
+                  <Params>
+                      <IncludeAllRestrictedLines>true</IncludeAllRestrictedLines>
+                      <NumberOfResults>2</NumberOfResults>
+                      <IncludeTrackSections>true</IncludeTrackSections>
+                      <IncludeLegProjection>false</IncludeLegProjection>
+                      <IncludeTurnDescription>true</IncludeTurnDescription>
+                      <IncludeIntermediateStops>true</IncludeIntermediateStops>
+                      <UseRealtimeData>explanatory</UseRealtimeData>
+                  </Params>
+              </OJPTripRequest>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>TR-1a2</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <StopPlaceRef>8509253</StopPlaceRef>
+                          <Name>
+                              <Text>St. Moritz</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <StopPlaceRef>8509251</StopPlaceRef>
+                          <Name>
+                              <Text>Samedan</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <Params>
+                      <IncludeAllRestrictedLines>true</IncludeAllRestrictedLines>
+                      <NumberOfResults>1</NumberOfResults>
+                      <IncludeTrackSections>true</IncludeTrackSections>
+                      <IncludeLegProjection>false</IncludeLegProjection>
+                      <IncludeTurnDescription>true</IncludeTurnDescription>
+                      <IncludeIntermediateStops>true</IncludeIntermediateStops>
+                      <UseRealtimeData>explanatory</UseRealtimeData>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  // 1. Import der xml2js-Bibliothek
+  const xml2js = require('xml2js');
+  
+  // 2. XML-Antwort in Text umwandeln
+  const responseXml = res.getBody()?.toString();
+  
+  // 3. XML asynchron parsen. Alle Tests müssen in dieser Funktion stehen.
+  xml2js.parseString(responseXml, (err, result) => {
+      // Fehlerbehandlung, falls das XML nicht gültig ist
+      if (err) {
+          console.error("Fehler beim Parsen des XML:", err);
+          test("XML-Parsing war erfolgreich", () => {
+              throw new Error("XML konnte nicht geparst werden.");
+          });
+          return;
+      }
+  
+      // Pfad zu den <OJPTripDelivery>-Elementen
+      const deliveries = result.OJP.OJPResponse[0]['siri:ServiceDelivery'][0].OJPTripDelivery;
+  
+      // ---
+      // TEST 1: Prüfen, ob <OJPTripDelivery> 3x vorkommt
+      // ---
+      test("Test 1: Das Element <OJPTripDelivery> muss 3x vorkommen", () => {
+          expect(deliveries).to.have.lengthOf(3, "Die Anzahl der OJPTripDelivery-Elemente ist nicht 3.");
+      });
+  
+      // ---
+      // TEST 2 (korrigiert): "Kloten" im ersten Delivery-Block finden
+      // ---
+      test("Trip 1 startet in 'Kloten'", () => {
+          // Korrekter Pfad im Beispiel: 1. Delivery -> 1. TripResult -> 1. Leg
+          const stopPointName = deliveries[0]?.TripResult[0]?.Trip[0]?.Leg[0]?.TimedLeg[0]?.LegBoard[0]?.StopPointName[0]?.Text[0]?._;
+          expect(stopPointName).to.eql("Kloten");
+      });
+  
+      // ---
+      // TEST 3 (korrigiert): "Bern" im zweiten Delivery-Block finden
+      // ---
+      test("Trip 2 startet in 'Bern'", () => {
+          // Korrekter Pfad im Beispiel: 2. Delivery -> 1. TripResult -> 1. Leg
+          const stopPointName = deliveries[1]?.TripResult[0]?.Trip[0]?.Leg[0]?.TimedLeg[0]?.LegBoard[0]?.StopPointName[0]?.Text[0]?._;
+          expect(stopPointName).to.eql("Bern");
+      });
+      
+      // ---
+      // TEST 4 (korrigiert): "St. Moritz" im dritten Delivery-Block finden
+      // ---
+      test("Trip 3 startet in 'St. Moritz'", () => {
+          // Korrekter Pfad im Beispiel: 3. Delivery -> 1. TripResult -> 1. Leg
+          const stopPointName = deliveries[2]?.TripResult[0]?.Trip[0]?.Leg[1]?.TimedLeg[0]?.LegBoard[0]?.StopPointName[0]?.Text[0]?._;
+          expect(stopPointName).to.eql("St. Moritz, Bahnhof");
+      });
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

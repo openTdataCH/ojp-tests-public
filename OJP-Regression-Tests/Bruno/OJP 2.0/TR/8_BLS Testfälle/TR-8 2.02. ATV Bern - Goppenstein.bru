@@ -34,7 +34,7 @@ body:xml {
                               <Text>Bern</Text>
                           </Name>
                       </PlaceRef>
-                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
                   </Origin>
                   <Destination>
                       <PlaceRef>
@@ -66,6 +66,7 @@ script:post-response {
   test("Body contains PtMode=rail", function () {
       expect(res.getBody()?.toString()).to.include("<PtMode>rail</PtMode>");
   });
+  
   test("Body contains vehicleTunnelTransportRailService", function () {
       expect(res.getBody()?.toString()).to.include(">vehicleTunnelTransportRailService<");
   });
@@ -77,4 +78,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

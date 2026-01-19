@@ -1,7 +1,7 @@
 meta {
   name: TR-1t_Check LinkProjection
   type: http
-  seq: 42
+  seq: 47
 }
 
 post {
@@ -35,7 +35,7 @@ body:xml {
                               <Text>Niederuzwil Wespiwiese</Text>
                           </Name>
                       </PlaceRef>
-                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
                   </Origin>
                   <Destination>
                       <PlaceRef>
@@ -59,7 +59,7 @@ body:xml {
 
 script:post-response {
   // Convert the XML response to JSON using Postman's built-in xml2Json function
-  var jsonObject = xml2js(bru.res.body);
+  var jsonObject = xml2js(res.getBody());
   
   // Helper function to safely get nested properties
   function getProp(obj, path) {
@@ -199,4 +199,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

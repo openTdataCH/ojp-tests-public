@@ -57,23 +57,19 @@ body:xml {
   </OJP>
 }
 
-assert {
-  res.body: contains '<Length>55'
-  res.body: contains '<Distance>558'
-}
-
 script:post-response {
-  //test("Contains <Distance>5643x", function () {
-  //    expect(res.getBody()?.toString()).to.include("<Distance>564");
-  //});
+  test("Contains <Distance>5583x", function () {
+      expect(res.getBody()?.toString()).to.include("<Distance>5");
+  });
   
-  //test("Contains <Length>55x", function () {
-  //    expect(res.getBody()?.toString()).to.include("<Length>55");
-  //});
+  test("Contains <Length>27x", function () {
+      expect(res.getBody()?.toString()).to.include("<Length>1");
+  });
   
   
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

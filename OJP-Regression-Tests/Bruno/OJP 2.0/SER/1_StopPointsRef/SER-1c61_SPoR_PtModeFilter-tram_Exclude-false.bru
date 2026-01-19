@@ -35,7 +35,7 @@ body:xml {
                               <Text>Zürich Kreuzplatz</Text>
                           </Name>
                       </PlaceRef>
-                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
                   </Location>
                   <Params>
                       <ModeFilter>
@@ -53,16 +53,22 @@ body:xml {
 }
 
 script:post-response {
-  test("Body matches string not", function () {
+  test("Darf kein rail enthalten", function () {
       expect(res.getBody()?.toString()).to.not.include("<PtMode>rail</PtMode>");
   });
   
-  test("Body matches string not", function () {
+  test("Darf kein bus enthalten", function () {
       expect(res.getBody()?.toString()).to.not.include("<PtMode>bus</PtMode>");
+  });
+  
+  
+  test("Muss tram enthalten", function () {
+      expect(res.getBody()?.toString()).to.include("<PtMode>tram</PtMode>");
   });
   
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

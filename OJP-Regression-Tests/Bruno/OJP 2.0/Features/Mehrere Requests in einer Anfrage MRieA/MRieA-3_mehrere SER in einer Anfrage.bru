@@ -1,0 +1,138 @@
+meta {
+  name: MRieA-3_mehrere SER in einer Anfrage
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPStopEventRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>SER-1c12</siri:MessageIdentifier>
+                  <Location>
+                      <PlaceRef>
+                          <StopPlaceRef>8507000</StopPlaceRef>
+                          <Name>
+                              <Text>Bern</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
+                  </Location>
+                  <Params>
+                      <NumberOfResults>1</NumberOfResults>
+                  </Params>
+              </OJPStopEventRequest>
+              <OJPStopEventRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>SER-1c12</siri:MessageIdentifier>
+                  <Location>
+                      <PlaceRef>
+                          <siri:StopPointRef>8506208</siri:StopPointRef>
+                          <Name>
+                              <Text>Uzwil</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
+                  </Location>
+                  <Params>
+                      <IncludeAllRestrictedLines>true</IncludeAllRestrictedLines>
+                      <NumberOfResults>10</NumberOfResults>
+                      <StopEventType>departure</StopEventType>
+                      <IncludePreviousCalls>true</IncludePreviousCalls>
+                      <IncludeOnwardCalls>true</IncludeOnwardCalls>
+                      <IncludeRealtimeData>true</IncludeRealtimeData>
+                      <UseRealtimeData>explanatory</UseRealtimeData>
+                  </Params>
+              </OJPStopEventRequest>
+              <OJPStopEventRequest>
+                  <siri:RequestTimestamp>2025-09-16T12:00:56.066Z</siri:RequestTimestamp>
+                  <Location>
+                      <PlaceRef>
+                          <siri:StopPointRef>8588168</siri:StopPointRef>
+                          <Name>
+                              <Text>n/a</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
+                  </Location>
+                  <Params>
+                      <IncludeAllRestrictedLines>true</IncludeAllRestrictedLines>
+                      <NumberOfResults>10</NumberOfResults>
+                      <StopEventType>departure</StopEventType>
+                      <IncludePreviousCalls>true</IncludePreviousCalls>
+                      <IncludeOnwardCalls>true</IncludeOnwardCalls>
+                      <IncludeRealtimeData>true</IncludeRealtimeData>
+                      <UseRealtimeData>explanatory</UseRealtimeData>
+                  </Params>
+              </OJPStopEventRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  // 1. Import the built-in xml2js library
+  const xml2js = require('xml2js');
+  
+  // 2. Get the XML response as text
+  const responseXml = res.getBody()?.toString();
+  
+  // 3. Parse the XML string.
+  xml2js.parseString(responseXml, (err, result) => {
+      // First, handle any potential parsing errors
+      if (err) {
+          console.error("Fehler beim Parsen des XML:", err);
+          test("XML-Parsing war erfolgreich", () => {
+              throw new Error("XML konnte nicht geparst werden.");
+          });
+          return;
+      }
+  
+      // Access the list of OJPStopEventDelivery blocks
+      const deliveries = result.OJP.OJPResponse[0]['siri:ServiceDelivery'][0].OJPStopEventDelivery;
+  
+      // --- Tests ---
+  
+      test("ThisCall Block 1 = 'Bern'", function () {
+          // KORREKTUR: ._ hinzugefügt, um den Textwert des Objekts zu erhalten
+          const stopPointName = deliveries[0].StopEventResult[0].StopEvent[0].ThisCall[0].CallAtStop[0].StopPointName[0].Text[0]._;
+          expect(stopPointName).to.include("Bern", "StopPointName im ersten Block sollte 'Bern' sein.");
+      });
+      
+      test("ThisCall Block 2 = 'Uzwil'", function () {
+          // KORREKTUR: ._ hinzugefügt
+          const stopPointName = deliveries[1].StopEventResult[2].StopEvent[0].ThisCall[0].CallAtStop[0].StopPointName[0].Text[0]._;
+          expect(stopPointName).to.include("Uzwil", "StopPointName im zweiten Block, drittes Ergebnis, sollte 'Uzwil' sein.");
+      });
+      
+      test("ThisCall Block 3 = 'Thun, Allmendhof'", function () {
+          // KORREKTUR: ._ hinzugefügt
+          const stopPointName = deliveries[2].StopEventResult[2].StopEvent[0].ThisCall[0].CallAtStop[0].StopPointName[0].Text[0]._;
+          expect(stopPointName).to.include("Thun, Allmendhof", "StopPointName im dritten Block, drittes Ergebnis, sollte 'Thun, Allmendhof' sein.");
+      });
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

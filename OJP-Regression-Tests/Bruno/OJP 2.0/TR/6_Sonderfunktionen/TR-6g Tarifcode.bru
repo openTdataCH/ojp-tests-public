@@ -37,7 +37,7 @@ body:xml {
                 <Text>Friedrichshafen Fähre</Text>
               </Name>
             </PlaceRef>
-            <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+            <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
           </Origin>
           <Destination>
             <PlaceRef>
@@ -73,4 +73,677 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
+}
+
+example {
+  name: TR-6g Tarifcode
+  
+  request: {
+    url: {{server2}}
+    method: POST
+    mode: xml
+    headers: {
+      Content-Type: text/xml
+    }
+  
+    body:xml: {
+      <?xml version="1.0" encoding="utf-8"?>
+      <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.vdv.de/ojp" version="2.0">
+        <OJPRequest>
+          <siri:ServiceRequest>
+            <siri:ServiceRequestContext>
+              <siri:Language>en</siri:Language>
+            </siri:ServiceRequestContext>
+            <siri:RequestTimestamp>2024-09-24T15:09:19.041Z</siri:RequestTimestamp>
+            <siri:RequestorRef>OJP_JS_SDK_v0.11.1</siri:RequestorRef>
+            <OJPTripRequest>
+              <siri:RequestTimestamp>2024-09-24T15:09:19.041Z</siri:RequestTimestamp>
+              <Origin>
+                <PlaceRef>
+                  <StopPlaceRef>8011121</StopPlaceRef>
+                  <Name>
+                    <Text>Friedrichshafen Fähre</Text>
+                  </Name>
+                </PlaceRef>
+                <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
+              </Origin>
+              <Destination>
+                <PlaceRef>
+                  <StopPlaceRef>8506346</StopPlaceRef>
+                  <Name>
+                    <Text>Romanshorn Autoquai</Text>
+                  </Name>
+                </PlaceRef>
+              </Destination>
+              <Params>
+                <NumberOfResults>5</NumberOfResults>
+                <IncludeTrackSections>false</IncludeTrackSections>
+                <IncludeLegProjection>false</IncludeLegProjection>
+                <IncludeTurnDescription>false</IncludeTurnDescription>
+                <IncludeIntermediateStops>false</IncludeIntermediateStops>
+                <UseRealtimeData>none</UseRealtimeData>
+              </Params>
+            </OJPTripRequest>
+          </siri:ServiceRequest>
+        </OJPRequest>
+      </OJP>
+    }
+  }
+  
+  response: {
+    headers: {
+      Date: Mon, 06 Jan 2025 08:22:29 GMT
+      Content-Type: application/xml
+      Transfer-Encoding: chunked
+      Connection: keep-alive
+      Content-Encoding: gzip
+      Vary: Origin
+      Vary: Accept-Encoding
+      X-Ratelimit-Limit: -1
+      X-Ratelimit-Remaining: 0
+      X-Ratelimit-Reset: 0
+      Strict-Transport-Security: max-age=15724800; includeSubDomains
+    }
+  
+    status: {
+      code: OK
+      text: 200
+    }
+  
+    body: {
+      type: xml
+      content: '''
+        <?xml version="1.0" encoding="utf-8"?>
+        <OJP xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns="http://www.vdv.de/ojp">
+            <OJPResponse>
+                <siri:ServiceDelivery>
+                    <siri:ResponseTimestamp>2025-01-06T09:22:29.1725755+01:00</siri:ResponseTimestamp>
+                    <siri:ProducerRef>MENTZ</siri:ProducerRef>
+                    <OJPTripDelivery>
+                        <siri:ResponseTimestamp>2025-01-06T09:22:29.1725768+01:00</siri:ResponseTimestamp>
+                        <siri:RequestMessageRef>002cb243-b4dc-405f-afc6-a18354cae17d</siri:RequestMessageRef>
+                        <siri:DefaultLanguage>en</siri:DefaultLanguage>
+                        <CalcTime>183</CalcTime>
+                        <TripResponseContext>
+                            <Places>
+                                <Place>
+                                    <StopPlace>
+                                        <StopPlaceRef>8011121</StopPlaceRef>
+                                        <StopPlaceName>
+                                            <Text xml:lang="en">Friedrichshafen Fähre</Text>
+                                        </StopPlaceName>
+                                        <PrivateCode>
+                                            <System>EFA</System>
+                                            <Value>175525</Value>
+                                        </PrivateCode>
+                                        <TopographicPlaceRef>32000000:1</TopographicPlaceRef>
+                                    </StopPlace>
+                                    <Name>
+                                        <Text xml:lang="en">Friedrichshafen Fähre</Text>
+                                    </Name>
+                                    <GeoPosition>
+                                        <siri:Longitude>9.48422</siri:Longitude>
+                                        <siri:Latitude>47.65101</siri:Latitude>
+                                    </GeoPosition>
+                                </Place>
+                                <Place>
+                                    <StopPoint>
+                                        <siri:StopPointRef>8011121</siri:StopPointRef>
+                                        <StopPointName>
+                                            <Text xml:lang="en">Friedrichshafen Fähre</Text>
+                                        </StopPointName>
+                                        <PrivateCode>
+                                            <System>EFA</System>
+                                            <Value>175525</Value>
+                                        </PrivateCode>
+                                        <ParentRef>8011121</ParentRef>
+                                        <TopographicPlaceRef>32000000:1</TopographicPlaceRef>
+                                    </StopPoint>
+                                    <Name>
+                                        <Text xml:lang="en">Friedrichshafen Fähre</Text>
+                                    </Name>
+                                    <GeoPosition>
+                                        <siri:Longitude>9.48422</siri:Longitude>
+                                        <siri:Latitude>47.65101</siri:Latitude>
+                                    </GeoPosition>
+                                </Place>
+                                <Place>
+                                    <TopographicPlace>
+                                        <TopographicPlaceCode>32000000:1</TopographicPlaceCode>
+                                        <TopographicPlaceName>
+                                            <Text xml:lang="en">Unbekannt</Text>
+                                        </TopographicPlaceName>
+                                    </TopographicPlace>
+                                    <Name>
+                                        <Text xml:lang="en">Friedrichshafen Fähre</Text>
+                                    </Name>
+                                    <GeoPosition>
+                                        <siri:Longitude>9.48422</siri:Longitude>
+                                        <siri:Latitude>47.65101</siri:Latitude>
+                                    </GeoPosition>
+                                </Place>
+                                <Place>
+                                    <StopPlace>
+                                        <StopPlaceRef>8506346</StopPlaceRef>
+                                        <StopPlaceName>
+                                            <Text xml:lang="en">Romanshorn Autoquai</Text>
+                                        </StopPlaceName>
+                                        <PrivateCode>
+                                            <System>EFA</System>
+                                            <Value>110619</Value>
+                                        </PrivateCode>
+                                        <TopographicPlaceRef>23021436:3</TopographicPlaceRef>
+                                    </StopPlace>
+                                    <Name>
+                                        <Text xml:lang="en">Romanshorn Autoquai</Text>
+                                    </Name>
+                                    <GeoPosition>
+                                        <siri:Longitude>9.3811</siri:Longitude>
+                                        <siri:Latitude>47.56466</siri:Latitude>
+                                    </GeoPosition>
+                                </Place>
+                                <Place>
+                                    <StopPoint>
+                                        <siri:StopPointRef>8506346</siri:StopPointRef>
+                                        <StopPointName>
+                                            <Text xml:lang="en">Romanshorn Autoquai</Text>
+                                        </StopPointName>
+                                        <PrivateCode>
+                                            <System>EFA</System>
+                                            <Value>110619</Value>
+                                        </PrivateCode>
+                                        <ParentRef>8506346</ParentRef>
+                                        <TopographicPlaceRef>23021436:3</TopographicPlaceRef>
+                                    </StopPoint>
+                                    <Name>
+                                        <Text xml:lang="en">Romanshorn Autoquai</Text>
+                                    </Name>
+                                    <GeoPosition>
+                                        <siri:Longitude>9.3811</siri:Longitude>
+                                        <siri:Latitude>47.56466</siri:Latitude>
+                                    </GeoPosition>
+                                </Place>
+                                <Place>
+                                    <TopographicPlace>
+                                        <TopographicPlaceCode>23021436:3</TopographicPlaceCode>
+                                        <TopographicPlaceName>
+                                            <Text xml:lang="en">Romanshorn</Text>
+                                        </TopographicPlaceName>
+                                    </TopographicPlace>
+                                    <Name>
+                                        <Text xml:lang="en">Romanshorn Autoquai</Text>
+                                    </Name>
+                                    <GeoPosition>
+                                        <siri:Longitude>9.3811</siri:Longitude>
+                                        <siri:Latitude>47.56466</siri:Latitude>
+                                    </GeoPosition>
+                                </Place>
+                            </Places>
+                            <Situations />
+                        </TripResponseContext>
+                        <TripResult>
+                            <Id>ID-0BE5F226-0CE8-4CA5-A300-BF1D6BED192C</Id>
+                            <Trip>
+                                <Id>ID-0BE5F226-0CE8-4CA5-A300-BF1D6BED192C</Id>
+                                <Duration>PT46M</Duration>
+                                <StartTime>2025-12-12T11:20:00Z</StartTime>
+                                <EndTime>2025-12-12T12:06:00Z</EndTime>
+                                <Transfers>0</Transfers>
+                                <Leg>
+                                    <Id>1</Id>
+                                    <Duration>PT46M</Duration>
+                                    <TimedLeg>
+                                        <LegBoard>
+                                            <siri:StopPointRef>8011121</siri:StopPointRef>
+                                            <StopPointName>
+                                                <Text xml:lang="en">Friedrichshafen Fähre</Text>
+                                            </StopPointName>
+                                            <ServiceDeparture>
+                                                <TimetabledTime>2025-12-12T11:20:00Z</TimetabledTime>
+                                            </ServiceDeparture>
+                                            <Order>1</Order>
+                                        </LegBoard>
+                                        <LegAlight>
+                                            <siri:StopPointRef>8506346</siri:StopPointRef>
+                                            <StopPointName>
+                                                <Text xml:lang="en">Romanshorn Autoquai</Text>
+                                            </StopPointName>
+                                            <NameSuffix>
+                                                <Text xml:lang="en">PLATFORM_NOT_WHEELCHAIR_ACCESSIBLE</Text>
+                                            </NameSuffix>
+                                            <ServiceArrival>
+                                                <TimetabledTime>2025-12-12T12:06:00Z</TimetabledTime>
+                                            </ServiceArrival>
+                                            <Order>2</Order>
+                                        </LegAlight>
+                                        <Service>
+                                            <Mode>
+                                                <PtMode>water</PtMode>
+                                                <Name>
+                                                    <Text xml:lang="en">Ship</Text>
+                                                </Name>
+                                                <ShortName>
+                                                    <Text xml:lang="en">FAE</Text>
+                                                </ShortName>
+                                            </Mode>
+                                            <ConventionalModeOfOperation>scheduled</ConventionalModeOfOperation>
+                                            <TrainNumber>207</TrainNumber>
+                                            <siri:LineRef>ojp:94381:A</siri:LineRef>
+                                            <siri:OperatorRef>360</siri:OperatorRef>
+                                            <PublicCode>Ferry</PublicCode>
+                                            <PublishedServiceName>
+                                                <Text xml:lang="en">3810</Text>
+                                            </PublishedServiceName>
+                                            <ProductCategory>
+                                                <Name>
+                                                    <Text xml:lang="en">Ship</Text>
+                                                </Name>
+                                                <ShortName>
+                                                    <Text xml:lang="en">FAE</Text>
+                                                </ShortName>
+                                                <ProductCategoryRef>15</ProductCategoryRef>
+                                            </ProductCategory>
+                                            <siri:DirectionRef>H</siri:DirectionRef>
+                                            <OperatingDayRef>2025-12-12</OperatingDayRef>
+                                            <DestinationStopPointRef>8506346</DestinationStopPointRef>
+                                            <OriginText>
+                                                <Text xml:lang="en">n/a</Text>
+                                            </OriginText>
+                                            <DestinationText>
+                                                <Text xml:lang="en">Romanshorn Autoquai</Text>
+                                            </DestinationText>
+                                            <JourneyRef>ojp-94-381-A-j25-1-7-TA</JourneyRef>
+                                            <Attribute>
+                                                <UserText>
+                                                    <Text xml:lang="en">TC-006000</Text>
+                                                </UserText>
+                                                <Code>T_1SX</Code>
+                                            </Attribute>
+                                            <Attribute>
+                                                <UserText>
+                                                    <Text xml:lang="en">Access with step</Text>
+                                                </UserText>
+                                                <Code>A__PH</Code>
+                                            </Attribute>
+                                        </Service>
+                                    </TimedLeg>
+                                </Leg>
+                            </Trip>
+                        </TripResult>
+                        <TripResult>
+                            <Id>ID-E0CCFD84-E119-4BF3-915A-8577E0F71D07</Id>
+                            <Trip>
+                                <Id>ID-E0CCFD84-E119-4BF3-915A-8577E0F71D07</Id>
+                                <Duration>PT46M</Duration>
+                                <StartTime>2025-12-12T12:20:00Z</StartTime>
+                                <EndTime>2025-12-12T13:06:00Z</EndTime>
+                                <Transfers>0</Transfers>
+                                <Leg>
+                                    <Id>1</Id>
+                                    <Duration>PT46M</Duration>
+                                    <TimedLeg>
+                                        <LegBoard>
+                                            <siri:StopPointRef>8011121</siri:StopPointRef>
+                                            <StopPointName>
+                                                <Text xml:lang="en">Friedrichshafen Fähre</Text>
+                                            </StopPointName>
+                                            <ServiceDeparture>
+                                                <TimetabledTime>2025-12-12T12:20:00Z</TimetabledTime>
+                                            </ServiceDeparture>
+                                            <Order>1</Order>
+                                        </LegBoard>
+                                        <LegAlight>
+                                            <siri:StopPointRef>8506346</siri:StopPointRef>
+                                            <StopPointName>
+                                                <Text xml:lang="en">Romanshorn Autoquai</Text>
+                                            </StopPointName>
+                                            <NameSuffix>
+                                                <Text xml:lang="en">PLATFORM_NOT_WHEELCHAIR_ACCESSIBLE</Text>
+                                            </NameSuffix>
+                                            <ServiceArrival>
+                                                <TimetabledTime>2025-12-12T13:06:00Z</TimetabledTime>
+                                            </ServiceArrival>
+                                            <Order>2</Order>
+                                        </LegAlight>
+                                        <Service>
+                                            <Mode>
+                                                <PtMode>water</PtMode>
+                                                <Name>
+                                                    <Text xml:lang="en">Ship</Text>
+                                                </Name>
+                                                <ShortName>
+                                                    <Text xml:lang="en">FAE</Text>
+                                                </ShortName>
+                                            </Mode>
+                                            <ConventionalModeOfOperation>scheduled</ConventionalModeOfOperation>
+                                            <TrainNumber>1207</TrainNumber>
+                                            <siri:LineRef>ojp:94381:0</siri:LineRef>
+                                            <siri:OperatorRef>195</siri:OperatorRef>
+                                            <PublicCode>Ferry</PublicCode>
+                                            <PublishedServiceName>
+                                                <Text xml:lang="en">3810</Text>
+                                            </PublishedServiceName>
+                                            <ProductCategory>
+                                                <Name>
+                                                    <Text xml:lang="en">Ship</Text>
+                                                </Name>
+                                                <ShortName>
+                                                    <Text xml:lang="en">FAE</Text>
+                                                </ShortName>
+                                                <ProductCategoryRef>15</ProductCategoryRef>
+                                            </ProductCategory>
+                                            <siri:DirectionRef>H</siri:DirectionRef>
+                                            <OperatingDayRef>2025-12-12</OperatingDayRef>
+                                            <DestinationStopPointRef>8506346</DestinationStopPointRef>
+                                            <OriginText>
+                                                <Text xml:lang="en">n/a</Text>
+                                            </OriginText>
+                                            <DestinationText>
+                                                <Text xml:lang="en">Romanshorn Autoquai</Text>
+                                            </DestinationText>
+                                            <JourneyRef>ojp-94-381-0-j25-1-3-TA</JourneyRef>
+                                            <Attribute>
+                                                <UserText>
+                                                    <Text xml:lang="en">TC-006000</Text>
+                                                </UserText>
+                                                <Code>T_1SX</Code>
+                                            </Attribute>
+                                            <Attribute>
+                                                <UserText>
+                                                    <Text xml:lang="en">From 15.12.-13.01. and from 15.11.-13.12. no vehicle loading</Text>
+                                                </UserText>
+                                                <Code>I_1SJ</Code>
+                                            </Attribute>
+                                            <Attribute>
+                                                <UserText>
+                                                    <Text xml:lang="en">Access with step</Text>
+                                                </UserText>
+                                                <Code>A__PH</Code>
+                                            </Attribute>
+                                        </Service>
+                                    </TimedLeg>
+                                </Leg>
+                            </Trip>
+                        </TripResult>
+                        <TripResult>
+                            <Id>ID-234ACB91-F114-43B1-862C-245C49A858BC</Id>
+                            <Trip>
+                                <Id>ID-234ACB91-F114-43B1-862C-245C49A858BC</Id>
+                                <Duration>PT46M</Duration>
+                                <StartTime>2025-12-12T13:20:00Z</StartTime>
+                                <EndTime>2025-12-12T14:06:00Z</EndTime>
+                                <Transfers>0</Transfers>
+                                <Leg>
+                                    <Id>1</Id>
+                                    <Duration>PT46M</Duration>
+                                    <TimedLeg>
+                                        <LegBoard>
+                                            <siri:StopPointRef>8011121</siri:StopPointRef>
+                                            <StopPointName>
+                                                <Text xml:lang="en">Friedrichshafen Fähre</Text>
+                                            </StopPointName>
+                                            <ServiceDeparture>
+                                                <TimetabledTime>2025-12-12T13:20:00Z</TimetabledTime>
+                                            </ServiceDeparture>
+                                            <Order>1</Order>
+                                        </LegBoard>
+                                        <LegAlight>
+                                            <siri:StopPointRef>8506346</siri:StopPointRef>
+                                            <StopPointName>
+                                                <Text xml:lang="en">Romanshorn Autoquai</Text>
+                                            </StopPointName>
+                                            <NameSuffix>
+                                                <Text xml:lang="en">PLATFORM_NOT_WHEELCHAIR_ACCESSIBLE</Text>
+                                            </NameSuffix>
+                                            <ServiceArrival>
+                                                <TimetabledTime>2025-12-12T14:06:00Z</TimetabledTime>
+                                            </ServiceArrival>
+                                            <Order>2</Order>
+                                        </LegAlight>
+                                        <Service>
+                                            <Mode>
+                                                <PtMode>water</PtMode>
+                                                <Name>
+                                                    <Text xml:lang="en">Ship</Text>
+                                                </Name>
+                                                <ShortName>
+                                                    <Text xml:lang="en">FAE</Text>
+                                                </ShortName>
+                                            </Mode>
+                                            <ConventionalModeOfOperation>scheduled</ConventionalModeOfOperation>
+                                            <TrainNumber>209</TrainNumber>
+                                            <siri:LineRef>ojp:94381:A</siri:LineRef>
+                                            <siri:OperatorRef>360</siri:OperatorRef>
+                                            <PublicCode>Ferry</PublicCode>
+                                            <PublishedServiceName>
+                                                <Text xml:lang="en">3810</Text>
+                                            </PublishedServiceName>
+                                            <ProductCategory>
+                                                <Name>
+                                                    <Text xml:lang="en">Ship</Text>
+                                                </Name>
+                                                <ShortName>
+                                                    <Text xml:lang="en">FAE</Text>
+                                                </ShortName>
+                                                <ProductCategoryRef>15</ProductCategoryRef>
+                                            </ProductCategory>
+                                            <siri:DirectionRef>H</siri:DirectionRef>
+                                            <OperatingDayRef>2025-12-12</OperatingDayRef>
+                                            <DestinationStopPointRef>8506346</DestinationStopPointRef>
+                                            <OriginText>
+                                                <Text xml:lang="en">n/a</Text>
+                                            </OriginText>
+                                            <DestinationText>
+                                                <Text xml:lang="en">Romanshorn Autoquai</Text>
+                                            </DestinationText>
+                                            <JourneyRef>ojp-94-381-A-j25-1-2-TA</JourneyRef>
+                                            <Attribute>
+                                                <UserText>
+                                                    <Text xml:lang="en">TC-006000</Text>
+                                                </UserText>
+                                                <Code>T_1SX</Code>
+                                            </Attribute>
+                                            <Attribute>
+                                                <UserText>
+                                                    <Text xml:lang="en">Access with step</Text>
+                                                </UserText>
+                                                <Code>A__PH</Code>
+                                            </Attribute>
+                                        </Service>
+                                    </TimedLeg>
+                                </Leg>
+                            </Trip>
+                        </TripResult>
+                        <TripResult>
+                            <Id>ID-F31AA3E6-158F-4A55-92F7-B42A9A6BB3F2</Id>
+                            <Trip>
+                                <Id>ID-F31AA3E6-158F-4A55-92F7-B42A9A6BB3F2</Id>
+                                <Duration>PT46M</Duration>
+                                <StartTime>2025-12-12T14:20:00Z</StartTime>
+                                <EndTime>2025-12-12T15:06:00Z</EndTime>
+                                <Transfers>0</Transfers>
+                                <Leg>
+                                    <Id>1</Id>
+                                    <Duration>PT46M</Duration>
+                                    <TimedLeg>
+                                        <LegBoard>
+                                            <siri:StopPointRef>8011121</siri:StopPointRef>
+                                            <StopPointName>
+                                                <Text xml:lang="en">Friedrichshafen Fähre</Text>
+                                            </StopPointName>
+                                            <ServiceDeparture>
+                                                <TimetabledTime>2025-12-12T14:20:00Z</TimetabledTime>
+                                            </ServiceDeparture>
+                                            <Order>1</Order>
+                                        </LegBoard>
+                                        <LegAlight>
+                                            <siri:StopPointRef>8506346</siri:StopPointRef>
+                                            <StopPointName>
+                                                <Text xml:lang="en">Romanshorn Autoquai</Text>
+                                            </StopPointName>
+                                            <NameSuffix>
+                                                <Text xml:lang="en">PLATFORM_NOT_WHEELCHAIR_ACCESSIBLE</Text>
+                                            </NameSuffix>
+                                            <ServiceArrival>
+                                                <TimetabledTime>2025-12-12T15:06:00Z</TimetabledTime>
+                                            </ServiceArrival>
+                                            <Order>2</Order>
+                                        </LegAlight>
+                                        <Service>
+                                            <Mode>
+                                                <PtMode>water</PtMode>
+                                                <Name>
+                                                    <Text xml:lang="en">Ship</Text>
+                                                </Name>
+                                                <ShortName>
+                                                    <Text xml:lang="en">FAE</Text>
+                                                </ShortName>
+                                            </Mode>
+                                            <ConventionalModeOfOperation>scheduled</ConventionalModeOfOperation>
+                                            <TrainNumber>1209</TrainNumber>
+                                            <siri:LineRef>ojp:94381:0</siri:LineRef>
+                                            <siri:OperatorRef>195</siri:OperatorRef>
+                                            <PublicCode>Ferry</PublicCode>
+                                            <PublishedServiceName>
+                                                <Text xml:lang="en">3810</Text>
+                                            </PublishedServiceName>
+                                            <ProductCategory>
+                                                <Name>
+                                                    <Text xml:lang="en">Ship</Text>
+                                                </Name>
+                                                <ShortName>
+                                                    <Text xml:lang="en">FAE</Text>
+                                                </ShortName>
+                                                <ProductCategoryRef>15</ProductCategoryRef>
+                                            </ProductCategory>
+                                            <siri:DirectionRef>H</siri:DirectionRef>
+                                            <OperatingDayRef>2025-12-12</OperatingDayRef>
+                                            <DestinationStopPointRef>8506346</DestinationStopPointRef>
+                                            <OriginText>
+                                                <Text xml:lang="en">n/a</Text>
+                                            </OriginText>
+                                            <DestinationText>
+                                                <Text xml:lang="en">Romanshorn Autoquai</Text>
+                                            </DestinationText>
+                                            <JourneyRef>ojp-94-381-0-j25-1-7-TA</JourneyRef>
+                                            <Attribute>
+                                                <UserText>
+                                                    <Text xml:lang="en">TC-006000</Text>
+                                                </UserText>
+                                                <Code>T_1SX</Code>
+                                            </Attribute>
+                                            <Attribute>
+                                                <UserText>
+                                                    <Text xml:lang="en">From 15.12.-13.01. and from 15.11.-13.12. no vehicle loading</Text>
+                                                </UserText>
+                                                <Code>I_1SJ</Code>
+                                            </Attribute>
+                                            <Attribute>
+                                                <UserText>
+                                                    <Text xml:lang="en">Access with step</Text>
+                                                </UserText>
+                                                <Code>A__PH</Code>
+                                            </Attribute>
+                                        </Service>
+                                    </TimedLeg>
+                                </Leg>
+                            </Trip>
+                        </TripResult>
+                        <TripResult>
+                            <Id>ID-36858454-7202-42C5-B0C8-94B83BA5ED56</Id>
+                            <Trip>
+                                <Id>ID-36858454-7202-42C5-B0C8-94B83BA5ED56</Id>
+                                <Duration>PT46M</Duration>
+                                <StartTime>2025-12-12T15:20:00Z</StartTime>
+                                <EndTime>2025-12-12T16:06:00Z</EndTime>
+                                <Transfers>0</Transfers>
+                                <Leg>
+                                    <Id>1</Id>
+                                    <Duration>PT46M</Duration>
+                                    <TimedLeg>
+                                        <LegBoard>
+                                            <siri:StopPointRef>8011121</siri:StopPointRef>
+                                            <StopPointName>
+                                                <Text xml:lang="en">Friedrichshafen Fähre</Text>
+                                            </StopPointName>
+                                            <ServiceDeparture>
+                                                <TimetabledTime>2025-12-12T15:20:00Z</TimetabledTime>
+                                            </ServiceDeparture>
+                                            <Order>1</Order>
+                                        </LegBoard>
+                                        <LegAlight>
+                                            <siri:StopPointRef>8506346</siri:StopPointRef>
+                                            <StopPointName>
+                                                <Text xml:lang="en">Romanshorn Autoquai</Text>
+                                            </StopPointName>
+                                            <NameSuffix>
+                                                <Text xml:lang="en">PLATFORM_NOT_WHEELCHAIR_ACCESSIBLE</Text>
+                                            </NameSuffix>
+                                            <ServiceArrival>
+                                                <TimetabledTime>2025-12-12T16:06:00Z</TimetabledTime>
+                                            </ServiceArrival>
+                                            <Order>2</Order>
+                                        </LegAlight>
+                                        <Service>
+                                            <Mode>
+                                                <PtMode>water</PtMode>
+                                                <Name>
+                                                    <Text xml:lang="en">Ship</Text>
+                                                </Name>
+                                                <ShortName>
+                                                    <Text xml:lang="en">FAE</Text>
+                                                </ShortName>
+                                            </Mode>
+                                            <ConventionalModeOfOperation>scheduled</ConventionalModeOfOperation>
+                                            <TrainNumber>211</TrainNumber>
+                                            <siri:LineRef>ojp:94381:A</siri:LineRef>
+                                            <siri:OperatorRef>360</siri:OperatorRef>
+                                            <PublicCode>Ferry</PublicCode>
+                                            <PublishedServiceName>
+                                                <Text xml:lang="en">3810</Text>
+                                            </PublishedServiceName>
+                                            <ProductCategory>
+                                                <Name>
+                                                    <Text xml:lang="en">Ship</Text>
+                                                </Name>
+                                                <ShortName>
+                                                    <Text xml:lang="en">FAE</Text>
+                                                </ShortName>
+                                                <ProductCategoryRef>15</ProductCategoryRef>
+                                            </ProductCategory>
+                                            <siri:DirectionRef>H</siri:DirectionRef>
+                                            <OperatingDayRef>2025-12-12</OperatingDayRef>
+                                            <DestinationStopPointRef>8506346</DestinationStopPointRef>
+                                            <OriginText>
+                                                <Text xml:lang="en">n/a</Text>
+                                            </OriginText>
+                                            <DestinationText>
+                                                <Text xml:lang="en">Romanshorn Autoquai</Text>
+                                            </DestinationText>
+                                            <JourneyRef>ojp-94-381-A-j25-1-3-TA</JourneyRef>
+                                            <Attribute>
+                                                <UserText>
+                                                    <Text xml:lang="en">TC-006000</Text>
+                                                </UserText>
+                                                <Code>T_1SX</Code>
+                                            </Attribute>
+                                            <Attribute>
+                                                <UserText>
+                                                    <Text xml:lang="en">Access with step</Text>
+                                                </UserText>
+                                                <Code>A__PH</Code>
+                                            </Attribute>
+                                        </Service>
+                                    </TimedLeg>
+                                </Leg>
+                            </Trip>
+                        </TripResult>
+                    </OJPTripDelivery>
+                </siri:ServiceDelivery>
+            </OJPResponse>
+        </OJP>
+      '''
+    }
+  }
 }

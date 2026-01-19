@@ -35,7 +35,7 @@ body:xml {
                               <Text>Zürich Kreuzplatz</Text>
                           </Name>
                       </PlaceRef>
-                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
                   </Location>
                   <Params>
                       <TimeWindow>PT20M</TimeWindow>
@@ -50,7 +50,8 @@ body:xml {
 
 script:post-response {
   test("Body matches string", function () {
-      expect(res.getBody()?.toString()).to.include(bru.getCollectionVar('DatumFreitagVorFahrplanwechsel'));
+      expect(res.getBody()?.toString()).to.include(bru.getCollectionVar
+  ('friday_timetable_change'));
   });
   
   test("Response contains <= 25 of <ResultId>", function () {
@@ -64,4 +65,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

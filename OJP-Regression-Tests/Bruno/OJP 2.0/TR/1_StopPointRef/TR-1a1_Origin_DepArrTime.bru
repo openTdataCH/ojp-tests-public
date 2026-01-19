@@ -27,27 +27,32 @@ body:xml {
               <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
               <OJPTripRequest>
                   <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
-                  <siri:MessageIdentifier>TR-1a1NOW</siri:MessageIdentifier>
+                  <siri:MessageIdentifier>TR-1g</siri:MessageIdentifier>
                   <Origin>
                       <PlaceRef>
-                          <siri:StopPointRef>8503308</siri:StopPointRef>
+                          <siri:StopPointRef>8506728</siri:StopPointRef>
                           <Name>
-                              <Text>Kloten</Text>
+                              <Text>Niederuzwil Wespiwiese</Text>
                           </Name>
                       </PlaceRef>
-                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
                   </Origin>
                   <Destination>
                       <PlaceRef>
-                          <siri:StopPointRef>8503424</siri:StopPointRef>
+                          <siri:StopPointRef>8503000</siri:StopPointRef>
                           <Name>
-                              <Text>Schaffhausen</Text>
+                              <Text>Züri HB</Text>
                           </Name>
                       </PlaceRef>
                   </Destination>
                   <Params>
+                      <IncludeAllRestrictedLines>false</IncludeAllRestrictedLines>
                       <NumberOfResults>5</NumberOfResults>
-                      <IncludeIntermediateStops>true</IncludeIntermediateStops>
+                      <IncludeTrackSections>false</IncludeTrackSections>
+                      <IncludeLegProjection>false</IncludeLegProjection>
+                      <IncludeTurnDescription>false</IncludeTurnDescription>
+                      <IncludeIntermediateStops>false</IncludeIntermediateStops>
+                      <UseRealtimeData>full</UseRealtimeData>
                   </Params>
               </OJPTripRequest>
           </siri:ServiceRequest>
@@ -57,7 +62,8 @@ body:xml {
 
 script:post-response {
   test("Response contains TimetabledTime Date", function () {
-      expect(res.getBody()?.toString()).to.include("TimetabledTime>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechsel'));
+      expect(res.getBody()?.toString()).to.include("TimetabledTime>" + bru.getCollectionVar
+  ('friday_timetable_change'));
   });
   
   test("Response contains exactly 5 of </TripResult>", function () {
@@ -77,4 +83,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

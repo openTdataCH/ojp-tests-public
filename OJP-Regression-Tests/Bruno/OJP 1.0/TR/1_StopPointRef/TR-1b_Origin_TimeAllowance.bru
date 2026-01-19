@@ -64,7 +64,8 @@ script:post-response {
   
   // Überprüfe, ob StartTime in der Response mehr als 2 Stunden nach der aktuellen Zeit ist
   test('Überprüfe StartTime ist mehr als 2 Stunden nach der aktuellen Zeit', function() {
-      let responseXml = res.getBody()?.toString(); // Annahme: Die Antwort ist als XML-Text verfügbar
+      let responseXml = res.getBody()?.toString(); 
+    // Annahme: Die Antwort ist als XML-Text verfügbar
       let regex = new RegExp(`<ojp:StartTime>(.*?)<\/ojp:StartTime>`);
       let match = responseXml.match(regex);
   
@@ -82,4 +83,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

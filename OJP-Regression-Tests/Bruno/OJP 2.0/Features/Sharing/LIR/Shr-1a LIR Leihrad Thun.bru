@@ -1,0 +1,102 @@
+meta {
+  name: Shr-1a LIR Leihrad Thun
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Accept: application/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPLocationInformationRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>Shr</siri:MessageIdentifier>
+                  <InitialInput>
+                      <GeoRestriction>
+                          <Circle>
+                              <Center>
+                                  <siri:Longitude>7.630108</siri:Longitude> <!--46.739765,7.630108-->
+                                  <siri:Latitude>46.739765</siri:Latitude>
+                              </Center>
+                              <Radius>2000</Radius>
+                          </Circle>
+                      </GeoRestriction>
+                  </InitialInput>
+                  <Restrictions>
+                      <NumberOfResults>5</NumberOfResults>
+                      <Modes>
+                          <PersonalMode>bicycle</PersonalMode>
+                      </Modes>
+                  </Restrictions>
+              </OJPLocationInformationRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  test("only class bicycle", function () {
+      expect(res.getBody()?.toString()).to.include("bicycle_rental");
+      expect(res.getBody()?.toString()).to.not.include("scooter");
+      expect(res.getBody()?.toString()).to.not.include("car");
+  });
+  
+  test("contains donkey_thun", function () {
+      expect(res.getBody()?.toString()).to.include("donkey_thun");
+  });
+  
+  test("contains um_docks and vehicles available", function () {
+      expect(res.getBody()?.toString()).to.include("num_vehicles_available")
+      expect(res.getBody()?.toString()).to.include("num_docks_available")
+  });
+  
+  test("contains additional informations ex. uri", function () {
+      expect(res.getBody()?.toString()).to.include("rental_uris.ios")
+      expect(res.getBody()?.toString()).to.include("https://dnky.bike/deeplink")
+      expect(res.getBody()?.toString()).to.include("rental_uris.android")
+      expect(res.getBody()?.toString()).to.include("OPERATOR_NAME")
+      expect(res.getBody()?.toString()).to.include(">Donkey Republic<")
+      expect(res.getBody()?.toString()).to.include("OPERATING_AREA_NAME")
+      expect(res.getBody()?.toString()).to.include(">Thun<")
+      expect(res.getBody()?.toString()).to.include("<Complete>true</Complete>")
+  });
+  
+  test("Body contains 'bicycle_rental' exactly 5 times", function () {
+      // We use .text() to get the raw string of the XML body
+      const responseBody = res.getBody()?.toString();
+  
+      // Use a regular expression with the 'global' flag to find all matches
+      const matches = responseBody.match(/bicycle_rental/g);
+  
+      // Count the number of matches found
+      // If 'matches' is null (no matches found), set count to 0
+      const count = matches ? matches.length : 0;
+  
+      // Assert that the count is exactly 5
+      expect(count).to.equal(5);
+  });
+  
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

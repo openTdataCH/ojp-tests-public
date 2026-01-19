@@ -30,18 +30,18 @@ body:xml {
                   <MessageIdentifier>TR-1q2</MessageIdentifier>
                   <ojp:Origin>
                       <ojp:PlaceRef>
-                          <StopPointRef>8503000</StopPointRef>
+                          <ojp:StopPlaceRef>8503000</ojp:StopPlaceRef>
                           <ojp:LocationName>
-                              <ojp:Text>Zürich HB</ojp:Text>
+                              <ojp:Text>Zürich HB (Zürich)</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
-                      <ojp:DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                      <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
                   </ojp:Origin>
                   <ojp:Destination>
                       <ojp:PlaceRef>
-                          <StopPointRef>8503091</StopPointRef>
+                          <ojp:StopPlaceRef>8503096</ojp:StopPlaceRef>
                           <ojp:LocationName>
-                              <ojp:Text>Zürich Giesshübel</ojp:Text>
+                              <ojp:Text>Adliswil (Adliswil)</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
                   </ojp:Destination>
@@ -49,14 +49,13 @@ body:xml {
                       <ojp:NumberOfResults>1</ojp:NumberOfResults>
                       <ojp:IncludeTrackSections>true</ojp:IncludeTrackSections>
                       <ojp:IncludeLegProjection>true</ojp:IncludeLegProjection>
-                      <ojp:IncludeTurnDescription>false</ojp:IncludeTurnDescription>
+                      <ojp:IncludeTurnDescription>true</ojp:IncludeTurnDescription>
                       <ojp:IncludeIntermediateStops>false</ojp:IncludeIntermediateStops>
                   </ojp:Params>
               </ojp:OJPTripRequest>
           </ServiceRequest>
       </OJPRequest>
   </OJP>
-  
 }
 
 script:post-response {
@@ -68,4 +67,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

@@ -52,3 +52,232 @@ body:xml {
 settings {
   encodeUrl: true
 }
+
+example {
+  name: 20240620 LIR führt zu Signal 11 und Absturz Controller
+  
+  request: {
+    url: {{server}}
+    method: POST
+    mode: xml
+    headers: {
+      Content-Type: text/xml
+    }
+  
+    body:xml: {
+      <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+      <OJP version="1.0" xmlns="http://www.siri.org.uk/siri" xmlns:ns5="http://datex2.eu/schema/2_0RC1/2_0" xmlns:ns2="http://www.vdv.de/ojp" xmlns:ns4="http://www.ifopt.org.uk/ifopt" xmlns:ns3="http://www.ifopt.org.uk/acsb">
+          <OJPRequest>
+              <ServiceRequest>
+                  <ServiceRequestContext>
+                      <Language>de</Language>
+                      <DistanceUnits>m</DistanceUnits>
+                      <RequestTimeout>PT29S</RequestTimeout>
+                  </ServiceRequestContext>
+                  <RequestTimestamp>2024-06-20T20:45:39+02:00</RequestTimestamp>
+                  <RequestorRef>J-S_TEST</RequestorRef>
+                  <ns2:OJPLocationInformationRequest>
+                      <RequestTimestamp>2024-06-20T20:45:39+02:00</RequestTimestamp>
+                      <ns2:InitialInput>
+                          <ns2:LocationName>Oerlikon</ns2:LocationName>
+                          <ns2:GeoPosition>
+                              <Longitude>8.544112</Longitude>
+                              <Latitude>47.411527</Latitude>
+                          </ns2:GeoPosition>
+                      </ns2:InitialInput>
+                      <ns2:Restrictions>
+                          <ns2:Type>stop</ns2:Type>
+                          <ns2:NumberOfResults>10</ns2:NumberOfResults>
+                      </ns2:Restrictions>
+                  </ns2:OJPLocationInformationRequest>
+              </ServiceRequest>
+          </OJPRequest>
+      </OJP>
+    }
+  }
+  
+  response: {
+    headers: {
+      Accept-Ranges: none
+      Access-Control-Allow-Origin: *
+      Content-Encoding: gzip
+      Content-Length: 882
+      Content-Type: text/xml
+      Date: Fri, 21 Jun 2024 12:11:33 GMT
+      Last-Modified: Fri, 21 Jun 2024 12:11:33 GMT
+      Server: nginx/1.20.2
+      Vary: Origin
+      X-Ratelimit-Limit: -1
+      X-Ratelimit-Remaining: 0
+      X-Ratelimit-Reset: 0
+      Strict-Transport-Security: max-age=21600000
+    }
+  
+    status: {
+      code: OK
+      text: 200
+    }
+  
+    body: {
+      type: xml
+      content: '''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <siri:OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns:ojp="http://www.vdv.de/ojp" version="1.0">
+            <siri:OJPResponse>
+                <siri:ServiceDelivery>
+                    <siri:ResponseTimestamp>2024-06-21T12:11:33Z</siri:ResponseTimestamp>
+                    <siri:ProducerRef>optmentzEFAControllerEFAController10.6.19.22-build-1625-63f6bbf46485</siri:ProducerRef>
+                    <siri:ResponseMessageIdentifier>4c554e6df9700047</siri:ResponseMessageIdentifier>
+                    <siri:Status>true</siri:Status>
+                    <ojp:OJPLocationInformationDelivery>
+                        <siri:ResponseTimestamp>2024-06-21T12:11:33Z</siri:ResponseTimestamp>
+                        <siri:Status>true</siri:Status>
+                        <ojp:CalcTime>30</ojp:CalcTime>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:StopPlace>
+                                    <ojp:StopPlaceRef>8503006</ojp:StopPlaceRef>
+                                    <ojp:StopPlaceName>
+                                        <ojp:Text xml:lang="de">Zürich Oerlikon</ojp:Text>
+                                    </ojp:StopPlaceName>
+                                    <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                </ojp:StopPlace>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Zürich Oerlikon (Zürich)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.54414</siri:Longitude>
+                                    <siri:Latitude>47.41153</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1.05299997</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:StopPlace>
+                                    <ojp:StopPlaceRef>8580449</ojp:StopPlaceRef>
+                                    <ojp:StopPlaceName>
+                                        <ojp:Text xml:lang="de">Zürich Oerlikon, Bahnhof</ojp:Text>
+                                    </ojp:StopPlaceName>
+                                    <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                </ojp:StopPlace>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Zürich Oerlikon, Bahnhof (Zürich)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.54479</siri:Longitude>
+                                    <siri:Latitude>47.41149</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1.03600001</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:StopPlace>
+                                    <ojp:StopPlaceRef>8591382</ojp:StopPlaceRef>
+                                    <ojp:StopPlaceName>
+                                        <ojp:Text xml:lang="de">Zürich, Sternen Oerlikon</ojp:Text>
+                                    </ojp:StopPlaceName>
+                                    <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                </ojp:StopPlace>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Zürich, Sternen Oerlikon (Zürich)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.54623</siri:Longitude>
+                                    <siri:Latitude>47.41007</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1.03600001</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:StopPlace>
+                                    <ojp:StopPlaceRef>8591175</ojp:StopPlaceRef>
+                                    <ojp:StopPlaceName>
+                                        <ojp:Text xml:lang="de">Zürich, Hallenbad Oerlikon</ojp:Text>
+                                    </ojp:StopPlaceName>
+                                    <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                </ojp:StopPlace>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Zürich, Hallenbad Oerlikon (Zürich)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.55586</siri:Longitude>
+                                    <siri:Latitude>47.41070</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1.03400004</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:StopPlace>
+                                    <ojp:StopPlaceRef>8591063</ojp:StopPlaceRef>
+                                    <ojp:StopPlaceName>
+                                        <ojp:Text xml:lang="de">Zürich Oerlikon, Bahnhof Ost</ojp:Text>
+                                    </ojp:StopPlaceName>
+                                    <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                </ojp:StopPlace>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Zürich Oerlikon, Bahnhof Ost (Zürich)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.54584</siri:Longitude>
+                                    <siri:Latitude>47.41334</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1.02999997</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:StopPlace>
+                                    <ojp:StopPlaceRef>8591062</ojp:StopPlaceRef>
+                                    <ojp:StopPlaceName>
+                                        <ojp:Text xml:lang="de">Zürich Oerlikon, Bahnhof Nord</ojp:Text>
+                                    </ojp:StopPlaceName>
+                                    <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                </ojp:StopPlace>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Zürich Oerlikon, Bahnhof Nord (Zürich)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.54393</siri:Longitude>
+                                    <siri:Latitude>47.41241</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1.02900004</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:StopPlace>
+                                    <ojp:StopPlaceRef>8587784</ojp:StopPlaceRef>
+                                    <ojp:StopPlaceName>
+                                        <ojp:Text xml:lang="de">Oberalikon, Tönihof</ojp:Text>
+                                    </ojp:StopPlaceName>
+                                    <ojp:TopographicPlaceRef>23001239:7</ojp:TopographicPlaceRef>
+                                </ojp:StopPlace>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Oberalikon, Tönihof (Sins)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.35784</siri:Longitude>
+                                    <siri:Latitude>47.19037</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.870999992</ojp:Probability>
+                        </ojp:Location>
+                    </ojp:OJPLocationInformationDelivery>
+                </siri:ServiceDelivery>
+            </siri:OJPResponse>
+        </siri:OJP>
+      '''
+    }
+  }
+}

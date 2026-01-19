@@ -1,7 +1,7 @@
 meta {
   name: TR-1m6_Dest.DepArrTime_NumberOfResultsAfter-2
   type: http
-  seq: 31
+  seq: 36
 }
 
 post {
@@ -43,7 +43,7 @@ body:xml {
                               <Text>Winterthur</Text>
                           </Name>
                       </PlaceRef>
-                      <DepArrTime>{{Freitag12UhrVorFahrplanwechsel}}</DepArrTime>
+                      <DepArrTime>{{friday_timetable_change}}T11:00:00Z</DepArrTime>
                   </Destination>
                   <Params>
                       <NumberOfResultsAfter>2</NumberOfResultsAfter>
@@ -61,9 +61,9 @@ body:xml {
 
 script:post-response {
   test("Ankunft nach 12:00", function () {
-      expect(res.getBody()?.toString()).to.include("EndTime>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechsel') + "11:");
-      expect(res.getBody()?.toString()).to.not.include("EndTime>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechsel') + "10:");
-      expect(res.getBody()?.toString()).to.not.include("EndTime>" + bru.getCollectionVar('DatumFreitagVorFahrplanwechsel') + "12:");
+      expect(res.getBody()?.toString()).to.include("EndTime>" + bru.getCollectionVar('friday_timetable_change') + "T11:");
+      expect(res.getBody()?.toString()).to.not.include("EndTime>" + bru.getCollectionVar('friday_timetable_change') + "T10:");
+      expect(res.getBody()?.toString()).to.not.include("EndTime>" + bru.getCollectionVar('friday_timetable_change') + "T12:");
   });
   
   test("Response contains exactly 2 of </TripResult>", function () {
@@ -76,4 +76,5 @@ script:post-response {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }
