@@ -1,0 +1,161 @@
+meta {
+  name: 2161-TR-2c_Meldung_Wagonfabrik_Fahrt
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>2161-SER-2c</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <siri:StopPointRef>8596007</siri:StopPointRef>
+                          <Name>
+                              <Text>Schlieren, Geissweid</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{isoTimestamp}}</DepArrTime>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <siri:StopPointRef>8590803</siri:StopPointRef>
+                          <Name>
+                              <Text>Schlieren, Wagonsfabrik</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <Params>
+                      <NumberOfResults>10</NumberOfResults>
+                      <IncludeTrackSections>false</IncludeTrackSections>
+                      <IncludeLegProjection>false</IncludeLegProjection>
+                      <IncludeTurnDescription>false</IncludeTurnDescription>
+                      <IncludeIntermediateStops>false</IncludeIntermediateStops>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  // 1. Response als XML lesen und in JSON umwandeln
+  const xml2js = require('xml2js');
+  let jsonBody;
+  xml2js.parseString(res.getBody()?.toString(),{explicitArray: false}, (err, result)=>{
+      jsonBody = result;
+  });
+  
+  // Hilfsfunktion: Extrahiert Text aus verschiedenen XML-Knoten-Strukturen
+  function getXmlText(node) {
+      if (!node) return undefined;
+      // Falls das Element Attribute hat (Struktur {_: "Text", $: {...}})
+      if (typeof node === 'object' && node._) return node._;
+      // Falls es ein direktes Objekt mit Text-Eigenschaft ist
+      if (typeof node === 'object' && node.Text) {
+          return typeof node.Text === 'object' ? node.Text._ : node.Text;
+      }
+      return node;
+  }
+  
+  // Navigiere zum relevanten Delivery-Objekt
+  const responseRoot = jsonBody.OJP?.OJPResponse || jsonBody.OJPResponse;
+  const serviceDelivery = responseRoot["siri:ServiceDelivery"] || responseRoot.ServiceDelivery;
+  const tripDelivery = serviceDelivery.OJPTripDelivery;
+  
+  let targetSituationNumber = null;
+  
+  test("Situation 'Wagonsfabrik nicht bedient' finden", function () {
+      let situationsNode = tripDelivery.TripResponseContext?.Situations?.PtSituation;
+      let situations = Array.isArray(situationsNode) ? situationsNode : (situationsNode ? [situationsNode] : []);
+      
+      const targetSituation = situations.find(sit => {
+          // Extrahiere Summary (Checkt beide XML Varianten)
+          const summaryDirect = getXmlText(sit["siri:Summary"] || sit.Summary);
+          
+          // Suche in PublishingActions (Variante 2)
+          let summaryNested = undefined;
+          const pubActions = sit["siri:PublishingActions"]?.["siri:PublishingAction"] || sit.PublishingActions?.PublishingAction;
+          if (pubActions) {
+              const action = Array.isArray(pubActions) ? pubActions[0] : pubActions;
+              summaryNested = getXmlText(action["siri:PassengerInformationAction"]?.["siri:TextualContent"]?.["siri:SummaryContent"]?.["siri:SummaryText"]);
+          }
+  
+          const summaryText = summaryDirect || summaryNested;
+          const endTime = sit["siri:ValidityPeriod"]?.["siri:EndTime"] || sit.ValidityPeriod?.EndTime;
+          const scopeType = sit["siri:ScopeType"] || sit.ScopeType;
+  
+          return (summaryText && (summaryText.includes("Wagonsfabrik nicht bedient") || 
+                  summaryText.includes("Wagonsfabrik ist nicht bedient"))) &&
+                 endTime === "2500-12-31T00:00:00Z" &&
+                 scopeType === "stopPoint";
+      });
+  
+      expect(targetSituation, "Situation wurde in keiner der XML-Strukturen gefunden").to.not.be.undefined;
+      
+      targetSituationNumber = targetSituation["siri:SituationNumber"] || targetSituation.SituationNumber;
+      console.log("Gefundene SituationNumber:", targetSituationNumber);
+  });
+  
+  test("Alle Tram 2 Legs referenzieren die Situation", function () {
+      expect(targetSituationNumber, "Keine Situation zum Vergleichen gefunden").to.not.be.null;
+  
+      let resultsNode = tripDelivery.TripResult;
+      let tripResults = Array.isArray(resultsNode) ? resultsNode : (resultsNode ? [resultsNode] : []);
+      let checkedCount = 0;
+  
+      tripResults.forEach((result, tripIndex) => {
+          const trip = result.Trip;
+          if (!trip) return;
+  
+          let legsNode = trip.Leg;
+          let legs = Array.isArray(legsNode) ? legsNode : (legsNode ? [legsNode] : []);
+  
+          legs.forEach((leg, legIndex) => {
+              const service = leg.TimedLeg?.Service;
+              if (!service) return;
+  
+              const catName = getXmlText(service.ProductCategory?.Name);
+              const serviceName = getXmlText(service.PublishedServiceName);
+  
+              // Prüfung auf Tram 2
+              if (catName === "Tram" && serviceName === "2") {
+                  checkedCount++;
+                  
+                  let refsNode = service.SituationFullRefs?.SituationFullRef;
+                  let refs = Array.isArray(refsNode) ? refsNode : (refsNode ? [refsNode] : []);
+                  
+                  const hasTargetRef = refs.some(ref => {
+                      const sitNum = ref["siri:SituationNumber"] || ref.SituationNumber;
+                      return getXmlText(sitNum) === targetSituationNumber;
+                  });
+                  
+                  expect(hasTargetRef, `Trip ${tripIndex}, Leg ${legIndex} fehlt Ref: ${targetSituationNumber}`).to.be.true;
+              }
+          });
+      });
+  
+      console.log(`Geprüfte Tram 2 Legs: ${checkedCount}`);
+      expect(checkedCount).to.be.greaterThan(0, "Keine Tram 2 Fahrten im Resultat gefunden.");
+  });
+}
+
+settings {
+  encodeUrl: true
+}

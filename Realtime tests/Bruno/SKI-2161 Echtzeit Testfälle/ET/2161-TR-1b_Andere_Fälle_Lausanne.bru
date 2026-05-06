@@ -1,0 +1,352 @@
+meta {
+  name: 2161-TR-1b_Andere_Fälle_Lausanne
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>2161-TR-1b</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <siri:StopPointRef>8592086</siri:StopPointRef>
+                          <Name>
+                              <Text>Lausanne, Ouchy-Olympique)</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{fixedTimestamp}}</DepArrTime>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <siri:StopPointRef>8579239</siri:StopPointRef>
+                          <Name>
+                              <Text>Epalinges, Croisettes</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <Params>
+                    <ModeAndModeOfOperationFilter>
+                      <Exclude>false</Exclude>
+                      <PtMode>metro</PtMode>
+                    </ModeAndModeOfOperationFilter>
+                    <NumberOfResults>14</NumberOfResults>
+                    <NumberOfResultsBefore>0</NumberOfResultsBefore>
+                    <NumberOfResultsAfter>14</NumberOfResultsAfter>
+                    <UseRealtimeData>explanatory</UseRealtimeData>
+                    <IncludeAllRestrictedLines>true</IncludeAllRestrictedLines>
+                    <IncludeTrackSections>false</IncludeTrackSections>
+                    <IncludeLegProjection>false</IncludeLegProjection>
+                    <IncludeIntermediateStops>true</IncludeIntermediateStops>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:pre-request {
+  // 1. Aktuelles Datum holen
+  const now = new Date();
+  
+  // 2. Datum & Uhrzeit als formatierte Strings in der Ziel-Zeitzone und in UTC generieren
+  // Wir nutzen "en-US", da dieses Format (MM/DD/YYYY) am sichersten von JS geparst wird.
+  const bernString = now.toLocaleString("en-US", { timeZone: "Europe/Berlin" });
+  const utcString = now.toLocaleString("en-US", { timeZone: "UTC" });
+  
+  // 3. Diese Strings zu temporären Date-Objekten parsen
+  // (Diese nutzen intern die Server-Zeit, was aber für die Differenzberechnung völlig egal ist)
+  const bernDate = new Date(bernString);
+  const utcDate = new Date(utcString);
+  
+  // 4. Den dynamischen Offset in Stunden berechnen (1 für Winterzeit, 2 für Sommerzeit)
+  const offsetHours = (bernDate - utcDate) / (1000 * 60 * 60);
+  
+  // 5. Gewünschte Zielzeit festlegen (hier: 17:00:00 Uhr)
+  const targetHour = 17;
+  const targetMinute = 0;
+  
+  // 6. Den finalen UTC-Zeitstempel berechnen
+  // Wichtig: Wir nutzen Date.UTC() und ziehen Tag/Monat/Jahr aus dem 'bernDate'. 
+  // So stimmt das Datum auch dann, wenn der CI-Server sich an einem anderen Tag befindet als Berlin.
+  const finalDate = new Date(Date.UTC(
+      bernDate.getFullYear(),
+      bernDate.getMonth(),       // Hinweis: Monate starten in JavaScript bei 0!
+      bernDate.getDate(),
+      targetHour - offsetHours,    // Ziel-Uhrzeit abzüglich des Offsets = exakte UTC-Stunde
+      targetMinute,
+      0,                           // Sekunden
+      0                            // Millisekunden
+  ));
+  
+  // 7. In das ISO-Format umwandeln (gibt exakt den Wert in "Z" bzw. UTC aus)
+  const fixedTimestamp = finalDate.toISOString();
+  
+  // 8. Als Postman-Variable speichern
+  bru.setVar("fixedTimestamp", fixedTimestamp);
+}
+
+script:post-response {
+  // ============================================================================
+  // HILFSFUNKTIONEN
+  // ============================================================================
+  
+  const getText = (node) => {
+      if (!node) return undefined;
+      if (typeof node === 'string') return node;
+      if (node.Text) {
+          return typeof node.Text === 'string' ? node.Text : node.Text._;
+      }
+      if (node._) return node._;
+      return undefined;
+  };
+  
+  const checkTimeDifference = (stop, expectedDiffMs, stopLabel) => {
+      if (!stop) return; 
+  
+      const checkDiff = (timeType, timetabledObj, estimatedObj) => {
+          const tt = getText(timetabledObj);
+          const est = getText(estimatedObj);
+          if (tt && est) {
+              const diffMs = new Date(est).getTime() - new Date(tt).getTime();
+              expect(diffMs).to.equal(expectedDiffMs, 
+                  `${stopLabel} ${timeType}: Abweichung ist nicht ${expectedDiffMs / 60000} Min (${expectedDiffMs}ms)`);
+          }
+      };
+  
+      checkDiff("Arrival", stop.ServiceArrival?.TimetabledTime, stop.ServiceArrival?.EstimatedTime);
+      checkDiff("Departure", stop.ServiceDeparture?.TimetabledTime, stop.ServiceDeparture?.EstimatedTime);
+  };
+  
+  const getAllStops = (trip) => {
+      const timedLeg = trip?.Trip?.Leg?.TimedLeg;
+      if (!timedLeg) return [];
+      return [
+          timedLeg.LegBoard, 
+          ...(timedLeg.LegIntermediate || []), 
+          timedLeg.LegAlight
+      ].filter(Boolean); 
+  };
+  
+  const findStopByOrder = (trip, orderNum) => {
+      const legIntermediates = trip?.Trip?.Leg?.TimedLeg?.LegIntermediate || [];
+      return legIntermediates.find(leg => getText(leg.Order) === String(orderNum));
+  };
+  
+  // Vergleicht zwei beliebige Zeitstempel absolut sicher über Millisekunden seit 1970
+  const expectSameTime = (actualIsoString, expectedIsoString, message) => {
+      const actualMs = new Date(actualIsoString).getTime();
+      const expectedMs = new Date(expectedIsoString).getTime();
+      
+      expect(actualMs).to.equal(
+          expectedMs, 
+          `${message} - Erwartet: ${expectedIsoString}, Bekommen: ${actualIsoString}`
+      );
+  };
+  
+  
+  // ============================================================================
+  // DATEN & ZEITEN VORBEREITEN
+  // ============================================================================
+  
+  // Response-Body parsen
+  const xml2js = require('xml2js');
+  let responseJson;
+  xml2js.parseString(res.getBody()?.toString(),{explicitArray: false}, (err, result)=>{
+      responseJson = result;
+  });
+  const tripDelivery = responseJson?.OJP?.OJPResponse?.["siri:ServiceDelivery"]?.OJPTripDelivery;
+  const tripResults = tripDelivery?.TripResult;
+  const resultsArray = Array.isArray(tripResults) ? tripResults : (tripResults ? [tripResults] : []);
+  
+  // Wir lesen das Basis-Datum und die aktuelle Zeitzone direkt aus dem XML!
+  const rawTimestamp = getText(tripDelivery?.["siri:ResponseTimestamp"]) || new Date().toISOString();
+  const datePart = rawTimestamp.split('T')[0]; // z.B. "2026-03-25"
+  
+  // Extrahiert z.B. "+01:00" (Winter) oder "+02:00" (Sommer) am Ende des Strings
+  const offsetMatch = rawTimestamp.match(/([+-]\d{2}:?\d{2}|Z)$/);
+  const timezoneOffset = offsetMatch ? offsetMatch[1] : "Z";
+  
+  // Baut uns die perfekte Testzeit (inklusive Sommer/Winter-Offset)
+  const buildLocalTime = (localTime) => {
+      return `${datePart}T${localTime}${timezoneOffset}`;
+  };
+  
+  
+  // ============================================================================
+  // TESTS
+  // ============================================================================
+  
+  test("Mindestens 14 TripResults vorhanden", function () {
+      expect(resultsArray.length).to.be.at.least(14);
+  });
+  
+  // --- TEST 1 ---
+  test("1. Trip: Startet um 17:00 und alle Zeiten entsprechen EstimatedTimes (Diff 0)", function () {
+      const trip = resultsArray[0];
+      const expectedStart = buildLocalTime("17:00:00");
+      expectSameTime(getText(trip?.Trip?.StartTime), expectedStart, "Startzeit weicht ab!");
+  
+      getAllStops(trip).forEach((stop, index) => {
+          checkTimeDifference(stop, 0, `Stop Index ${index}`);
+      });
+  });
+  
+  // --- TEST 2 ---
+  test("2. Trip: Startet um 17:04 und NotServicedStop Namen sind korrekt", function () {
+      const trip = resultsArray[1];
+      const expectedStart = buildLocalTime("17:04:00");
+      expectSameTime(getText(trip?.Trip?.StartTime), expectedStart, "Startzeit weicht ab!");
+  
+      const expectedNotServicedNames = [
+          "Lausanne, gare", "Lausanne, Flon", "Lausanne, Riponne-M. Béjart",
+          "Lausanne, Bessières", "Lausanne, Ours"
+      ];
+  
+      const legIntermediates = trip?.Trip?.Leg?.TimedLeg?.LegIntermediate || [];
+      const actualNotServicedNames = legIntermediates
+          .filter(leg => String(leg.NotServicedStop) === "true")
+          .map(leg => getText(leg.StopPointName));
+  
+      expect(actualNotServicedNames).to.deep.equal(expectedNotServicedNames, "Die übersprungenen Haltestellen stimmen nicht!");
+  });
+  
+  // --- TEST 3 ---
+  test("3. Trip: Startet um 17:08 und Verspätung wächst pro Halt um +30 Sekunden", function () {
+      const trip = resultsArray[2];
+      const expectedStart = buildLocalTime("17:08:00");
+      expectSameTime(getText(trip?.Trip?.StartTime), expectedStart, "Startzeit weicht ab!");
+  
+      getAllStops(trip).forEach((stop, index) => {
+          checkTimeDifference(stop, index * 30000, `Stop Index ${index}`); // +30s
+      });
+  });
+  
+  // --- TEST 4 ---
+  test("4. Trip: Startet um 17:12 und alle EstimatedTimes sind exakt -5 Min", function () {
+      const trip = resultsArray[3];
+      const expectedStart = buildLocalTime("17:12:00");
+      expectSameTime(getText(trip?.Trip?.StartTime), expectedStart, "Startzeit weicht ab!");
+  
+      getAllStops(trip).forEach((stop, index) => {
+          checkTimeDifference(stop, -300000, `Stop Index ${index}`); // -5m
+      });
+  });
+  
+  // --- TEST 5 ---
+  test("5. Trip: Startet um 17:13 und Service ist Cancelled", function () {
+      const trip = resultsArray[4];
+      const expectedStart = buildLocalTime("17:13:00");
+      expectSameTime(getText(trip?.Trip?.StartTime), expectedStart, "Startzeit weicht ab!");
+  
+      const service = trip?.Trip?.Leg?.TimedLeg?.Service;
+      expect(getText(service?.Cancelled)).to.equal("true", "Fahrt sollte als Cancelled markiert sein!");
+  });
+  
+  // --- TEST 6 ---
+  test("6. Trip: Startet um 17:21 und Service ist Unplanned", function () {
+      const trip = resultsArray[5];
+      const expectedStart = buildLocalTime("17:21:00");
+      expectSameTime(getText(trip?.Trip?.StartTime), expectedStart, "Startzeit weicht ab!");
+  
+      const service = trip?.Trip?.Leg?.TimedLeg?.Service;
+      expect(getText(service?.Unplanned)).to.equal("true", "Fahrt sollte als Unplanned markiert sein!");
+  });
+  
+  // --- TEST 7 ---
+  test("7. Trip: Startet um 17:26, Stop 8 ist Mon Repos und ist UnplannedStop", function () {
+      const trip = resultsArray[6];
+      const expectedStart = buildLocalTime("17:26:00");
+      expectSameTime(getText(trip?.Trip?.StartTime), expectedStart, "Startzeit weicht ab!");
+  
+      const stop8 = findStopByOrder(trip, 8);
+      expect(stop8, "Ein Halt mit Order 8 wurde nicht gefunden!").to.not.be.undefined;
+      expect(getText(stop8?.StopPointName)).to.equal("Lausanne, Mon Repos");
+      expect(getText(stop8?.UnplannedStop)).to.equal("true");
+  });
+  
+  // --- TEST 8 ---
+  test("8. Trip: Startet um 17:34, Stop 11 ist Sallaz und ist NotServicedStop", function () {
+      const trip = resultsArray[7];
+      const expectedStart = buildLocalTime("17:34:00");
+      expectSameTime(getText(trip?.Trip?.StartTime), expectedStart, "Startzeit weicht ab!");
+  
+      const stop11 = findStopByOrder(trip, 11);
+      expect(stop11, "Ein Halt mit Order 11 wurde nicht gefunden!").to.not.be.undefined;
+      expect(getText(stop11?.StopPointName)).to.equal("Lausanne, Sallaz");
+      expect(getText(stop11?.NotServicedStop)).to.equal("true");
+  });
+  
+  // --- TEST 9 ---
+  test("9. Trip: Startet um 17:35 und alle EstimatedTimes sind exakt +5 Min", function () {
+      const trip = resultsArray[8];
+      const expectedStart = buildLocalTime("17:35:00");
+      expectSameTime(getText(trip?.Trip?.StartTime), expectedStart, "Startzeit weicht ab!");
+  
+      getAllStops(trip).forEach((stop, index) => {
+          checkTimeDifference(stop, 300000, `Stop Index ${index}`); // +5m
+      });
+  });
+  
+  // --- TEST 10 ---
+  test("10. Trip: Startet um 17:39 und Differenz wächst pro Halt (-30s)", function () {
+      const trip = resultsArray[9];
+      const expectedStart = buildLocalTime("17:39:00");
+      expectSameTime(getText(trip?.Trip?.StartTime), expectedStart, "Startzeit weicht ab!");
+  
+      getAllStops(trip).forEach((stop, index) => {
+          checkTimeDifference(stop, index * -30000, `Stop Index ${index}`); // -30s
+      });
+  });
+  
+  // --- TEST 12 ---
+  test("12. Trip: Startet um 17:47, Service hat Deviation und Stop 10 ist César-Roux (Unplanned)", function () {
+      const trip = resultsArray[11];
+      const expectedStart = buildLocalTime("17:47:00");
+      expectSameTime(getText(trip?.Trip?.StartTime), expectedStart, "Startzeit weicht ab!");
+  
+      const service = trip?.Trip?.Leg?.TimedLeg?.Service;
+      expect(getText(service?.Deviation)).to.equal("true", "Service ist nicht als Deviation markiert!");
+  
+      const stop10 = findStopByOrder(trip, 10);
+      expect(stop10, "Ein Halt mit Order 10 wurde nicht gefunden!").to.not.be.undefined;
+      expect(getText(stop10?.StopPointName)).to.equal("Lausanne, César-Roux");
+      expect(getText(stop10?.UnplannedStop)).to.equal("true");
+  });
+  
+  // --- TEST 14 ---
+  test("14. Trip: Startet um 17:56 und enthält keine EstimatedTimes", function () {
+      const trip = resultsArray[13];
+      const expectedStart = buildLocalTime("17:56:00");
+      expectSameTime(getText(trip?.Trip?.StartTime), expectedStart, "Startzeit weicht ab!");
+  
+      getAllStops(trip).forEach((stop, index) => {
+          expect(getText(stop.ServiceArrival?.EstimatedTime), `Stop Index ${index} Arrival hat EstimatedTime!`).to.be.undefined;
+          expect(getText(stop.ServiceDeparture?.EstimatedTime), `Stop Index ${index} Departure hat EstimatedTime!`).to.be.undefined;
+      });
+  });
+}
+
+settings {
+  encodeUrl: true
+}

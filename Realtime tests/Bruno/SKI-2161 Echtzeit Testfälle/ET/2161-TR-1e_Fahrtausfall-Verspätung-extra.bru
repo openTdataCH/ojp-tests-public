@@ -1,0 +1,216 @@
+meta {
+  name: 2161-TR-1e_Fahrtausfall/Verspätung/extra
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+headers {
+  Content-Type: text/xml
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>2161-TR-1e</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <siri:StopPointRef>8592086</siri:StopPointRef>
+                          <Name>
+                              <Text>Lausanne, Ouchy-Olympique)</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{fixedTimestamp}}</DepArrTime>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <siri:StopPointRef>8579239</siri:StopPointRef>
+                          <Name>
+                              <Text>Epalinges, Croisettes</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <Params>
+                    <ModeAndModeOfOperationFilter>
+                      <Exclude>false</Exclude>
+                      <PtMode>metro</PtMode>
+                    </ModeAndModeOfOperationFilter>
+                    <NumberOfResults>3</NumberOfResults>
+                    <NumberOfResultsBefore>0</NumberOfResultsBefore>
+                    <NumberOfResultsAfter>3</NumberOfResultsAfter>
+                    <UseRealtimeData>full</UseRealtimeData>
+                    <IncludeAllRestrictedLines>true</IncludeAllRestrictedLines>
+                    <IncludeTrackSections>false</IncludeTrackSections>
+                    <IncludeLegProjection>false</IncludeLegProjection>
+                    <IncludeIntermediateStops>true</IncludeIntermediateStops>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:pre-request {
+  // 1. Aktuelles Datum holen
+  const now = new Date();
+  
+  // 2. Datum & Uhrzeit als formatierte Strings in der Ziel-Zeitzone und in UTC generieren
+  // Wir nutzen "en-US", da dieses Format (MM/DD/YYYY) am sichersten von JS geparst wird.
+  const bernString = now.toLocaleString("en-US", { timeZone: "Europe/Berlin" });
+  const utcString = now.toLocaleString("en-US", { timeZone: "UTC" });
+  
+  // 3. Diese Strings zu temporären Date-Objekten parsen
+  // (Diese nutzen intern die Server-Zeit, was aber für die Differenzberechnung völlig egal ist)
+  const bernDate = new Date(bernString);
+  const utcDate = new Date(utcString);
+  
+  // 4. Den dynamischen Offset in Stunden berechnen (1 für Winterzeit, 2 für Sommerzeit)
+  const offsetHours = (bernDate - utcDate) / (1000 * 60 * 60);
+  
+  // 5. Gewünschte Zielzeit festlegen (hier: 17:10:00 Uhr)
+  const targetHour = 17;
+  const targetMinute = 10;
+  
+  // 6. Den finalen UTC-Zeitstempel berechnen
+  // Wichtig: Wir nutzen Date.UTC() und ziehen Tag/Monat/Jahr aus dem 'bernDate'. 
+  // So stimmt das Datum auch dann, wenn der CI-Server sich an einem anderen Tag befindet als Berlin.
+  const finalDate = new Date(Date.UTC(
+      bernDate.getFullYear(),
+      bernDate.getMonth(),       // Hinweis: Monate starten in JavaScript bei 0!
+      bernDate.getDate(),
+      targetHour - offsetHours,    // Ziel-Uhrzeit abzüglich des Offsets = exakte UTC-Stunde
+      targetMinute,
+      0,                           // Sekunden
+      0                            // Millisekunden
+  ));
+  
+  // 7. In das ISO-Format umwandeln (gibt exakt den Wert in "Z" bzw. UTC aus)
+  const fixedTimestamp = finalDate.toISOString();
+  
+  // 8. Als Postman-Variable speichern
+  bru.setVar("fixedTimestamp", fixedTimestamp);
+}
+
+script:post-response {
+  // Response-Body parsen
+  const xml2js = require('xml2js');
+  let responseJson;
+  xml2js.parseString(res.getBody()?.toString(),{explicitArray: false}, (err, result)=>{
+      responseJson = result;
+  });
+  
+  // Datenpfad auflösen (Optional Chaining verhindert TypeErrors bei unvollständiger Response)
+  const tripDelivery = responseJson?.OJP?.OJPResponse?.["siri:ServiceDelivery"]?.OJPTripDelivery;
+  let tripResults = tripDelivery?.TripResult || [];
+  
+  // xml2js wandelt einzelne Nodes in Objekte um. Für die Iteration wird zwingend ein Array benötigt.
+  if (!Array.isArray(tripResults)) {
+      tripResults = [tripResults];
+  }
+  
+  test("Validierung: TimetabledTime darf bei LegAlight nicht vor EstimatedTime sein (Langsamer Trip soll bei Routing ignoriert werden)", function () {
+      const invalidLegs = [];
+  
+      tripResults.forEach((result, index) => {
+          // Trips können mehrere Legs (Umstiege) enthalten, daher Array-Struktur erzwingen
+          const legs = Array.isArray(result?.Trip?.Leg) ? result.Trip.Leg : [result?.Trip?.Leg];
+  
+          legs.forEach((leg, legIndex) => {
+              const serviceArrival = leg?.TimedLeg?.LegAlight?.ServiceArrival;
+              if (!serviceArrival) return;
+  
+              const timetabledStr = serviceArrival.TimetabledTime;
+              const estimatedStr = serviceArrival.EstimatedTime;
+  
+              if (timetabledStr && estimatedStr) {
+                  // Konvertierung in Millisekunden für den numerischen Vergleich
+                  const timetabledMs = new Date(timetabledStr).getTime();
+                  const estimatedMs = new Date(estimatedStr).getTime();
+  
+                  // Fehler sammeln, falls Timetabled < Estimated
+                  if (timetabledMs < estimatedMs) {
+                      invalidLegs.push(`Trip ${index + 1} Leg ${legIndex + 1}`);
+                  }
+              }
+          });
+      });
+  
+      // Expectation: Das Array der Treffer muss leer sein
+      expect(
+          invalidLegs,
+          `Fehlschlag: Ungültige Zeiten bei LegAlight gefunden -> ${invalidLegs.join(", ")}`
+      ).to.be.empty;
+  });
+  
+  
+  test("Zusatztrip soll markiert sein", function () {
+      let unplannedCount = 0;
+  
+      tripResults.forEach(result => {
+          // xml2js parst XML-Booleans als String ("true")
+          if (result?.Trip?.Unplanned === 'true' || result?.Trip?.Unplanned === true) {
+              unplannedCount++;
+          }
+      });
+  
+      // Expectation: Der Zähler muss exakt 1 sein
+      expect(
+          unplannedCount,
+          `Fehlschlag: Es soll 1 Zusatzfahrt vorkommen, es kommen aber ${unplannedCount}`
+      ).to.equal(1);
+  });
+  
+  
+  test("Validierung: Der zweite Trip startet nach 17:19 Lokalzeit (Ausgefallender Trip 17:13 soll bei Routing ignoriert werden)", function () {
+      // Sicherstellen, dass ein zweiter Trip (Index 1) existiert
+      expect(tripResults.length, "Fehlschlag: Es wurden weniger als 2 Trips in der Response gefunden").to.be.at.least(2);
+  
+      const startTimeUtc = tripResults[1]?.Trip?.StartTime;
+      expect(startTimeUtc, "Fehlschlag: Dem zweiten Trip fehlt die StartTime").to.not.be.undefined;
+  
+      // Date-Objekt aus dem UTC-String erstellen
+      const date = new Date(startTimeUtc);
+  
+      // Native Konvertierung in die Schweizer Lokalzeit
+      const formatter = new Intl.DateTimeFormat('de-CH', {
+          timeZone: 'Europe/Zurich',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+      });
+  
+      // Format liefert einen String wie z.B. "17:47"
+      const localTimeStr = formatter.format(date);
+      const [hoursStr, minutesStr] = localTimeStr.split(':');
+      const hours = parseInt(hoursStr, 10);
+      const minutes = parseInt(minutesStr, 10);
+  
+      // Logik: Nach 17:19 Uhr (Stunde > 17 oder genau 17 Uhr und Minute > 19)
+      const isAfter1719 = hours > 17 || (hours === 17 && minutes > 19);
+  
+      // Expectation: Die Bedingung muss erfüllt (true) sein
+      expect(
+          isAfter1719,
+          `Fehlschlag: Der zweite Trip startet um ${localTimeStr}, was nicht nach 17:19 Uhr ist`
+      ).to.be.true;
+  });
+}
+
+settings {
+  encodeUrl: true
+}

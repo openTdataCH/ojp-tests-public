@@ -1,0 +1,107 @@
+meta {
+  name: 2161-TR-1a_Zurich_HB_Gleiswechsel
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{server2}}
+  body: xml
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{BearerToken}}
+}
+
+body:xml {
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OJP xmlns="http://www.vdv.de/ojp" xmlns:siri="http://www.siri.org.uk/siri" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd">
+      <OJPRequest>
+          <siri:ServiceRequest>
+              <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+              <siri:RequestorRef>SKIPlusRegTest</siri:RequestorRef>
+              <OJPTripRequest>
+                  <siri:RequestTimestamp>{{isoTimestamp}}</siri:RequestTimestamp>
+                  <siri:MessageIdentifier>2161-TR-1a</siri:MessageIdentifier>
+                  <Origin>
+                      <PlaceRef>
+                          <siri:StopPointRef>8503000</siri:StopPointRef>
+                          <Name>
+                              <Text>Zürich HB</Text>
+                          </Name>
+                      </PlaceRef>
+                      <DepArrTime>{{isoTimestamp}}</DepArrTime>
+                  </Origin>
+                  <Destination>
+                      <PlaceRef>
+                          <siri:StopPointRef>8503003</siri:StopPointRef>
+                          <Name>
+                              <Text>Stadelhofen</Text>
+                          </Name>
+                      </PlaceRef>
+                  </Destination>
+                  <Params>
+                      <IncludeAllRestrictedLines>false</IncludeAllRestrictedLines>
+                      <NumberOfResults>2</NumberOfResults>
+                      <NumberOfResultsBefore>4</NumberOfResultsBefore>
+                      <IncludeTrackSections>false</IncludeTrackSections>
+                      <IncludeLegProjection>false</IncludeLegProjection>
+                      <IncludeTurnDescription>false</IncludeTurnDescription>
+                      <IncludeIntermediateStops>false</IncludeIntermediateStops>
+                      <UseRealtimeData>full</UseRealtimeData>
+                  </Params>
+              </OJPTripRequest>
+          </siri:ServiceRequest>
+      </OJPRequest>
+  </OJP>
+}
+
+script:post-response {
+  const xml2js = require('xml2js');
+  let responseJson;
+  xml2js.parseString(res.getBody()?.toString(),{explicitArray: false}, (err, result)=>{
+      responseJson = result;
+  });
+  
+  // Pfad-Navigation zu den TripResults
+  const tripDelivery = responseJson?.OJP?.OJPResponse?.["siri:ServiceDelivery"]?.OJPTripDelivery;
+  const tripResults = tripDelivery?.TripResult;
+  const resultsArray = Array.isArray(tripResults) ? tripResults : (tripResults ? [tripResults] : []);
+  
+  test("FAIL if PlannedQuay and EstimatedQuay are EQUAL", function () {
+      expect(resultsArray.length).to.be.above(0, "Keine TripResults gefunden");
+  
+      resultsArray.forEach((result, index) => {
+          const legBoard = result?.Trip?.Leg?.TimedLeg?.LegBoard;
+          
+          if (legBoard && legBoard.PlannedQuay && legBoard.EstimatedQuay) {
+              
+              // Funktion um den Text sicher zu extrahieren (egal ob String oder Objekt mit _)
+              const getVal = (obj) => {
+                  if (!obj || !obj.Text) return null;
+                  return typeof obj.Text === 'object' ? obj.Text._ : obj.Text;
+              };
+  
+              const planned = getVal(legBoard.PlannedQuay);
+              const estimated = getVal(legBoard.EstimatedQuay);
+  
+              // Debugging in der Postman Console (WICHTIG: Hier schauen!)
+              console.log(`Trip ${index} - Planned: [${planned}] | Estimated: [${estimated}]`);
+  
+              if (planned !== null && estimated !== null) {
+                  // Wir trimmen Leerzeichen, falls vorhanden
+                  const pTrim = String(planned).trim();
+                  const eTrim = String(estimated).trim();
+  
+                  expect(pTrim).to.not.equal(eTrim, 
+                      `Trip #${index}: Werte sind identisch ('${pTrim}'), muessen sich aber unterscheiden!`);
+              }
+          }
+      });
+  });
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,1807 @@
+{
+  "info": {
+    "_postman_id": "ce62a2b5-51e9-4731-9002-a73fbf73b829",
+    "name": "OJP Echtzeit Testfälle",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "41756201",
+    "_collection_link": "https://go.postman.co/collection/41756201-ce62a2b5-51e9-4731-9002-a73fbf73b829?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "SKI-2161 Echtzeit Testfälle",
+      "item": [
+        {
+          "name": "ET",
+          "item": [
+            {
+              "name": "2161-TR-1a_Zurich_HB_Gleiswechsel",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const xml2js = require('xml2js');\r",
+                      "let responseJson;\r",
+                      "xml2js.parseString(pm.response.text(),{explicitArray: false}, (err, result)=>{\r",
+                      "    responseJson = result;\r",
+                      "});\r",
+                      "\r",
+                      "// Pfad-Navigation zu den TripResults\r",
+                      "const tripDelivery = responseJson?.OJP?.OJPResponse?.[\"siri:ServiceDelivery\"]?.OJPTripDelivery;\r",
+                      "const tripResults = tripDelivery?.TripResult;\r",
+                      "const resultsArray = Array.isArray(tripResults) ? tripResults : (tripResults ? [tripResults] : []);\r",
+                      "\r",
+                      "pm.test(\"FAIL if PlannedQuay and EstimatedQuay are EQUAL\", function () {\r",
+                      "    pm.expect(resultsArray.length).to.be.above(0, \"Keine TripResults gefunden\");\r",
+                      "\r",
+                      "    resultsArray.forEach((result, index) => {\r",
+                      "        const legBoard = result?.Trip?.Leg?.TimedLeg?.LegBoard;\r",
+                      "        \r",
+                      "        if (legBoard && legBoard.PlannedQuay && legBoard.EstimatedQuay) {\r",
+                      "            \r",
+                      "            // Funktion um den Text sicher zu extrahieren (egal ob String oder Objekt mit _)\r",
+                      "            const getVal = (obj) => {\r",
+                      "                if (!obj || !obj.Text) return null;\r",
+                      "                return typeof obj.Text === 'object' ? obj.Text._ : obj.Text;\r",
+                      "            };\r",
+                      "\r",
+                      "            const planned = getVal(legBoard.PlannedQuay);\r",
+                      "            const estimated = getVal(legBoard.EstimatedQuay);\r",
+                      "\r",
+                      "            // Debugging in der Postman Console (WICHTIG: Hier schauen!)\r",
+                      "            console.log(`Trip ${index} - Planned: [${planned}] | Estimated: [${estimated}]`);\r",
+                      "\r",
+                      "            if (planned !== null && estimated !== null) {\r",
+                      "                // Wir trimmen Leerzeichen, falls vorhanden\r",
+                      "                const pTrim = String(planned).trim();\r",
+                      "                const eTrim = String(estimated).trim();\r",
+                      "\r",
+                      "                pm.expect(pTrim).to.not.equal(eTrim, \r",
+                      "                    `Trip #${index}: Werte sind identisch ('${pTrim}'), muessen sich aber unterscheiden!`);\r",
+                      "            }\r",
+                      "        }\r",
+                      "    });\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{BearerToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<OJP xmlns=\"http://www.vdv.de/ojp\" xmlns:siri=\"http://www.siri.org.uk/siri\" version=\"2.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd\">\r\n    <OJPRequest>\r\n        <siri:ServiceRequest>\r\n            <siri:RequestTimestamp>{{$isoTimestamp}}</siri:RequestTimestamp>\r\n            <siri:RequestorRef>MENTZRegTest</siri:RequestorRef>\r\n            <OJPTripRequest>\r\n                <siri:RequestTimestamp>{{$isoTimestamp}}</siri:RequestTimestamp>\r\n                <siri:MessageIdentifier>2161-TR-1a</siri:MessageIdentifier>\r\n                <Origin>\r\n                    <PlaceRef>\r\n                        <siri:StopPointRef>8503000</siri:StopPointRef>\r\n                        <Name>\r\n                            <Text>Zürich HB</Text>\r\n                        </Name>\r\n                    </PlaceRef>\r\n                    <DepArrTime>{{$isoTimestamp}}</DepArrTime>\r\n                </Origin>\r\n                <Destination>\r\n                    <PlaceRef>\r\n                        <siri:StopPointRef>8503003</siri:StopPointRef>\r\n                        <Name>\r\n                            <Text>Stadelhofen</Text>\r\n                        </Name>\r\n                    </PlaceRef>\r\n                </Destination>\r\n                <Params>\r\n                    <IncludeAllRestrictedLines>false</IncludeAllRestrictedLines>\r\n                    <NumberOfResults>2</NumberOfResults>\r\n                    <NumberOfResultsBefore>4</NumberOfResultsBefore>\r\n                    <IncludeTrackSections>false</IncludeTrackSections>\r\n                    <IncludeLegProjection>false</IncludeLegProjection>\r\n                    <IncludeTurnDescription>false</IncludeTurnDescription>\r\n                    <IncludeIntermediateStops>false</IncludeIntermediateStops>\r\n                    <UseRealtimeData>full</UseRealtimeData>\r\n                </Params>\r\n            </OJPTripRequest>\r\n        </siri:ServiceRequest>\r\n    </OJPRequest>\r\n</OJP>",
+                  "options": {
+                    "raw": {
+                      "language": "xml"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{server2}}",
+                  "host": [
+                    "{{server2}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "2161-TR-1b_Andere_Fälle_Lausanne",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "// 1. Aktuelles Datum holen\r",
+                      "const now = new Date();\r",
+                      "\r",
+                      "// 2. Datum & Uhrzeit als formatierte Strings in der Ziel-Zeitzone und in UTC generieren\r",
+                      "// Wir nutzen \"en-US\", da dieses Format (MM/DD/YYYY) am sichersten von JS geparst wird.\r",
+                      "const bernString = now.toLocaleString(\"en-US\", { timeZone: \"Europe/Berlin\" });\r",
+                      "const utcString = now.toLocaleString(\"en-US\", { timeZone: \"UTC\" });\r",
+                      "\r",
+                      "// 3. Diese Strings zu temporären Date-Objekten parsen\r",
+                      "// (Diese nutzen intern die Server-Zeit, was aber für die Differenzberechnung völlig egal ist)\r",
+                      "const bernDate = new Date(bernString);\r",
+                      "const utcDate = new Date(utcString);\r",
+                      "\r",
+                      "// 4. Den dynamischen Offset in Stunden berechnen (1 für Winterzeit, 2 für Sommerzeit)\r",
+                      "const offsetHours = (bernDate - utcDate) / (1000 * 60 * 60);\r",
+                      "\r",
+                      "// 5. Gewünschte Zielzeit festlegen (hier: 17:00:00 Uhr)\r",
+                      "const targetHour = 17;\r",
+                      "const targetMinute = 0;\r",
+                      "\r",
+                      "// 6. Den finalen UTC-Zeitstempel berechnen\r",
+                      "// Wichtig: Wir nutzen Date.UTC() und ziehen Tag/Monat/Jahr aus dem 'bernDate'. \r",
+                      "// So stimmt das Datum auch dann, wenn der CI-Server sich an einem anderen Tag befindet als Berlin.\r",
+                      "const finalDate = new Date(Date.UTC(\r",
+                      "    bernDate.getFullYear(),\r",
+                      "    bernDate.getMonth(),       // Hinweis: Monate starten in JavaScript bei 0!\r",
+                      "    bernDate.getDate(),\r",
+                      "    targetHour - offsetHours,    // Ziel-Uhrzeit abzüglich des Offsets = exakte UTC-Stunde\r",
+                      "    targetMinute,\r",
+                      "    0,                           // Sekunden\r",
+                      "    0                            // Millisekunden\r",
+                      "));\r",
+                      "\r",
+                      "// 7. In das ISO-Format umwandeln (gibt exakt den Wert in \"Z\" bzw. UTC aus)\r",
+                      "const fixedTimestamp = finalDate.toISOString();\r",
+                      "\r",
+                      "// 8. Als Postman-Variable speichern\r",
+                      "pm.variables.set(\"fixedTimestamp\", fixedTimestamp);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// ============================================================================\r",
+                      "// HILFSFUNKTIONEN\r",
+                      "// ============================================================================\r",
+                      "\r",
+                      "const getText = (node) => {\r",
+                      "    if (!node) return undefined;\r",
+                      "    if (typeof node === 'string') return node;\r",
+                      "    if (node.Text) {\r",
+                      "        return typeof node.Text === 'string' ? node.Text : node.Text._;\r",
+                      "    }\r",
+                      "    if (node._) return node._;\r",
+                      "    return undefined;\r",
+                      "};\r",
+                      "\r",
+                      "const checkTimeDifference = (stop, expectedDiffMs, stopLabel) => {\r",
+                      "    if (!stop) return; \r",
+                      "\r",
+                      "    const checkDiff = (timeType, timetabledObj, estimatedObj) => {\r",
+                      "        const tt = getText(timetabledObj);\r",
+                      "        const est = getText(estimatedObj);\r",
+                      "        if (tt && est) {\r",
+                      "            const diffMs = new Date(est).getTime() - new Date(tt).getTime();\r",
+                      "            pm.expect(diffMs).to.equal(expectedDiffMs, \r",
+                      "                `${stopLabel} ${timeType}: Abweichung ist nicht ${expectedDiffMs / 60000} Min (${expectedDiffMs}ms)`);\r",
+                      "        }\r",
+                      "    };\r",
+                      "\r",
+                      "    checkDiff(\"Arrival\", stop.ServiceArrival?.TimetabledTime, stop.ServiceArrival?.EstimatedTime);\r",
+                      "    checkDiff(\"Departure\", stop.ServiceDeparture?.TimetabledTime, stop.ServiceDeparture?.EstimatedTime);\r",
+                      "};\r",
+                      "\r",
+                      "const getAllStops = (trip) => {\r",
+                      "    const timedLeg = trip?.Trip?.Leg?.TimedLeg;\r",
+                      "    if (!timedLeg) return [];\r",
+                      "    return [\r",
+                      "        timedLeg.LegBoard, \r",
+                      "        ...(timedLeg.LegIntermediate || []), \r",
+                      "        timedLeg.LegAlight\r",
+                      "    ].filter(Boolean); \r",
+                      "};\r",
+                      "\r",
+                      "const findStopByOrder = (trip, orderNum) => {\r",
+                      "    const legIntermediates = trip?.Trip?.Leg?.TimedLeg?.LegIntermediate || [];\r",
+                      "    return legIntermediates.find(leg => getText(leg.Order) === String(orderNum));\r",
+                      "};\r",
+                      "\r",
+                      "// Vergleicht zwei beliebige Zeitstempel absolut sicher über Millisekunden seit 1970\r",
+                      "const expectSameTime = (actualIsoString, expectedIsoString, message) => {\r",
+                      "    const actualMs = new Date(actualIsoString).getTime();\r",
+                      "    const expectedMs = new Date(expectedIsoString).getTime();\r",
+                      "    \r",
+                      "    pm.expect(actualMs).to.equal(\r",
+                      "        expectedMs, \r",
+                      "        `${message} - Erwartet: ${expectedIsoString}, Bekommen: ${actualIsoString}`\r",
+                      "    );\r",
+                      "};\r",
+                      "\r",
+                      "\r",
+                      "// ============================================================================\r",
+                      "// DATEN & ZEITEN VORBEREITEN\r",
+                      "// ============================================================================\r",
+                      "\r",
+                      "// Response-Body parsen\r",
+                      "const xml2js = require('xml2js');\r",
+                      "let responseJson;\r",
+                      "xml2js.parseString(pm.response.text(),{explicitArray: false}, (err, result)=>{\r",
+                      "    responseJson = result;\r",
+                      "});\r",
+                      "const tripDelivery = responseJson?.OJP?.OJPResponse?.[\"siri:ServiceDelivery\"]?.OJPTripDelivery;\r",
+                      "const tripResults = tripDelivery?.TripResult;\r",
+                      "const resultsArray = Array.isArray(tripResults) ? tripResults : (tripResults ? [tripResults] : []);\r",
+                      "\r",
+                      "// Wir lesen das Basis-Datum und die aktuelle Zeitzone direkt aus dem XML!\r",
+                      "const rawTimestamp = getText(tripDelivery?.[\"siri:ResponseTimestamp\"]) || new Date().toISOString();\r",
+                      "const datePart = rawTimestamp.split('T')[0]; // z.B. \"2026-03-25\"\r",
+                      "\r",
+                      "// Extrahiert z.B. \"+01:00\" (Winter) oder \"+02:00\" (Sommer) am Ende des Strings\r",
+                      "const offsetMatch = rawTimestamp.match(/([+-]\\d{2}:?\\d{2}|Z)$/);\r",
+                      "const timezoneOffset = offsetMatch ? offsetMatch[1] : \"Z\";\r",
+                      "\r",
+                      "// Baut uns die perfekte Testzeit (inklusive Sommer/Winter-Offset)\r",
+                      "const buildLocalTime = (localTime) => {\r",
+                      "    return `${datePart}T${localTime}${timezoneOffset}`;\r",
+                      "};\r",
+                      "\r",
+                      "\r",
+                      "// ============================================================================\r",
+                      "// TESTS\r",
+                      "// ============================================================================\r",
+                      "\r",
+                      "pm.test(\"Mindestens 14 TripResults vorhanden\", function () {\r",
+                      "    pm.expect(resultsArray.length).to.be.at.least(14);\r",
+                      "});\r",
+                      "\r",
+                      "// --- TEST 1 ---\r",
+                      "pm.test(\"1. Trip: Startet um 17:00 und alle Zeiten entsprechen EstimatedTimes (Diff 0)\", function () {\r",
+                      "    const trip = resultsArray[0];\r",
+                      "    const expectedStart = buildLocalTime(\"17:00:00\");\r",
+                      "    expectSameTime(getText(trip?.Trip?.StartTime), expectedStart, \"Startzeit weicht ab!\");\r",
+                      "\r",
+                      "    getAllStops(trip).forEach((stop, index) => {\r",
+                      "        checkTimeDifference(stop, 0, `Stop Index ${index}`);\r",
+                      "    });\r",
+                      "});\r",
+                      "\r",
+                      "// --- TEST 2 ---\r",
+                      "pm.test(\"2. Trip: Startet um 17:04 und NotServicedStop Namen sind korrekt\", function () {\r",
+                      "    const trip = resultsArray[1];\r",
+                      "    const expectedStart = buildLocalTime(\"17:04:00\");\r",
+                      "    expectSameTime(getText(trip?.Trip?.StartTime), expectedStart, \"Startzeit weicht ab!\");\r",
+                      "\r",
+                      "    const expectedNotServicedNames = [\r",
+                      "        \"Lausanne, gare\", \"Lausanne, Flon\", \"Lausanne, Riponne-M. Béjart\",\r",
+                      "        \"Lausanne, Bessières\", \"Lausanne, Ours\"\r",
+                      "    ];\r",
+                      "\r",
+                      "    const legIntermediates = trip?.Trip?.Leg?.TimedLeg?.LegIntermediate || [];\r",
+                      "    const actualNotServicedNames = legIntermediates\r",
+                      "        .filter(leg => String(leg.NotServicedStop) === \"true\")\r",
+                      "        .map(leg => getText(leg.StopPointName));\r",
+                      "\r",
+                      "    pm.expect(actualNotServicedNames).to.deep.equal(expectedNotServicedNames, \"Die übersprungenen Haltestellen stimmen nicht!\");\r",
+                      "});\r",
+                      "\r",
+                      "// --- TEST 3 ---\r",
+                      "pm.test(\"3. Trip: Startet um 17:08 und Verspätung wächst pro Halt um +30 Sekunden\", function () {\r",
+                      "    const trip = resultsArray[2];\r",
+                      "    const expectedStart = buildLocalTime(\"17:08:00\");\r",
+                      "    expectSameTime(getText(trip?.Trip?.StartTime), expectedStart, \"Startzeit weicht ab!\");\r",
+                      "\r",
+                      "    getAllStops(trip).forEach((stop, index) => {\r",
+                      "        checkTimeDifference(stop, index * 30000, `Stop Index ${index}`); // +30s\r",
+                      "    });\r",
+                      "});\r",
+                      "\r",
+                      "// --- TEST 4 ---\r",
+                      "pm.test(\"4. Trip: Startet um 17:12 und alle EstimatedTimes sind exakt -5 Min\", function () {\r",
+                      "    const trip = resultsArray[3];\r",
+                      "    const expectedStart = buildLocalTime(\"17:12:00\");\r",
+                      "    expectSameTime(getText(trip?.Trip?.StartTime), expectedStart, \"Startzeit weicht ab!\");\r",
+                      "\r",
+                      "    getAllStops(trip).forEach((stop, index) => {\r",
+                      "        checkTimeDifference(stop, -300000, `Stop Index ${index}`); // -5m\r",
+                      "    });\r",
+                      "});\r",
+                      "\r",
+                      "// --- TEST 5 ---\r",
+                      "pm.test(\"5. Trip: Startet um 17:13 und Service ist Cancelled\", function () {\r",
+                      "    const trip = resultsArray[4];\r",
+                      "    const expectedStart = buildLocalTime(\"17:13:00\");\r",
+                      "    expectSameTime(getText(trip?.Trip?.StartTime), expectedStart, \"Startzeit weicht ab!\");\r",
+                      "\r",
+                      "    const service = trip?.Trip?.Leg?.TimedLeg?.Service;\r",
+                      "    pm.expect(getText(service?.Cancelled)).to.equal(\"true\", \"Fahrt sollte als Cancelled markiert sein!\");\r",
+                      "});\r",
+                      "\r",
+                      "// --- TEST 6 ---\r",
+                      "pm.test(\"6. Trip: Startet um 17:21 und Service ist Unplanned\", function () {\r",
+                      "    const trip = resultsArray[5];\r",
+                      "    const expectedStart = buildLocalTime(\"17:21:00\");\r",
+                      "    expectSameTime(getText(trip?.Trip?.StartTime), expectedStart, \"Startzeit weicht ab!\");\r",
+                      "\r",
+                      "    const service = trip?.Trip?.Leg?.TimedLeg?.Service;\r",
+                      "    pm.expect(getText(service?.Unplanned)).to.equal(\"true\", \"Fahrt sollte als Unplanned markiert sein!\");\r",
+                      "});\r",
+                      "\r",
+                      "// --- TEST 7 ---\r",
+                      "pm.test(\"7. Trip: Startet um 17:26, Stop 8 ist Mon Repos und ist UnplannedStop\", function () {\r",
+                      "    const trip = resultsArray[6];\r",
+                      "    const expectedStart = buildLocalTime(\"17:26:00\");\r",
+                      "    expectSameTime(getText(trip?.Trip?.StartTime), expectedStart, \"Startzeit weicht ab!\");\r",
+                      "\r",
+                      "    const stop8 = findStopByOrder(trip, 8);\r",
+                      "    pm.expect(stop8, \"Ein Halt mit Order 8 wurde nicht gefunden!\").to.not.be.undefined;\r",
+                      "    pm.expect(getText(stop8?.StopPointName)).to.equal(\"Lausanne, Mon Repos\");\r",
+                      "    pm.expect(getText(stop8?.UnplannedStop)).to.equal(\"true\");\r",
+                      "});\r",
+                      "\r",
+                      "// --- TEST 8 ---\r",
+                      "pm.test(\"8. Trip: Startet um 17:34, Stop 11 ist Sallaz und ist NotServicedStop\", function () {\r",
+                      "    const trip = resultsArray[7];\r",
+                      "    const expectedStart = buildLocalTime(\"17:34:00\");\r",
+                      "    expectSameTime(getText(trip?.Trip?.StartTime), expectedStart, \"Startzeit weicht ab!\");\r",
+                      "\r",
+                      "    const stop11 = findStopByOrder(trip, 11);\r",
+                      "    pm.expect(stop11, \"Ein Halt mit Order 11 wurde nicht gefunden!\").to.not.be.undefined;\r",
+                      "    pm.expect(getText(stop11?.StopPointName)).to.equal(\"Lausanne, Sallaz\");\r",
+                      "    pm.expect(getText(stop11?.NotServicedStop)).to.equal(\"true\");\r",
+                      "});\r",
+                      "\r",
+                      "// --- TEST 9 ---\r",
+                      "pm.test(\"9. Trip: Startet um 17:35 und alle EstimatedTimes sind exakt +5 Min\", function () {\r",
+                      "    const trip = resultsArray[8];\r",
+                      "    const expectedStart = buildLocalTime(\"17:35:00\");\r",
+                      "    expectSameTime(getText(trip?.Trip?.StartTime), expectedStart, \"Startzeit weicht ab!\");\r",
+                      "\r",
+                      "    getAllStops(trip).forEach((stop, index) => {\r",
+                      "        checkTimeDifference(stop, 300000, `Stop Index ${index}`); // +5m\r",
+                      "    });\r",
+                      "});\r",
+                      "\r",
+                      "// --- TEST 10 ---\r",
+                      "pm.test(\"10. Trip: Startet um 17:39 und Differenz wächst pro Halt (-30s)\", function () {\r",
+                      "    const trip = resultsArray[9];\r",
+                      "    const expectedStart = buildLocalTime(\"17:39:00\");\r",
+                      "    expectSameTime(getText(trip?.Trip?.StartTime), expectedStart, \"Startzeit weicht ab!\");\r",
+                      "\r",
+                      "    getAllStops(trip).forEach((stop, index) => {\r",
+                      "        checkTimeDifference(stop, index * -30000, `Stop Index ${index}`); // -30s\r",
+                      "    });\r",
+                      "});\r",
+                      "\r",
+                      "// --- TEST 12 ---\r",
+                      "pm.test(\"12. Trip: Startet um 17:47, Service hat Deviation und Stop 10 ist César-Roux (Unplanned)\", function () {\r",
+                      "    const trip = resultsArray[11];\r",
+                      "    const expectedStart = buildLocalTime(\"17:47:00\");\r",
+                      "    expectSameTime(getText(trip?.Trip?.StartTime), expectedStart, \"Startzeit weicht ab!\");\r",
+                      "\r",
+                      "    const service = trip?.Trip?.Leg?.TimedLeg?.Service;\r",
+                      "    pm.expect(getText(service?.Deviation)).to.equal(\"true\", \"Service ist nicht als Deviation markiert!\");\r",
+                      "\r",
+                      "    const stop10 = findStopByOrder(trip, 10);\r",
+                      "    pm.expect(stop10, \"Ein Halt mit Order 10 wurde nicht gefunden!\").to.not.be.undefined;\r",
+                      "    pm.expect(getText(stop10?.StopPointName)).to.equal(\"Lausanne, César-Roux\");\r",
+                      "    pm.expect(getText(stop10?.UnplannedStop)).to.equal(\"true\");\r",
+                      "});\r",
+                      "\r",
+                      "// --- TEST 14 ---\r",
+                      "pm.test(\"14. Trip: Startet um 17:56 und enthält keine EstimatedTimes\", function () {\r",
+                      "    const trip = resultsArray[13];\r",
+                      "    const expectedStart = buildLocalTime(\"17:56:00\");\r",
+                      "    expectSameTime(getText(trip?.Trip?.StartTime), expectedStart, \"Startzeit weicht ab!\");\r",
+                      "\r",
+                      "    getAllStops(trip).forEach((stop, index) => {\r",
+                      "        pm.expect(getText(stop.ServiceArrival?.EstimatedTime), `Stop Index ${index} Arrival hat EstimatedTime!`).to.be.undefined;\r",
+                      "        pm.expect(getText(stop.ServiceDeparture?.EstimatedTime), `Stop Index ${index} Departure hat EstimatedTime!`).to.be.undefined;\r",
+                      "    });\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{BearerToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "text/xml",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<OJP xmlns=\"http://www.vdv.de/ojp\" xmlns:siri=\"http://www.siri.org.uk/siri\" version=\"2.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd\">\r\n    <OJPRequest>\r\n        <siri:ServiceRequest>\r\n            <siri:RequestTimestamp>{{$isoTimestamp}}</siri:RequestTimestamp>\r\n            <siri:RequestorRef>MENTZRegTest</siri:RequestorRef>\r\n            <OJPTripRequest>\r\n                <siri:RequestTimestamp>{{$isoTimestamp}}</siri:RequestTimestamp>\r\n                <siri:MessageIdentifier>2161-TR-1b</siri:MessageIdentifier>\r\n                <Origin>\r\n                    <PlaceRef>\r\n                        <siri:StopPointRef>8592086</siri:StopPointRef>\r\n                        <Name>\r\n                            <Text>Lausanne, Ouchy-Olympique)</Text>\r\n                        </Name>\r\n                    </PlaceRef>\r\n                    <DepArrTime>{{fixedTimestamp}}</DepArrTime>\r\n                </Origin>\r\n                <Destination>\r\n                    <PlaceRef>\r\n                        <siri:StopPointRef>8579239</siri:StopPointRef>\r\n                        <Name>\r\n                            <Text>Epalinges, Croisettes</Text>\r\n                        </Name>\r\n                    </PlaceRef>\r\n                </Destination>\r\n                <Params>\r\n                  <ModeAndModeOfOperationFilter>\r\n                    <Exclude>false</Exclude>\r\n                    <PtMode>metro</PtMode>\r\n                  </ModeAndModeOfOperationFilter>\r\n                  <NumberOfResults>14</NumberOfResults>\r\n                  <NumberOfResultsBefore>0</NumberOfResultsBefore>\r\n                  <NumberOfResultsAfter>14</NumberOfResultsAfter>\r\n                  <UseRealtimeData>explanatory</UseRealtimeData>\r\n                  <IncludeAllRestrictedLines>true</IncludeAllRestrictedLines>\r\n                  <IncludeTrackSections>false</IncludeTrackSections>\r\n                  <IncludeLegProjection>false</IncludeLegProjection>\r\n                  <IncludeIntermediateStops>true</IncludeIntermediateStops>\r\n                </Params>\r\n            </OJPTripRequest>\r\n        </siri:ServiceRequest>\r\n    </OJPRequest>\r\n</OJP>"
+                },
+                "url": {
+                  "raw": "{{server2}}",
+                  "host": [
+                    "{{server2}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "2161-TR-1c_Umleitung_CesarRoux",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"U-Bahn Fahrt direkt nach Cesar-Roux gefunden\", function() {\r",
+                      "    pm.expect(pm.response.text()).to.include(\">Lausanne, César-Roux</Text>\");\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"U-Bahn Fahrt gefunden\", function() {\r",
+                      "    pm.expect(pm.response.text()).to.include(\"<PtMode>metro</PtMode>\");\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Haltestelle nicht angefahrenen\", function() {\r",
+                      "    pm.expect(pm.response.text()).to.include(\"<NotServicedStop>true</NotServicedStop>\");\r",
+                      "});\r",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "// 1. Aktuelles Datum holen\r",
+                      "const now = new Date();\r",
+                      "\r",
+                      "// 2. Datum & Uhrzeit als formatierte Strings in der Ziel-Zeitzone und in UTC generieren\r",
+                      "// Wir nutzen \"en-US\", da dieses Format (MM/DD/YYYY) am sichersten von JS geparst wird.\r",
+                      "const bernString = now.toLocaleString(\"en-US\", { timeZone: \"Europe/Berlin\" });\r",
+                      "const utcString = now.toLocaleString(\"en-US\", { timeZone: \"UTC\" });\r",
+                      "\r",
+                      "// 3. Diese Strings zu temporären Date-Objekten parsen\r",
+                      "// (Diese nutzen intern die Server-Zeit, was aber für die Differenzberechnung völlig egal ist)\r",
+                      "const bernDate = new Date(bernString);\r",
+                      "const utcDate = new Date(utcString);\r",
+                      "\r",
+                      "// 4. Den dynamischen Offset in Stunden berechnen (1 für Winterzeit, 2 für Sommerzeit)\r",
+                      "const offsetHours = (bernDate - utcDate) / (1000 * 60 * 60);\r",
+                      "\r",
+                      "// 5. Gewünschte Zielzeit festlegen (hier: 17:00:00 Uhr)\r",
+                      "const targetHour = 17;\r",
+                      "const targetMinute = 0;\r",
+                      "\r",
+                      "// 6. Den finalen UTC-Zeitstempel berechnen\r",
+                      "// Wichtig: Wir nutzen Date.UTC() und ziehen Tag/Monat/Jahr aus dem 'bernDate'. \r",
+                      "// So stimmt das Datum auch dann, wenn der CI-Server sich an einem anderen Tag befindet als Berlin.\r",
+                      "const finalDate = new Date(Date.UTC(\r",
+                      "    bernDate.getFullYear(),\r",
+                      "    bernDate.getMonth(),       // Hinweis: Monate starten in JavaScript bei 0!\r",
+                      "    bernDate.getDate(),\r",
+                      "    targetHour - offsetHours,    // Ziel-Uhrzeit abzüglich des Offsets = exakte UTC-Stunde\r",
+                      "    targetMinute,\r",
+                      "    0,                           // Sekunden\r",
+                      "    0                            // Millisekunden\r",
+                      "));\r",
+                      "\r",
+                      "// 7. In das ISO-Format umwandeln (gibt exakt den Wert in \"Z\" bzw. UTC aus)\r",
+                      "const fixedTimestamp = finalDate.toISOString();\r",
+                      "\r",
+                      "// 8. Als Postman-Variable speichern\r",
+                      "pm.variables.set(\"fixedTimestamp\", fixedTimestamp);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{BearerToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "text/xml",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<OJP xmlns=\"http://www.vdv.de/ojp\" xmlns:siri=\"http://www.siri.org.uk/siri\" version=\"2.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd\">\r\n    <OJPRequest>\r\n        <siri:ServiceRequest>\r\n            <siri:RequestTimestamp>{{$isoTimestamp}}</siri:RequestTimestamp>\r\n            <siri:RequestorRef>MENTZRegTest</siri:RequestorRef>\r\n            <OJPTripRequest>\r\n                <siri:RequestTimestamp>{{$isoTimestamp}}</siri:RequestTimestamp>\r\n                <siri:MessageIdentifier>2161-TR-1c</siri:MessageIdentifier>\r\n                <Origin>\r\n                    <PlaceRef>\r\n                        <siri:StopPointRef>8592086</siri:StopPointRef>\r\n                        <Name>\r\n                            <Text>Lausanne, Ouchy-Olympique)</Text>\r\n                        </Name>\r\n                    </PlaceRef>\r\n                    <DepArrTime>{{fixedTimestamp}}</DepArrTime>\r\n                </Origin>\r\n                <Destination>\r\n                    <PlaceRef>\r\n                        <siri:StopPointRef>8510575</siri:StopPointRef>\r\n                        <Name>\r\n                            <Text>Epalinges, Cesar-Roux</Text>\r\n                        </Name>\r\n                    </PlaceRef>\r\n                </Destination>\r\n                <Params>\r\n                  <ModeAndModeOfOperationFilter>\r\n                    <Exclude>false</Exclude>\r\n                    <PtMode>metro</PtMode>\r\n                  </ModeAndModeOfOperationFilter>\r\n                  <NumberOfResults>1</NumberOfResults>\r\n                  <NumberOfResultsBefore>0</NumberOfResultsBefore>\r\n                  <NumberOfResultsAfter>1</NumberOfResultsAfter>\r\n                  <UseRealtimeData>full</UseRealtimeData>\r\n                  <IncludeAllRestrictedLines>true</IncludeAllRestrictedLines>\r\n                  <IncludeTrackSections>false</IncludeTrackSections>\r\n                  <IncludeLegProjection>false</IncludeLegProjection>\r\n                  <IncludeIntermediateStops>true</IncludeIntermediateStops>\r\n                </Params>\r\n            </OJPTripRequest>\r\n        </siri:ServiceRequest>\r\n    </OJPRequest>\r\n</OJP>"
+                },
+                "url": {
+                  "raw": "{{server2}}",
+                  "host": [
+                    "{{server2}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "2161-TR-1d_Umleitung_Ours_KeinHalt",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const text = pm.response.text();\r",
+                      "\r",
+                      "// Extrahiert alle kompletten <Trip>...</Trip> Blöcke in ein Array\r",
+                      "const tripBlocks = text.match(/<Trip>[\\s\\S]*?<\\/Trip>/g) || [];\r",
+                      "\r",
+                      "pm.test(\"Validierung: Keine Direkt-Verbindung um 17:47 Lokalzeit\", function () {\r",
+                      "    \r",
+                      "    // Sucht, ob es einen Trip gibt, der beide Bedingungen erfüllt\r",
+                      "    const conflict = tripBlocks.find(tripXml => {\r",
+                      "        // Sucht die Startzeit und die Umstiege innerhalb dieses einen Trips\r",
+                      "        const timeMatch = tripXml.match(/<StartTime>(.*?)<\\/StartTime>/);\r",
+                      "        const transferMatch = tripXml.match(/<Transfers>(.*?)<\\/Transfers>/);\r",
+                      "        \r",
+                      "        if (timeMatch && transferMatch) {\r",
+                      "            const utcTime = timeMatch[1];\r",
+                      "            const transfers = transferMatch[1];\r",
+                      "            \r",
+                      "            // Umwandlung in Lokalzeit\r",
+                      "            const localTime = new Date(utcTime).toLocaleTimeString(\"de-CH\", { timeZone: \"Europe/Zurich\" });\r",
+                      "            \r",
+                      "            // Konflikt-Bedingung: Zeit beginnt mit 17:47 UND Transfers sind \"0\" (Direkt-Verbindung)\r",
+                      "            return localTime.startsWith(\"17:47\") && transfers === \"0\"; \r",
+                      "        }\r",
+                      "        return false;\r",
+                      "    });\r",
+                      "\r",
+                      "    // Erwartung: Es darf kein Konflikt gefunden worden sein (muss undefined sein)\r",
+                      "    pm.expect(\r",
+                      "        conflict, \r",
+                      "        `Fehlschlag: Eine Direkt-Verbindung (0 Umstiege) um 17:47 Lokalzeit wurde gefunden!`\r",
+                      "    ).to.be.undefined;\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "// 1. Aktuelles Datum holen\r",
+                      "const now = new Date();\r",
+                      "\r",
+                      "// 2. Datum & Uhrzeit als formatierte Strings in der Ziel-Zeitzone und in UTC generieren\r",
+                      "// Wir nutzen \"en-US\", da dieses Format (MM/DD/YYYY) am sichersten von JS geparst wird.\r",
+                      "const bernString = now.toLocaleString(\"en-US\", { timeZone: \"Europe/Berlin\" });\r",
+                      "const utcString = now.toLocaleString(\"en-US\", { timeZone: \"UTC\" });\r",
+                      "\r",
+                      "// 3. Diese Strings zu temporären Date-Objekten parsen\r",
+                      "// (Diese nutzen intern die Server-Zeit, was aber für die Differenzberechnung völlig egal ist)\r",
+                      "const bernDate = new Date(bernString);\r",
+                      "const utcDate = new Date(utcString);\r",
+                      "\r",
+                      "// 4. Den dynamischen Offset in Stunden berechnen (1 für Winterzeit, 2 für Sommerzeit)\r",
+                      "const offsetHours = (bernDate - utcDate) / (1000 * 60 * 60);\r",
+                      "\r",
+                      "// 5. Gewünschte Zielzeit festlegen (hier: 17:00:00 Uhr)\r",
+                      "const targetHour = 17;\r",
+                      "const targetMinute = 0;\r",
+                      "\r",
+                      "// 6. Den finalen UTC-Zeitstempel berechnen\r",
+                      "// Wichtig: Wir nutzen Date.UTC() und ziehen Tag/Monat/Jahr aus dem 'bernDate'. \r",
+                      "// So stimmt das Datum auch dann, wenn der CI-Server sich an einem anderen Tag befindet als Berlin.\r",
+                      "const finalDate = new Date(Date.UTC(\r",
+                      "    bernDate.getFullYear(),\r",
+                      "    bernDate.getMonth(),       // Hinweis: Monate starten in JavaScript bei 0!\r",
+                      "    bernDate.getDate(),\r",
+                      "    targetHour - offsetHours,    // Ziel-Uhrzeit abzüglich des Offsets = exakte UTC-Stunde\r",
+                      "    targetMinute,\r",
+                      "    0,                           // Sekunden\r",
+                      "    0                            // Millisekunden\r",
+                      "));\r",
+                      "\r",
+                      "// 7. In das ISO-Format umwandeln (gibt exakt den Wert in \"Z\" bzw. UTC aus)\r",
+                      "const fixedTimestamp = finalDate.toISOString();\r",
+                      "\r",
+                      "// 8. Als Postman-Variable speichern\r",
+                      "pm.variables.set(\"fixedTimestamp\", fixedTimestamp);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{BearerToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "text/xml",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<OJP xmlns=\"http://www.vdv.de/ojp\" xmlns:siri=\"http://www.siri.org.uk/siri\" version=\"2.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd\">\r\n    <OJPRequest>\r\n        <siri:ServiceRequest>\r\n            <siri:RequestTimestamp>{{$isoTimestamp}}</siri:RequestTimestamp>\r\n            <siri:RequestorRef>MENTZRegTest</siri:RequestorRef>\r\n            <OJPTripRequest>\r\n                <siri:RequestTimestamp>{{$isoTimestamp}}</siri:RequestTimestamp>\r\n                <siri:MessageIdentifier>2161-TR-1d</siri:MessageIdentifier>\r\n                <Origin>\r\n                    <PlaceRef>\r\n                        <siri:StopPointRef>8592086</siri:StopPointRef>\r\n                        <Name>\r\n                            <Text>Lausanne, Ouchy-Olympique)</Text>\r\n                        </Name>\r\n                    </PlaceRef>\r\n                    <DepArrTime>{{fixedTimestamp}}</DepArrTime>\r\n                </Origin>\r\n                <Destination>\r\n                    <PlaceRef>\r\n                        <siri:StopPointRef>8579237</siri:StopPointRef>\r\n                        <Name>\r\n                            <Text>Lausanne, Ours</Text>\r\n                        </Name>\r\n                    </PlaceRef>\r\n                </Destination>\r\n                <Params>\r\n                  <ModeAndModeOfOperationFilter>\r\n                    <Exclude>false</Exclude>\r\n                    <PtMode>metro</PtMode>\r\n                  </ModeAndModeOfOperationFilter>\r\n                  <NumberOfResults>3</NumberOfResults>\r\n                  <NumberOfResultsBefore>0</NumberOfResultsBefore>\r\n                  <NumberOfResultsAfter>3</NumberOfResultsAfter>\r\n                  <UseRealtimeData>full</UseRealtimeData>\r\n                  <IncludeAllRestrictedLines>true</IncludeAllRestrictedLines>\r\n                  <IncludeTrackSections>false</IncludeTrackSections>\r\n                  <IncludeLegProjection>false</IncludeLegProjection>\r\n                  <IncludeIntermediateStops>true</IncludeIntermediateStops>\r\n                </Params>\r\n            </OJPTripRequest>\r\n        </siri:ServiceRequest>\r\n    </OJPRequest>\r\n</OJP>"
+                },
+                "url": {
+                  "raw": "{{server2}}",
+                  "host": [
+                    "{{server2}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "2161-TR-1e_Fahrtausfall/Verspätung/extra",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// Response-Body parsen\r",
+                      "const xml2js = require('xml2js');\r",
+                      "let responseJson;\r",
+                      "xml2js.parseString(pm.response.text(),{explicitArray: false}, (err, result)=>{\r",
+                      "    responseJson = result;\r",
+                      "});\r",
+                      "\r",
+                      "// Datenpfad auflösen (Optional Chaining verhindert TypeErrors bei unvollständiger Response)\r",
+                      "const tripDelivery = responseJson?.OJP?.OJPResponse?.[\"siri:ServiceDelivery\"]?.OJPTripDelivery;\r",
+                      "let tripResults = tripDelivery?.TripResult || [];\r",
+                      "\r",
+                      "// xml2Json wandelt einzelne Nodes in Objekte um. Für die Iteration wird zwingend ein Array benötigt.\r",
+                      "if (!Array.isArray(tripResults)) {\r",
+                      "    tripResults = [tripResults];\r",
+                      "}\r",
+                      "\r",
+                      "pm.test(\"Validierung: TimetabledTime darf bei LegAlight nicht vor EstimatedTime sein (Langsamer Trip soll bei Routing ignoriert werden)\", function () {\r",
+                      "    const invalidLegs = [];\r",
+                      "\r",
+                      "    tripResults.forEach((result, index) => {\r",
+                      "        // Trips können mehrere Legs (Umstiege) enthalten, daher Array-Struktur erzwingen\r",
+                      "        const legs = Array.isArray(result?.Trip?.Leg) ? result.Trip.Leg : [result?.Trip?.Leg];\r",
+                      "\r",
+                      "        legs.forEach((leg, legIndex) => {\r",
+                      "            const serviceArrival = leg?.TimedLeg?.LegAlight?.ServiceArrival;\r",
+                      "            if (!serviceArrival) return;\r",
+                      "\r",
+                      "            const timetabledStr = serviceArrival.TimetabledTime;\r",
+                      "            const estimatedStr = serviceArrival.EstimatedTime;\r",
+                      "\r",
+                      "            if (timetabledStr && estimatedStr) {\r",
+                      "                // Konvertierung in Millisekunden für den numerischen Vergleich\r",
+                      "                const timetabledMs = new Date(timetabledStr).getTime();\r",
+                      "                const estimatedMs = new Date(estimatedStr).getTime();\r",
+                      "\r",
+                      "                // Fehler sammeln, falls Timetabled < Estimated\r",
+                      "                if (timetabledMs < estimatedMs) {\r",
+                      "                    invalidLegs.push(`Trip ${index + 1} Leg ${legIndex + 1}`);\r",
+                      "                }\r",
+                      "            }\r",
+                      "        });\r",
+                      "    });\r",
+                      "\r",
+                      "    // Expectation: Das Array der Treffer muss leer sein\r",
+                      "    pm.expect(\r",
+                      "        invalidLegs,\r",
+                      "        `Fehlschlag: Ungültige Zeiten bei LegAlight gefunden -> ${invalidLegs.join(\", \")}`\r",
+                      "    ).to.be.empty;\r",
+                      "});\r",
+                      "\r",
+                      "\r",
+                      "pm.test(\"Zusatztrip soll markiert sein\", function () {\r",
+                      "    let unplannedCount = 0;\r",
+                      "\r",
+                      "    tripResults.forEach(result => {\r",
+                      "        // xml2Json parst XML-Booleans als String (\"true\")\r",
+                      "        if (result?.Trip?.Unplanned === 'true' || result?.Trip?.Unplanned === true) {\r",
+                      "            unplannedCount++;\r",
+                      "        }\r",
+                      "    });\r",
+                      "\r",
+                      "    // Expectation: Der Zähler muss exakt 1 sein\r",
+                      "    pm.expect(\r",
+                      "        unplannedCount,\r",
+                      "        `Fehlschlag: Es soll 1 Zusatzfahrt vorkommen, es kommen aber ${unplannedCount}`\r",
+                      "    ).to.equal(1);\r",
+                      "});\r",
+                      "\r",
+                      "\r",
+                      "pm.test(\"Validierung: Der zweite Trip startet nach 17:19 Lokalzeit (Ausgefallender Trip 17:13 soll bei Routing ignoriert werden)\", function () {\r",
+                      "    // Sicherstellen, dass ein zweiter Trip (Index 1) existiert\r",
+                      "    pm.expect(tripResults.length, \"Fehlschlag: Es wurden weniger als 2 Trips in der Response gefunden\").to.be.at.least(2);\r",
+                      "\r",
+                      "    const startTimeUtc = tripResults[1]?.Trip?.StartTime;\r",
+                      "    pm.expect(startTimeUtc, \"Fehlschlag: Dem zweiten Trip fehlt die StartTime\").to.not.be.undefined;\r",
+                      "\r",
+                      "    // Date-Objekt aus dem UTC-String erstellen\r",
+                      "    const date = new Date(startTimeUtc);\r",
+                      "\r",
+                      "    // Native Konvertierung in die Schweizer Lokalzeit\r",
+                      "    const formatter = new Intl.DateTimeFormat('de-CH', {\r",
+                      "        timeZone: 'Europe/Zurich',\r",
+                      "        hour: '2-digit',\r",
+                      "        minute: '2-digit',\r",
+                      "        hour12: false\r",
+                      "    });\r",
+                      "\r",
+                      "    // Format liefert einen String wie z.B. \"17:47\"\r",
+                      "    const localTimeStr = formatter.format(date);\r",
+                      "    const [hoursStr, minutesStr] = localTimeStr.split(':');\r",
+                      "    const hours = parseInt(hoursStr, 10);\r",
+                      "    const minutes = parseInt(minutesStr, 10);\r",
+                      "\r",
+                      "    // Logik: Nach 17:19 Uhr (Stunde > 17 oder genau 17 Uhr und Minute > 19)\r",
+                      "    const isAfter1719 = hours > 17 || (hours === 17 && minutes > 19);\r",
+                      "\r",
+                      "    // Expectation: Die Bedingung muss erfüllt (true) sein\r",
+                      "    pm.expect(\r",
+                      "        isAfter1719,\r",
+                      "        `Fehlschlag: Der zweite Trip startet um ${localTimeStr}, was nicht nach 17:19 Uhr ist`\r",
+                      "    ).to.be.true;\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "// 1. Aktuelles Datum holen\r",
+                      "const now = new Date();\r",
+                      "\r",
+                      "// 2. Datum & Uhrzeit als formatierte Strings in der Ziel-Zeitzone und in UTC generieren\r",
+                      "// Wir nutzen \"en-US\", da dieses Format (MM/DD/YYYY) am sichersten von JS geparst wird.\r",
+                      "const bernString = now.toLocaleString(\"en-US\", { timeZone: \"Europe/Berlin\" });\r",
+                      "const utcString = now.toLocaleString(\"en-US\", { timeZone: \"UTC\" });\r",
+                      "\r",
+                      "// 3. Diese Strings zu temporären Date-Objekten parsen\r",
+                      "// (Diese nutzen intern die Server-Zeit, was aber für die Differenzberechnung völlig egal ist)\r",
+                      "const bernDate = new Date(bernString);\r",
+                      "const utcDate = new Date(utcString);\r",
+                      "\r",
+                      "// 4. Den dynamischen Offset in Stunden berechnen (1 für Winterzeit, 2 für Sommerzeit)\r",
+                      "const offsetHours = (bernDate - utcDate) / (1000 * 60 * 60);\r",
+                      "\r",
+                      "// 5. Gewünschte Zielzeit festlegen (hier: 17:10:00 Uhr)\r",
+                      "const targetHour = 17;\r",
+                      "const targetMinute = 10;\r",
+                      "\r",
+                      "// 6. Den finalen UTC-Zeitstempel berechnen\r",
+                      "// Wichtig: Wir nutzen Date.UTC() und ziehen Tag/Monat/Jahr aus dem 'bernDate'. \r",
+                      "// So stimmt das Datum auch dann, wenn der CI-Server sich an einem anderen Tag befindet als Berlin.\r",
+                      "const finalDate = new Date(Date.UTC(\r",
+                      "    bernDate.getFullYear(),\r",
+                      "    bernDate.getMonth(),       // Hinweis: Monate starten in JavaScript bei 0!\r",
+                      "    bernDate.getDate(),\r",
+                      "    targetHour - offsetHours,    // Ziel-Uhrzeit abzüglich des Offsets = exakte UTC-Stunde\r",
+                      "    targetMinute,\r",
+                      "    0,                           // Sekunden\r",
+                      "    0                            // Millisekunden\r",
+                      "));\r",
+                      "\r",
+                      "// 7. In das ISO-Format umwandeln (gibt exakt den Wert in \"Z\" bzw. UTC aus)\r",
+                      "const fixedTimestamp = finalDate.toISOString();\r",
+                      "\r",
+                      "// 8. Als Postman-Variable speichern\r",
+                      "pm.variables.set(\"fixedTimestamp\", fixedTimestamp);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{BearerToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "text/xml",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<OJP xmlns=\"http://www.vdv.de/ojp\" xmlns:siri=\"http://www.siri.org.uk/siri\" version=\"2.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd\">\r\n    <OJPRequest>\r\n        <siri:ServiceRequest>\r\n            <siri:RequestTimestamp>{{$isoTimestamp}}</siri:RequestTimestamp>\r\n            <siri:RequestorRef>MENTZRegTest</siri:RequestorRef>\r\n            <OJPTripRequest>\r\n                <siri:RequestTimestamp>{{$isoTimestamp}}</siri:RequestTimestamp>\r\n                <siri:MessageIdentifier>2161-TR-1e</siri:MessageIdentifier>\r\n                <Origin>\r\n                    <PlaceRef>\r\n                        <siri:StopPointRef>8592086</siri:StopPointRef>\r\n                        <Name>\r\n                            <Text>Lausanne, Ouchy-Olympique)</Text>\r\n                        </Name>\r\n                    </PlaceRef>\r\n                    <DepArrTime>{{fixedTimestamp}}</DepArrTime>\r\n                </Origin>\r\n                <Destination>\r\n                    <PlaceRef>\r\n                        <siri:StopPointRef>8579239</siri:StopPointRef>\r\n                        <Name>\r\n                            <Text>Epalinges, Croisettes</Text>\r\n                        </Name>\r\n                    </PlaceRef>\r\n                </Destination>\r\n                <Params>\r\n                  <ModeAndModeOfOperationFilter>\r\n                    <Exclude>false</Exclude>\r\n                    <PtMode>metro</PtMode>\r\n                  </ModeAndModeOfOperationFilter>\r\n                  <NumberOfResults>3</NumberOfResults>\r\n                  <NumberOfResultsBefore>0</NumberOfResultsBefore>\r\n                  <NumberOfResultsAfter>3</NumberOfResultsAfter>\r\n                  <UseRealtimeData>full</UseRealtimeData>\r\n                  <IncludeAllRestrictedLines>true</IncludeAllRestrictedLines>\r\n                  <IncludeTrackSections>false</IncludeTrackSections>\r\n                  <IncludeLegProjection>false</IncludeLegProjection>\r\n                  <IncludeIntermediateStops>true</IncludeIntermediateStops>\r\n                </Params>\r\n            </OJPTripRequest>\r\n        </siri:ServiceRequest>\r\n    </OJPRequest>\r\n</OJP>"
+                },
+                "url": {
+                  "raw": "{{server2}}",
+                  "host": [
+                    "{{server2}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "2161-TR-1f_Verfrühung",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const moment = require('moment');\r",
+                      "\r",
+                      "pm.test(\"Zeigt nur schnelle fahrt an\", function() {\r",
+                      "    // Generiert das heutige Datum im Format YYYY-MM-DD\r",
+                      "    const heutigesDatum = moment().format(\"YYYY-MM-DD\"); \r",
+                      "    \r",
+                      "    // Baut den String dynamisch zusammen\r",
+                      "    const erwarteterString = `StartTime>${heutigesDatum}T15:39:00Z</StartTime>`;\r",
+                      "    \r",
+                      "    pm.expect(pm.response.text()).to.include(erwarteterString);\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "// 1. Aktuelles Datum holen\r",
+                      "const now = new Date();\r",
+                      "\r",
+                      "// 2. Datum & Uhrzeit als formatierte Strings in der Ziel-Zeitzone und in UTC generieren\r",
+                      "// Wir nutzen \"en-US\", da dieses Format (MM/DD/YYYY) am sichersten von JS geparst wird.\r",
+                      "const bernString = now.toLocaleString(\"en-US\", { timeZone: \"Europe/Berlin\" });\r",
+                      "const utcString = now.toLocaleString(\"en-US\", { timeZone: \"UTC\" });\r",
+                      "\r",
+                      "// 3. Diese Strings zu temporären Date-Objekten parsen\r",
+                      "// (Diese nutzen intern die Server-Zeit, was aber für die Differenzberechnung völlig egal ist)\r",
+                      "const bernDate = new Date(bernString);\r",
+                      "const utcDate = new Date(utcString);\r",
+                      "\r",
+                      "// 4. Den dynamischen Offset in Stunden berechnen (1 für Winterzeit, 2 für Sommerzeit)\r",
+                      "const offsetHours = (bernDate - utcDate) / (1000 * 60 * 60);\r",
+                      "\r",
+                      "// 5. Gewünschte Zielzeit festlegen (hier: 17:33:00 Uhr)\r",
+                      "const targetHour = 17;\r",
+                      "const targetMinute = 33;\r",
+                      "\r",
+                      "// 6. Den finalen UTC-Zeitstempel berechnen\r",
+                      "// Wichtig: Wir nutzen Date.UTC() und ziehen Tag/Monat/Jahr aus dem 'bernDate'. \r",
+                      "// So stimmt das Datum auch dann, wenn der CI-Server sich an einem anderen Tag befindet als Berlin.\r",
+                      "const finalDate = new Date(Date.UTC(\r",
+                      "    bernDate.getFullYear(),\r",
+                      "    bernDate.getMonth(),       // Hinweis: Monate starten in JavaScript bei 0!\r",
+                      "    bernDate.getDate(),\r",
+                      "    targetHour - offsetHours,    // Ziel-Uhrzeit abzüglich des Offsets = exakte UTC-Stunde\r",
+                      "    targetMinute,\r",
+                      "    0,                           // Sekunden\r",
+                      "    0                            // Millisekunden\r",
+                      "));\r",
+                      "\r",
+                      "// 7. In das ISO-Format umwandeln (gibt exakt den Wert in \"Z\" bzw. UTC aus)\r",
+                      "const fixedTimestamp = finalDate.toISOString();\r",
+                      "\r",
+                      "// 8. Als Postman-Variable speichern\r",
+                      "pm.variables.set(\"fixedTimestamp\", fixedTimestamp);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{BearerToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "text/xml",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<OJP xmlns=\"http://www.vdv.de/ojp\" xmlns:siri=\"http://www.siri.org.uk/siri\" version=\"2.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd\">\r\n    <OJPRequest>\r\n        <siri:ServiceRequest>\r\n            <siri:RequestTimestamp>{{$isoTimestamp}}</siri:RequestTimestamp>\r\n            <siri:RequestorRef>MENTZRegTest</siri:RequestorRef>\r\n            <OJPTripRequest>\r\n                <siri:RequestTimestamp>{{$isoTimestamp}}</siri:RequestTimestamp>\r\n                <siri:MessageIdentifier>2161-TR-1f</siri:MessageIdentifier>\r\n                <Origin>\r\n                    <PlaceRef>\r\n                        <siri:StopPointRef>8592086</siri:StopPointRef>\r\n                        <Name>\r\n                            <Text>Lausanne, Ouchy-Olympique)</Text>\r\n                        </Name>\r\n                    </PlaceRef>\r\n                    <DepArrTime>{{fixedTimestamp}}</DepArrTime>\r\n                </Origin>\r\n                <Destination>\r\n                    <PlaceRef>\r\n                        <siri:StopPointRef>8579239</siri:StopPointRef>\r\n                        <Name>\r\n                            <Text>Epalinges, Croisettes</Text>\r\n                        </Name>\r\n                    </PlaceRef>\r\n                </Destination>\r\n                <Params>\r\n                  <ModeAndModeOfOperationFilter>\r\n                    <Exclude>false</Exclude>\r\n                    <PtMode>metro</PtMode>\r\n                  </ModeAndModeOfOperationFilter>\r\n                  <NumberOfResults>1</NumberOfResults>\r\n                  <NumberOfResultsBefore>0</NumberOfResultsBefore>\r\n                  <NumberOfResultsAfter>1</NumberOfResultsAfter>\r\n                  <UseRealtimeData>full</UseRealtimeData>\r\n                  <IncludeAllRestrictedLines>true</IncludeAllRestrictedLines>\r\n                  <IncludeTrackSections>false</IncludeTrackSections>\r\n                  <IncludeLegProjection>false</IncludeLegProjection>\r\n                  <IncludeIntermediateStops>true</IncludeIntermediateStops>\r\n                </Params>\r\n            </OJPTripRequest>\r\n        </siri:ServiceRequest>\r\n    </OJPRequest>\r\n</OJP>"
+                },
+                "url": {
+                  "raw": "{{server2}}",
+                  "host": [
+                    "{{server2}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "2161-TR-1g_Haltausfall_Gare",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const text = pm.response.text();\r",
+                      "\r",
+                      "// Extrahiert alle Strings zwischen <StartTime> und </StartTime> in ein Array\r",
+                      "const startTimesUtc = [...text.matchAll(/<StartTime>(.*?)<\\/StartTime>/g)].map(m => m[1]);\r",
+                      "\r",
+                      "pm.test(\"Validierung: Keine Fahrt um 17:09 Lokalzeit\", function () {\r",
+                      "    \r",
+                      "    // Sucht, ob es eine Zeit gibt, die umgewandelt mit \"17:09\" beginnt\r",
+                      "    const conflict = startTimesUtc.find(utc => {\r",
+                      "        const localTime = new Date(utc).toLocaleTimeString(\"de-CH\", { timeZone: \"Europe/Zurich\" });\r",
+                      "        return localTime.startsWith(\"17:09\"); // Berücksichtigt Sommer-/Winterzeit automatisch\r",
+                      "    });\r",
+                      "\r",
+                      "    // Erwartung: Es darf kein Konflikt gefunden worden sein (muss undefined sein)\r",
+                      "    pm.expect(\r",
+                      "        conflict, \r",
+                      "        `Fehlschlag: Fahrt um 17:09 Lokalzeit gefunden (Originalzeit: ${conflict})`\r",
+                      "    ).to.be.undefined;\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "// 1. Aktuelles Datum holen\r",
+                      "const now = new Date();\r",
+                      "\r",
+                      "// 2. Datum & Uhrzeit als formatierte Strings in der Ziel-Zeitzone und in UTC generieren\r",
+                      "// Wir nutzen \"en-US\", da dieses Format (MM/DD/YYYY) am sichersten von JS geparst wird.\r",
+                      "const bernString = now.toLocaleString(\"en-US\", { timeZone: \"Europe/Berlin\" });\r",
+                      "const utcString = now.toLocaleString(\"en-US\", { timeZone: \"UTC\" });\r",
+                      "\r",
+                      "// 3. Diese Strings zu temporären Date-Objekten parsen\r",
+                      "// (Diese nutzen intern die Server-Zeit, was aber für die Differenzberechnung völlig egal ist)\r",
+                      "const bernDate = new Date(bernString);\r",
+                      "const utcDate = new Date(utcString);\r",
+                      "\r",
+                      "// 4. Den dynamischen Offset in Stunden berechnen (1 für Winterzeit, 2 für Sommerzeit)\r",
+                      "const offsetHours = (bernDate - utcDate) / (1000 * 60 * 60);\r",
+                      "\r",
+                      "// 5. Gewünschte Zielzeit festlegen (hier: 17:06:00 Uhr)\r",
+                      "const targetHour = 17;\r",
+                      "const targetMinute = 6;\r",
+                      "\r",
+                      "// 6. Den finalen UTC-Zeitstempel berechnen\r",
+                      "// Wichtig: Wir nutzen Date.UTC() und ziehen Tag/Monat/Jahr aus dem 'bernDate'. \r",
+                      "// So stimmt das Datum auch dann, wenn der CI-Server sich an einem anderen Tag befindet als Berlin.\r",
+                      "const finalDate = new Date(Date.UTC(\r",
+                      "    bernDate.getFullYear(),\r",
+                      "    bernDate.getMonth(),       // Hinweis: Monate starten in JavaScript bei 0!\r",
+                      "    bernDate.getDate(),\r",
+                      "    targetHour - offsetHours,    // Ziel-Uhrzeit abzüglich des Offsets = exakte UTC-Stunde\r",
+                      "    targetMinute,\r",
+                      "    0,                           // Sekunden\r",
+                      "    0                            // Millisekunden\r",
+                      "));\r",
+                      "\r",
+                      "// 7. In das ISO-Format umwandeln (gibt exakt den Wert in \"Z\" bzw. UTC aus)\r",
+                      "const fixedTimestamp = finalDate.toISOString();\r",
+                      "\r",
+                      "// 8. Als Postman-Variable speichern\r",
+                      "pm.variables.set(\"fixedTimestamp\", fixedTimestamp);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{BearerToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "text/xml",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<OJP xmlns=\"http://www.vdv.de/ojp\" xmlns:siri=\"http://www.siri.org.uk/siri\" version=\"2.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd\">\r\n    <OJPRequest>\r\n        <siri:ServiceRequest>\r\n            <siri:RequestTimestamp>{{$isoTimestamp}}</siri:RequestTimestamp>\r\n            <siri:RequestorRef>MENTZRegTest</siri:RequestorRef>\r\n            <OJPTripRequest>\r\n                <siri:RequestTimestamp>{{$isoTimestamp}}</siri:RequestTimestamp>\r\n                <siri:MessageIdentifier>2161-TR-1g</siri:MessageIdentifier>\r\n                <Origin>\r\n                    <PlaceRef>\r\n                        <siri:StopPointRef>8592050</siri:StopPointRef>\r\n                        <Name>\r\n                            <Text>Lausanne, Gare</Text>\r\n                        </Name>\r\n                    </PlaceRef>\r\n                    <DepArrTime>{{fixedTimestamp}}</DepArrTime>\r\n                </Origin>\r\n                <Destination>\r\n                    <PlaceRef>\r\n                        <siri:StopPointRef>8579239</siri:StopPointRef>\r\n                        <Name>\r\n                            <Text>Epalinges, Croisettes</Text>\r\n                        </Name>\r\n                    </PlaceRef>\r\n                </Destination>\r\n                <Params>\r\n                  <ModeAndModeOfOperationFilter>\r\n                    <Exclude>false</Exclude>\r\n                    <PtMode>metro</PtMode>\r\n                  </ModeAndModeOfOperationFilter>\r\n                  <NumberOfResults>1</NumberOfResults>\r\n                  <NumberOfResultsBefore>0</NumberOfResultsBefore>\r\n                  <NumberOfResultsAfter>1</NumberOfResultsAfter>\r\n                  <UseRealtimeData>full</UseRealtimeData>\r\n                  <IncludeAllRestrictedLines>true</IncludeAllRestrictedLines>\r\n                  <IncludeTrackSections>false</IncludeTrackSections>\r\n                  <IncludeLegProjection>false</IncludeLegProjection>\r\n                  <IncludeIntermediateStops>true</IncludeIntermediateStops>\r\n                </Params>\r\n            </OJPTripRequest>\r\n        </siri:ServiceRequest>\r\n    </OJPRequest>\r\n</OJP>"
+                },
+                "url": {
+                  "raw": "{{server2}}",
+                  "host": [
+                    "{{server2}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "2161-TR-1h_ZusatzHalt_MonRepos",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"U-Bahn Fahrt gefunden\", function() {\r",
+                      "    pm.expect(pm.response.text()).to.include(\"<PtMode>metro</PtMode>\");\r",
+                      "});\r",
+                      "\r",
+                      "\r",
+                      "pm.test(\"U-Bahn Fahrt direkt nach Mon Repos gefunden\", function() {\r",
+                      "    pm.expect(pm.response.text()).to.include(\">Lausanne, Mon Repos</Text>\");\r",
+                      "});\r",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "// 1. Aktuelles Datum holen\r",
+                      "const now = new Date();\r",
+                      "\r",
+                      "// 2. Datum & Uhrzeit als formatierte Strings in der Ziel-Zeitzone und in UTC generieren\r",
+                      "// Wir nutzen \"en-US\", da dieses Format (MM/DD/YYYY) am sichersten von JS geparst wird.\r",
+                      "const bernString = now.toLocaleString(\"en-US\", { timeZone: \"Europe/Berlin\" });\r",
+                      "const utcString = now.toLocaleString(\"en-US\", { timeZone: \"UTC\" });\r",
+                      "\r",
+                      "// 3. Diese Strings zu temporären Date-Objekten parsen\r",
+                      "// (Diese nutzen intern die Server-Zeit, was aber für die Differenzberechnung völlig egal ist)\r",
+                      "const bernDate = new Date(bernString);\r",
+                      "const utcDate = new Date(utcString);\r",
+                      "\r",
+                      "// 4. Den dynamischen Offset in Stunden berechnen (1 für Winterzeit, 2 für Sommerzeit)\r",
+                      "const offsetHours = (bernDate - utcDate) / (1000 * 60 * 60);\r",
+                      "\r",
+                      "// 5. Gewünschte Zielzeit festlegen (hier: 17:00:00 Uhr)\r",
+                      "const targetHour = 17;\r",
+                      "const targetMinute = 0;\r",
+                      "\r",
+                      "// 6. Den finalen UTC-Zeitstempel berechnen\r",
+                      "// Wichtig: Wir nutzen Date.UTC() und ziehen Tag/Monat/Jahr aus dem 'bernDate'. \r",
+                      "// So stimmt das Datum auch dann, wenn der CI-Server sich an einem anderen Tag befindet als Berlin.\r",
+                      "const finalDate = new Date(Date.UTC(\r",
+                      "    bernDate.getFullYear(),\r",
+                      "    bernDate.getMonth(),       // Hinweis: Monate starten in JavaScript bei 0!\r",
+                      "    bernDate.getDate(),\r",
+                      "    targetHour - offsetHours,    // Ziel-Uhrzeit abzüglich des Offsets = exakte UTC-Stunde\r",
+                      "    targetMinute,\r",
+                      "    0,                           // Sekunden\r",
+                      "    0                            // Millisekunden\r",
+                      "));\r",
+                      "\r",
+                      "// 7. In das ISO-Format umwandeln (gibt exakt den Wert in \"Z\" bzw. UTC aus)\r",
+                      "const fixedTimestamp = finalDate.toISOString();\r",
+                      "\r",
+                      "// 8. Als Postman-Variable speichern\r",
+                      "pm.variables.set(\"fixedTimestamp\", fixedTimestamp);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{BearerToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "text/xml",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<OJP xmlns=\"http://www.vdv.de/ojp\" xmlns:siri=\"http://www.siri.org.uk/siri\" version=\"2.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd\">\r\n    <OJPRequest>\r\n        <siri:ServiceRequest>\r\n            <siri:RequestTimestamp>{{$isoTimestamp}}</siri:RequestTimestamp>\r\n            <siri:RequestorRef>MENTZRegTest</siri:RequestorRef>\r\n            <OJPTripRequest>\r\n                <siri:RequestTimestamp>{{$isoTimestamp}}</siri:RequestTimestamp>\r\n                <siri:MessageIdentifier>2161-TR-1h</siri:MessageIdentifier>\r\n                <Origin>\r\n                    <PlaceRef>\r\n                        <siri:StopPointRef>8592086</siri:StopPointRef>\r\n                        <Name>\r\n                            <Text>Lausanne, Ouchy-Olympique)</Text>\r\n                        </Name>\r\n                    </PlaceRef>\r\n                    <DepArrTime>{{fixedTimestamp}}</DepArrTime>\r\n                </Origin>\r\n                <Destination>\r\n                    <PlaceRef>\r\n                        <siri:StopPointRef>8592074</siri:StopPointRef>\r\n                        <Name>\r\n                            <Text>Lausanne, Mon Repos</Text>\r\n                        </Name>\r\n                    </PlaceRef>\r\n                </Destination>\r\n                <Params>\r\n                  <ModeAndModeOfOperationFilter>\r\n                    <Exclude>false</Exclude>\r\n                    <PtMode>metro</PtMode>\r\n                  </ModeAndModeOfOperationFilter>\r\n                  <NumberOfResults>1</NumberOfResults>\r\n                  <NumberOfResultsBefore>0</NumberOfResultsBefore>\r\n                  <NumberOfResultsAfter>1</NumberOfResultsAfter>\r\n                  <UseRealtimeData>full</UseRealtimeData>\r\n                  <IncludeAllRestrictedLines>true</IncludeAllRestrictedLines>\r\n                  <IncludeTrackSections>false</IncludeTrackSections>\r\n                  <IncludeLegProjection>false</IncludeLegProjection>\r\n                  <IncludeIntermediateStops>true</IncludeIntermediateStops>\r\n                </Params>\r\n            </OJPTripRequest>\r\n        </siri:ServiceRequest>\r\n    </OJPRequest>\r\n</OJP>"
+                },
+                "url": {
+                  "raw": "{{server2}}",
+                  "host": [
+                    "{{server2}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "SX",
+          "item": [
+            {
+              "name": "2161-TR-2a_Meldung_Tram5_Fahrt",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// 1. Response als XML lesen und in JSON umwandeln\r",
+                      "const xml2js = require('xml2js');\r",
+                      "let jsonBody;\r",
+                      "xml2js.parseString(pm.response.text(),{explicitArray: false}, (err, result)=>{\r",
+                      "    jsonBody = result;\r",
+                      "});\r",
+                      "\r",
+                      "// Hilfsfunktion: Extrahiert Text aus verschiedenen XML-Knoten-Strukturen\r",
+                      "function getXmlText(node) {\r",
+                      "    if (!node) return undefined;\r",
+                      "    // Falls das Element Attribute hat (Struktur {_: \"Text\", $: {...}})\r",
+                      "    if (typeof node === 'object' && node._) return node._;\r",
+                      "    // Falls es ein direktes Objekt mit Text-Eigenschaft ist\r",
+                      "    if (typeof node === 'object' && node.Text) {\r",
+                      "        return typeof node.Text === 'object' ? node.Text._ : node.Text;\r",
+                      "    }\r",
+                      "    return node;\r",
+                      "}\r",
+                      "\r",
+                      "// Navigiere zum relevanten Delivery-Objekt\r",
+                      "const responseRoot = jsonBody.OJP?.OJPResponse || jsonBody.OJPResponse;\r",
+                      "const serviceDelivery = responseRoot[\"siri:ServiceDelivery\"] || responseRoot.ServiceDelivery;\r",
+                      "const tripDelivery = serviceDelivery.OJPTripDelivery;\r",
+                      "\r",
+                      "let targetSituationNumber = null;\r",
+                      "\r",
+                      "pm.test(\"Situation 'Unregelmässiger Betrieb Linie 5' finden\", function () {\r",
+                      "    let situationsNode = tripDelivery.TripResponseContext?.Situations?.PtSituation;\r",
+                      "    let situations = Array.isArray(situationsNode) ? situationsNode : (situationsNode ? [situationsNode] : []);\r",
+                      "    \r",
+                      "    const targetSituation = situations.find(sit => {\r",
+                      "        // Extrahiere Summary (Checkt beide XML Varianten)\r",
+                      "        const summaryDirect = getXmlText(sit[\"siri:Summary\"] || sit.Summary);\r",
+                      "        \r",
+                      "        // Suche in PublishingActions (Variante 2)\r",
+                      "        let summaryNested = undefined;\r",
+                      "        const pubActions = sit[\"siri:PublishingActions\"]?.[\"siri:PublishingAction\"] || sit.PublishingActions?.PublishingAction;\r",
+                      "        if (pubActions) {\r",
+                      "            const action = Array.isArray(pubActions) ? pubActions[0] : pubActions;\r",
+                      "            summaryNested = getXmlText(action[\"siri:PassengerInformationAction\"]?.[\"siri:TextualContent\"]?.[\"siri:SummaryContent\"]?.[\"siri:SummaryText\"]);\r",
+                      "        }\r",
+                      "\r",
+                      "        const summaryText = summaryDirect || summaryNested;\r",
+                      "        const endTime = sit[\"siri:ValidityPeriod\"]?.[\"siri:EndTime\"] || sit.ValidityPeriod?.EndTime;\r",
+                      "        const scopeType = sit[\"siri:ScopeType\"] || sit.ScopeType;\r",
+                      "\r",
+                      "        return (summaryText && \r",
+                      "                summaryText.includes(\"Unregelmässiger Betrieb Linie 5\")) &&\r",
+                      "               endTime === \"2500-12-31T00:00:00Z\" &&\r",
+                      "               scopeType === \"line\";\r",
+                      "    });\r",
+                      "\r",
+                      "    pm.expect(targetSituation, \"Situation wurde in keiner der XML-Strukturen gefunden\").to.not.be.undefined;\r",
+                      "    \r",
+                      "    targetSituationNumber = targetSituation[\"siri:SituationNumber\"] || targetSituation.SituationNumber;\r",
+                      "    console.log(\"Gefundene SituationNumber:\", targetSituationNumber);\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Alle Tram 5 Legs referenzieren die Situation\", function () {\r",
+                      "    pm.expect(targetSituationNumber, \"Keine Situation zum Vergleichen gefunden\").to.not.be.null;\r",
+                      "\r",
+                      "    let resultsNode = tripDelivery.TripResult;\r",
+                      "    let tripResults = Array.isArray(resultsNode) ? resultsNode : (resultsNode ? [resultsNode] : []);\r",
+                      "    let checkedCount = 0;\r",
+                      "\r",
+                      "    tripResults.forEach((result, tripIndex) => {\r",
+                      "        const trip = result.Trip;\r",
+                      "        if (!trip) return;\r",
+                      "\r",
+                      "        let legsNode = trip.Leg;\r",
+                      "        let legs = Array.isArray(legsNode) ? legsNode : (legsNode ? [legsNode] : []);\r",
+                      "\r",
+                      "        legs.forEach((leg, legIndex) => {\r",
+                      "            const service = leg.TimedLeg?.Service;\r",
+                      "            if (!service) return;\r",
+                      "\r",
+                      "            const catName = getXmlText(service.ProductCategory?.Name);\r",
+                      "            const serviceName = getXmlText(service.PublishedServiceName);\r",
+                      "\r",
+                      "            // Prüfung auf Tram 2\r",
+                      "            if (catName === \"Tram\" && serviceName === \"5\") {\r",
+                      "                checkedCount++;\r",
+                      "                \r",
+                      "                let refsNode = service.SituationFullRefs?.SituationFullRef;\r",
+                      "                let refs = Array.isArray(refsNode) ? refsNode : (refsNode ? [refsNode] : []);\r",
+                      "                \r",
+                      "                const hasTargetRef = refs.some(ref => {\r",
+                      "                    const sitNum = ref[\"siri:SituationNumber\"] || ref.SituationNumber;\r",
+                      "                    return getXmlText(sitNum) === targetSituationNumber;\r",
+                      "                });\r",
+                      "                \r",
+                      "                pm.expect(hasTargetRef, `Trip ${tripIndex}, Leg ${legIndex} fehlt Ref: ${targetSituationNumber}`).to.be.true;\r",
+                      "            }\r",
+                      "        });\r",
+                      "    });\r",
+                      "\r",
+                      "    console.log(`Geprüfte Tram 5 Legs: ${checkedCount}`);\r",
+                      "    pm.expect(checkedCount).to.be.greaterThan(0, \"Keine Tram 5 Fahrten im Resultat gefunden.\");\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{BearerToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<OJP xmlns=\"http://www.vdv.de/ojp\" xmlns:siri=\"http://www.siri.org.uk/siri\" version=\"2.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd\">\r\n    <OJPRequest>\r\n        <siri:ServiceRequest>\r\n            <siri:RequestTimestamp>{{$isoTimestamp}}</siri:RequestTimestamp>\r\n            <siri:RequestorRef>MENTZRegTest</siri:RequestorRef>\r\n            <OJPTripRequest>\r\n                <siri:RequestTimestamp>{{$isoTimestamp}}</siri:RequestTimestamp>\r\n                <siri:MessageIdentifier>2161-SER-2a</siri:MessageIdentifier>\r\n                <Origin>\r\n                    <PlaceRef>\r\n                        <siri:StopPointRef>8591366</siri:StopPointRef>\r\n                        <Name>\r\n                            <Text>Zürich, Sihlcity Nord</Text>\r\n                        </Name>\r\n                    </PlaceRef>\r\n                    <DepArrTime>{{$isoTimestamp}}</DepArrTime>\r\n                </Origin>\r\n                <Destination>\r\n                    <PlaceRef>\r\n                        <siri:StopPointRef>8576193</siri:StopPointRef>\r\n                        <Name>\r\n                            <Text>Zürich, Bellevue</Text>\r\n                        </Name>\r\n                    </PlaceRef>\r\n                </Destination>\r\n                <Params>\r\n                    <NumberOfResults>10</NumberOfResults>\r\n                    <IncludeTrackSections>false</IncludeTrackSections>\r\n                    <IncludeLegProjection>false</IncludeLegProjection>\r\n                    <IncludeTurnDescription>false</IncludeTurnDescription>\r\n                    <IncludeIntermediateStops>false</IncludeIntermediateStops>\r\n                </Params>\r\n            </OJPTripRequest>\r\n        </siri:ServiceRequest>\r\n    </OJPRequest>\r\n</OJP>",
+                  "options": {
+                    "raw": {
+                      "language": "xml"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{server2}}",
+                  "host": [
+                    "{{server2}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "2161-SER-2b_Meldung_Tram5_Abfahrt",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// 1. Response als XML lesen und in JSON umwandeln\r",
+                      "const xml2js = require('xml2js');\r",
+                      "let jsonBody;\r",
+                      "xml2js.parseString(pm.response.text(),{explicitArray: false}, (err, result)=>{\r",
+                      "    jsonBody = result;\r",
+                      "});\r",
+                      "\r",
+                      "// Hilfsfunktion: Extrahiert Text aus verschiedenen XML-Knoten-Strukturen\r",
+                      "function getXmlText(node) {\r",
+                      "    if (!node) return undefined;\r",
+                      "    // Falls das Element Attribute hat (Struktur {_: \"Text\", $: {...}})\r",
+                      "    if (typeof node === 'object' && node._) return node._;\r",
+                      "    // Falls es ein direktes Objekt mit Text-Eigenschaft ist\r",
+                      "    if (typeof node === 'object' && node.Text) {\r",
+                      "        return typeof node.Text === 'object' ? node.Text._ : node.Text;\r",
+                      "    }\r",
+                      "    return node;\r",
+                      "}\r",
+                      "\r",
+                      "// Navigiere zum relevanten Delivery-Objekt\r",
+                      "const responseRoot = jsonBody.OJP?.OJPResponse || jsonBody.OJPResponse;\r",
+                      "const serviceDelivery = responseRoot[\"siri:ServiceDelivery\"] || responseRoot.ServiceDelivery;\r",
+                      "const stopEventDelivery = serviceDelivery.OJPStopEventDelivery;\r",
+                      "\r",
+                      "let targetSituationNumber = null;\r",
+                      "\r",
+                      "pm.test(\"Situation 'Unregelmässiger Betrieb Linie 5' finden\", function () {\r",
+                      "    let situationsNode = stopEventDelivery.StopEventResponseContext?.Situations?.PtSituation;\r",
+                      "    let situations = Array.isArray(situationsNode) ? situationsNode : (situationsNode ? [situationsNode] : []);\r",
+                      "    \r",
+                      "    const targetSituation = situations.find(sit => {\r",
+                      "        // Extrahiere Summary (Checkt beide XML Varianten)\r",
+                      "        const summaryDirect = getXmlText(sit[\"siri:Summary\"] || sit.Summary);\r",
+                      "        \r",
+                      "        // Suche in PublishingActions (Variante 2)\r",
+                      "        let summaryNested = undefined;\r",
+                      "        const pubActions = sit[\"siri:PublishingActions\"]?.[\"siri:PublishingAction\"] || sit.PublishingActions?.PublishingAction;\r",
+                      "        if (pubActions) {\r",
+                      "            const action = Array.isArray(pubActions) ? pubActions[0] : pubActions;\r",
+                      "            summaryNested = getXmlText(action[\"siri:PassengerInformationAction\"]?.[\"siri:TextualContent\"]?.[\"siri:SummaryContent\"]?.[\"siri:SummaryText\"]);\r",
+                      "        }\r",
+                      "\r",
+                      "        const summaryText = summaryDirect || summaryNested;\r",
+                      "        const endTime = sit[\"siri:ValidityPeriod\"]?.[\"siri:EndTime\"] || sit.ValidityPeriod?.EndTime;\r",
+                      "        const scopeType = sit[\"siri:ScopeType\"] || sit.ScopeType;\r",
+                      "\r",
+                      "        return (summaryText && \r",
+                      "                summaryText.includes(\"Unregelmässiger Betrieb Linie 5\")) &&\r",
+                      "               endTime === \"2500-12-31T00:00:00Z\" &&\r",
+                      "               scopeType === \"line\";\r",
+                      "    });\r",
+                      "\r",
+                      "    pm.expect(targetSituation, \"Situation wurde in keiner der XML-Strukturen gefunden\").to.not.be.undefined;\r",
+                      "    \r",
+                      "    targetSituationNumber = targetSituation[\"siri:SituationNumber\"] || targetSituation.SituationNumber;\r",
+                      "    console.log(\"Gefundene SituationNumber:\", targetSituationNumber);\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Alle Tram 5 StopEvents referenzieren die Situation\", function () {\r",
+                      "    pm.expect(targetSituationNumber, \"Keine SituationNumber für den Vergleich vorhanden\").to.not.be.null;\r",
+                      "\r",
+                      "    // In StopEventDelivery heißen die Ergebnisse StopEventResult\r",
+                      "    let resultsNode = stopEventDelivery.StopEventResult;\r",
+                      "    let stopEventResults = Array.isArray(resultsNode) ? resultsNode : (resultsNode ? [resultsNode] : []);\r",
+                      "    \r",
+                      "    let checkedCount = 0;\r",
+                      "\r",
+                      "    stopEventResults.forEach((result, index) => {\r",
+                      "        // Bei StopEvents liegt der Service direkt im StopEvent-Objekt\r",
+                      "        const service = result.StopEvent?.Service;\r",
+                      "        if (!service) return;\r",
+                      "\r",
+                      "        // Produktkategorie und Servicename auslesen\r",
+                      "        const catName = getXmlText(service.ProductCategory?.Name);\r",
+                      "        const serviceName = getXmlText(service.PublishedServiceName);\r",
+                      "\r",
+                      "        // Prüfung: Handelt es sich um das Tram Linie 5?\r",
+                      "        if (catName === \"Tram\" && serviceName === \"5\") {\r",
+                      "            checkedCount++;\r",
+                      "            \r",
+                      "            // Lese die Referenzen aus\r",
+                      "            let refsNode = service.SituationFullRefs?.SituationFullRef;\r",
+                      "            let refs = Array.isArray(refsNode) ? refsNode : (refsNode ? [refsNode] : []);\r",
+                      "            \r",
+                      "            // Schauen ob unsere gesuchte SituationNumber in der Liste der Referenzen auftaucht\r",
+                      "            const hasTargetRef = refs.some(ref => {\r",
+                      "                const sitNum = ref[\"siri:SituationNumber\"] || ref.SituationNumber;\r",
+                      "                return getXmlText(sitNum) === targetSituationNumber;\r",
+                      "            });\r",
+                      "            \r",
+                      "            pm.expect(\r",
+                      "                hasTargetRef, \r",
+                      "                `StopEventResult Index ${index} (Tram 5) referenziert nicht die SituationNumber ${targetSituationNumber}`\r",
+                      "            ).to.be.true;\r",
+                      "        }\r",
+                      "    });\r",
+                      "\r",
+                      "    console.log(`Es wurden ${checkedCount} Tram 5 Abfahrten erfolgreich auf die Situation-Referenz geprüft.`);\r",
+                      "    pm.expect(checkedCount).to.be.greaterThan(0, \"Es wurde keine Abfahrt mit Tram 5 im XML gefunden.\");\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{BearerToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "text/xml",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<OJP xmlns=\"http://www.vdv.de/ojp\" xmlns:siri=\"http://www.siri.org.uk/siri\" version=\"2.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd\">\r\n    <OJPRequest>\r\n        <siri:ServiceRequest>\r\n            <siri:RequestTimestamp>{{$isoTimestamp}}</siri:RequestTimestamp>\r\n            <siri:RequestorRef>MENTZRegTest</siri:RequestorRef>\r\n            <OJPStopEventRequest>\r\n                <siri:RequestTimestamp>{{$isoTimestamp}}</siri:RequestTimestamp>\r\n                <siri:MessageIdentifier>2161-SER-2b</siri:MessageIdentifier>\r\n                <Location>\r\n                    <PlaceRef>\r\n                        <siri:StopPointRef>8591384</siri:StopPointRef>\r\n                        <Name>\r\n                            <Text>Zuerich, Stockerstrasse</Text>\r\n                        </Name>\r\n                    </PlaceRef>\r\n                    <DepArrTime>{{$isoTimestamp}}</DepArrTime>\r\n                </Location>\r\n                <Params>\r\n                    <NumberOfResults>20</NumberOfResults>\r\n                    <StopEventType>departure</StopEventType>\r\n                    <UseRealtimeData>explanatory</UseRealtimeData>\r\n                </Params>\r\n            </OJPStopEventRequest>\r\n        </siri:ServiceRequest>\r\n    </OJPRequest>\r\n</OJP>\r\n"
+                },
+                "url": {
+                  "raw": "{{server2}}",
+                  "host": [
+                    "{{server2}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "2161-TR-2c_Meldung_Wagonfabrik_Fahrt",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// 1. Response als XML lesen und in JSON umwandeln\r",
+                      "const xml2js = require('xml2js');\r",
+                      "let jsonBody;\r",
+                      "xml2js.parseString(pm.response.text(),{explicitArray: false}, (err, result)=>{\r",
+                      "    jsonBody = result;\r",
+                      "});\r",
+                      "\r",
+                      "// Hilfsfunktion: Extrahiert Text aus verschiedenen XML-Knoten-Strukturen\r",
+                      "function getXmlText(node) {\r",
+                      "    if (!node) return undefined;\r",
+                      "    // Falls das Element Attribute hat (Struktur {_: \"Text\", $: {...}})\r",
+                      "    if (typeof node === 'object' && node._) return node._;\r",
+                      "    // Falls es ein direktes Objekt mit Text-Eigenschaft ist\r",
+                      "    if (typeof node === 'object' && node.Text) {\r",
+                      "        return typeof node.Text === 'object' ? node.Text._ : node.Text;\r",
+                      "    }\r",
+                      "    return node;\r",
+                      "}\r",
+                      "\r",
+                      "// Navigiere zum relevanten Delivery-Objekt\r",
+                      "const responseRoot = jsonBody.OJP?.OJPResponse || jsonBody.OJPResponse;\r",
+                      "const serviceDelivery = responseRoot[\"siri:ServiceDelivery\"] || responseRoot.ServiceDelivery;\r",
+                      "const tripDelivery = serviceDelivery.OJPTripDelivery;\r",
+                      "\r",
+                      "let targetSituationNumber = null;\r",
+                      "\r",
+                      "pm.test(\"Situation 'Wagonsfabrik nicht bedient' finden\", function () {\r",
+                      "    let situationsNode = tripDelivery.TripResponseContext?.Situations?.PtSituation;\r",
+                      "    let situations = Array.isArray(situationsNode) ? situationsNode : (situationsNode ? [situationsNode] : []);\r",
+                      "    \r",
+                      "    const targetSituation = situations.find(sit => {\r",
+                      "        // Extrahiere Summary (Checkt beide XML Varianten)\r",
+                      "        const summaryDirect = getXmlText(sit[\"siri:Summary\"] || sit.Summary);\r",
+                      "        \r",
+                      "        // Suche in PublishingActions (Variante 2)\r",
+                      "        let summaryNested = undefined;\r",
+                      "        const pubActions = sit[\"siri:PublishingActions\"]?.[\"siri:PublishingAction\"] || sit.PublishingActions?.PublishingAction;\r",
+                      "        if (pubActions) {\r",
+                      "            const action = Array.isArray(pubActions) ? pubActions[0] : pubActions;\r",
+                      "            summaryNested = getXmlText(action[\"siri:PassengerInformationAction\"]?.[\"siri:TextualContent\"]?.[\"siri:SummaryContent\"]?.[\"siri:SummaryText\"]);\r",
+                      "        }\r",
+                      "\r",
+                      "        const summaryText = summaryDirect || summaryNested;\r",
+                      "        const endTime = sit[\"siri:ValidityPeriod\"]?.[\"siri:EndTime\"] || sit.ValidityPeriod?.EndTime;\r",
+                      "        const scopeType = sit[\"siri:ScopeType\"] || sit.ScopeType;\r",
+                      "\r",
+                      "        return (summaryText && (summaryText.includes(\"Wagonsfabrik nicht bedient\") || \r",
+                      "                summaryText.includes(\"Wagonsfabrik ist nicht bedient\"))) &&\r",
+                      "               endTime === \"2500-12-31T00:00:00Z\" &&\r",
+                      "               scopeType === \"stopPoint\";\r",
+                      "    });\r",
+                      "\r",
+                      "    pm.expect(targetSituation, \"Situation wurde in keiner der XML-Strukturen gefunden\").to.not.be.undefined;\r",
+                      "    \r",
+                      "    targetSituationNumber = targetSituation[\"siri:SituationNumber\"] || targetSituation.SituationNumber;\r",
+                      "    console.log(\"Gefundene SituationNumber:\", targetSituationNumber);\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Alle Tram 2 Legs referenzieren die Situation\", function () {\r",
+                      "    pm.expect(targetSituationNumber, \"Keine Situation zum Vergleichen gefunden\").to.not.be.null;\r",
+                      "\r",
+                      "    let resultsNode = tripDelivery.TripResult;\r",
+                      "    let tripResults = Array.isArray(resultsNode) ? resultsNode : (resultsNode ? [resultsNode] : []);\r",
+                      "    let checkedCount = 0;\r",
+                      "\r",
+                      "    tripResults.forEach((result, tripIndex) => {\r",
+                      "        const trip = result.Trip;\r",
+                      "        if (!trip) return;\r",
+                      "\r",
+                      "        let legsNode = trip.Leg;\r",
+                      "        let legs = Array.isArray(legsNode) ? legsNode : (legsNode ? [legsNode] : []);\r",
+                      "\r",
+                      "        legs.forEach((leg, legIndex) => {\r",
+                      "            const service = leg.TimedLeg?.Service;\r",
+                      "            if (!service) return;\r",
+                      "\r",
+                      "            const catName = getXmlText(service.ProductCategory?.Name);\r",
+                      "            const serviceName = getXmlText(service.PublishedServiceName);\r",
+                      "\r",
+                      "            // Prüfung auf Tram 2\r",
+                      "            if (catName === \"Tram\" && serviceName === \"2\") {\r",
+                      "                checkedCount++;\r",
+                      "                \r",
+                      "                let refsNode = service.SituationFullRefs?.SituationFullRef;\r",
+                      "                let refs = Array.isArray(refsNode) ? refsNode : (refsNode ? [refsNode] : []);\r",
+                      "                \r",
+                      "                const hasTargetRef = refs.some(ref => {\r",
+                      "                    const sitNum = ref[\"siri:SituationNumber\"] || ref.SituationNumber;\r",
+                      "                    return getXmlText(sitNum) === targetSituationNumber;\r",
+                      "                });\r",
+                      "                \r",
+                      "                pm.expect(hasTargetRef, `Trip ${tripIndex}, Leg ${legIndex} fehlt Ref: ${targetSituationNumber}`).to.be.true;\r",
+                      "            }\r",
+                      "        });\r",
+                      "    });\r",
+                      "\r",
+                      "    console.log(`Geprüfte Tram 2 Legs: ${checkedCount}`);\r",
+                      "    pm.expect(checkedCount).to.be.greaterThan(0, \"Keine Tram 2 Fahrten im Resultat gefunden.\");\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{BearerToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<OJP xmlns=\"http://www.vdv.de/ojp\" xmlns:siri=\"http://www.siri.org.uk/siri\" version=\"2.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd\">\r\n    <OJPRequest>\r\n        <siri:ServiceRequest>\r\n            <siri:RequestTimestamp>{{$isoTimestamp}}</siri:RequestTimestamp>\r\n            <siri:RequestorRef>MENTZRegTest</siri:RequestorRef>\r\n            <OJPTripRequest>\r\n                <siri:RequestTimestamp>{{$isoTimestamp}}</siri:RequestTimestamp>\r\n                <siri:MessageIdentifier>2161-SER-2c</siri:MessageIdentifier>\r\n                <Origin>\r\n                    <PlaceRef>\r\n                        <siri:StopPointRef>8596007</siri:StopPointRef>\r\n                        <Name>\r\n                            <Text>Schlieren, Geissweid</Text>\r\n                        </Name>\r\n                    </PlaceRef>\r\n                    <DepArrTime>{{$isoTimestamp}}</DepArrTime>\r\n                </Origin>\r\n                <Destination>\r\n                    <PlaceRef>\r\n                        <siri:StopPointRef>8590803</siri:StopPointRef>\r\n                        <Name>\r\n                            <Text>Schlieren, Wagonsfabrik</Text>\r\n                        </Name>\r\n                    </PlaceRef>\r\n                </Destination>\r\n                <Params>\r\n                    <NumberOfResults>10</NumberOfResults>\r\n                    <IncludeTrackSections>false</IncludeTrackSections>\r\n                    <IncludeLegProjection>false</IncludeLegProjection>\r\n                    <IncludeTurnDescription>false</IncludeTurnDescription>\r\n                    <IncludeIntermediateStops>false</IncludeIntermediateStops>\r\n                </Params>\r\n            </OJPTripRequest>\r\n        </siri:ServiceRequest>\r\n    </OJPRequest>\r\n</OJP>",
+                  "options": {
+                    "raw": {
+                      "language": "xml"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{server2}}",
+                  "host": [
+                    "{{server2}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "2161-SER-2d_Meldung_Wagonfabrik_Abfahrt",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// 1. Response als XML lesen und in JSON umwandeln\r",
+                      "const xml2js = require('xml2js');\r",
+                      "let jsonBody;\r",
+                      "xml2js.parseString(pm.response.text(),{explicitArray: false}, (err, result)=>{\r",
+                      "    jsonBody = result;\r",
+                      "});\r",
+                      "\r",
+                      "// Hilfsfunktion: Extrahiert Text aus verschiedenen XML-Knoten-Strukturen\r",
+                      "function getXmlText(node) {\r",
+                      "    if (!node) return undefined;\r",
+                      "    // Falls das Element Attribute hat (Struktur {_: \"Text\", $: {...}})\r",
+                      "    if (typeof node === 'object' && node._) return node._;\r",
+                      "    // Falls es ein direktes Objekt mit Text-Eigenschaft ist\r",
+                      "    if (typeof node === 'object' && node.Text) {\r",
+                      "        return typeof node.Text === 'object' ? node.Text._ : node.Text;\r",
+                      "    }\r",
+                      "    return node;\r",
+                      "}\r",
+                      "\r",
+                      "// Navigiere zum relevanten Delivery-Objekt\r",
+                      "const responseRoot = jsonBody.OJP?.OJPResponse || jsonBody.OJPResponse;\r",
+                      "const serviceDelivery = responseRoot[\"siri:ServiceDelivery\"] || responseRoot.ServiceDelivery;\r",
+                      "const stopEventDelivery = serviceDelivery.OJPStopEventDelivery;\r",
+                      "\r",
+                      "let targetSituationNumber = null;\r",
+                      "\r",
+                      "pm.test(\"Situation 'Unregelmässiger Betrieb Linie 2' finden\", function () {\r",
+                      "    let situationsNode = stopEventDelivery.StopEventResponseContext?.Situations?.PtSituation;\r",
+                      "    let situations = Array.isArray(situationsNode) ? situationsNode : (situationsNode ? [situationsNode] : []);\r",
+                      "    \r",
+                      "    const targetSituation = situations.find(sit => {\r",
+                      "        // Extrahiere Summary (Checkt beide XML Varianten)\r",
+                      "        const summaryDirect = getXmlText(sit[\"siri:Summary\"] || sit.Summary);\r",
+                      "        \r",
+                      "        // Suche in PublishingActions (Variante 2)\r",
+                      "        let summaryNested = undefined;\r",
+                      "        const pubActions = sit[\"siri:PublishingActions\"]?.[\"siri:PublishingAction\"] || sit.PublishingActions?.PublishingAction;\r",
+                      "        if (pubActions) {\r",
+                      "            const action = Array.isArray(pubActions) ? pubActions[0] : pubActions;\r",
+                      "            summaryNested = getXmlText(action[\"siri:PassengerInformationAction\"]?.[\"siri:TextualContent\"]?.[\"siri:SummaryContent\"]?.[\"siri:SummaryText\"]);\r",
+                      "        }\r",
+                      "\r",
+                      "        const summaryText = summaryDirect || summaryNested;\r",
+                      "        const endTime = sit[\"siri:ValidityPeriod\"]?.[\"siri:EndTime\"] || sit.ValidityPeriod?.EndTime;\r",
+                      "        const scopeType = sit[\"siri:ScopeType\"] || sit.ScopeType;\r",
+                      "\r",
+                      "        return (summaryText && (summaryText.includes(\"Wagonsfabrik nicht bedient\") || \r",
+                      "                summaryText.includes(\"Wagonsfabrik ist nicht bedient\"))) &&\r",
+                      "               endTime === \"2500-12-31T00:00:00Z\" &&\r",
+                      "               scopeType === \"stopPoint\";\r",
+                      "    });\r",
+                      "\r",
+                      "    pm.expect(targetSituation, \"Situation wurde in keiner der XML-Strukturen gefunden\").to.not.be.undefined;\r",
+                      "    \r",
+                      "    targetSituationNumber = targetSituation[\"siri:SituationNumber\"] || targetSituation.SituationNumber;\r",
+                      "    console.log(\"Gefundene SituationNumber:\", targetSituationNumber);\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Alle Tram 5 StopEvents referenzieren die Situation\", function () {\r",
+                      "    pm.expect(targetSituationNumber, \"Keine SituationNumber für den Vergleich vorhanden\").to.not.be.null;\r",
+                      "\r",
+                      "    // In StopEventDelivery heißen die Ergebnisse StopEventResult\r",
+                      "    let resultsNode = stopEventDelivery.StopEventResult;\r",
+                      "    let stopEventResults = Array.isArray(resultsNode) ? resultsNode : (resultsNode ? [resultsNode] : []);\r",
+                      "    \r",
+                      "    let checkedCount = 0;\r",
+                      "\r",
+                      "    stopEventResults.forEach((result, index) => {\r",
+                      "        // Bei StopEvents liegt der Service direkt im StopEvent-Objekt\r",
+                      "        const service = result.StopEvent?.Service;\r",
+                      "        if (!service) return;\r",
+                      "\r",
+                      "        // Produktkategorie und Servicename auslesen\r",
+                      "        const catName = getXmlText(service.ProductCategory?.Name);\r",
+                      "        const serviceName = getXmlText(service.PublishedServiceName);\r",
+                      "\r",
+                      "        // Prüfung: Handelt es sich um das Tram Linie 2?\r",
+                      "        if (catName === \"Tram\" && serviceName === \"2\") {\r",
+                      "            checkedCount++;\r",
+                      "            \r",
+                      "            // Lese die Referenzen aus\r",
+                      "            let refsNode = service.SituationFullRefs?.SituationFullRef;\r",
+                      "            let refs = Array.isArray(refsNode) ? refsNode : (refsNode ? [refsNode] : []);\r",
+                      "            \r",
+                      "            // Schauen ob unsere gesuchte SituationNumber in der Liste der Referenzen auftaucht\r",
+                      "            const hasTargetRef = refs.some(ref => {\r",
+                      "                const sitNum = ref[\"siri:SituationNumber\"] || ref.SituationNumber;\r",
+                      "                return getXmlText(sitNum) === targetSituationNumber;\r",
+                      "            });\r",
+                      "            \r",
+                      "            pm.expect(\r",
+                      "                hasTargetRef, \r",
+                      "                `StopEventResult Index ${index} (Tram 2) referenziert nicht die SituationNumber ${targetSituationNumber}`\r",
+                      "            ).to.be.true;\r",
+                      "        }\r",
+                      "    });\r",
+                      "\r",
+                      "    console.log(`Es wurden ${checkedCount} Tram 2 Abfahrten erfolgreich auf die Situation-Referenz geprüft.`);\r",
+                      "    pm.expect(checkedCount).to.be.greaterThan(0, \"Es wurde keine Abfahrt mit Tram 2 im XML gefunden.\");\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{BearerToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "text/xml",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<OJP xmlns=\"http://www.vdv.de/ojp\" xmlns:siri=\"http://www.siri.org.uk/siri\" version=\"2.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.vdv.de/ojp OJP_changes_for_v1.1/OJP.xsd\">\r\n    <OJPRequest>\r\n        <siri:ServiceRequest>\r\n            <siri:RequestTimestamp>{{$isoTimestamp}}</siri:RequestTimestamp>\r\n            <siri:RequestorRef>MENTZRegTest</siri:RequestorRef>\r\n            <OJPStopEventRequest>\r\n                <siri:RequestTimestamp>{{$isoTimestamp}}</siri:RequestTimestamp>\r\n                <siri:MessageIdentifier>2161-SER-2d</siri:MessageIdentifier>\r\n                <Location>\r\n                    <PlaceRef>\r\n                        <siri:StopPointRef>8590803</siri:StopPointRef>\r\n                        <Name>\r\n                            <Text>Schlieren, Wagonfabrik</Text>\r\n                        </Name>\r\n                    </PlaceRef>\r\n                    <DepArrTime>{{$isoTimestamp}}</DepArrTime>\r\n                </Location>\r\n                <Params>\r\n                    <NumberOfResults>20</NumberOfResults>\r\n                    <StopEventType>departure</StopEventType>\r\n                </Params>\r\n            </OJPStopEventRequest>\r\n        </siri:ServiceRequest>\r\n    </OJPRequest>\r\n</OJP>\r\n"
+                },
+                "url": {
+                  "raw": "{{server2}}",
+                  "host": [
+                    "{{server2}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

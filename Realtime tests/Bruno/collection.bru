@@ -1,0 +1,14 @@
+meta {
+  name: OJP Echtzeit Testfälle
+}
+
+auth {
+  mode: none
+}
+
+script:pre-request {
+  // Calculate the isoTimestamp variable
+  const mymoment = require('moment');
+  const now = mymoment().format("yyyy-MM-DDTHH:mm:ssZ");
+  bru.setVar('isoTimestamp', now);
+}

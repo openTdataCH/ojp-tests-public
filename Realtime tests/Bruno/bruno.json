@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "OJP Echtzeit Testfälle 2026 05",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

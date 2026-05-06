@@ -1,0 +1,290 @@
+<OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns="http://www.vdv.de/ojp" version="2.0">
+  <OJPResponse>
+    <siri:ServiceDelivery>
+      <siri:ResponseTimestamp>2026-02-24T16:15:11.3667547+01:00</siri:ResponseTimestamp>
+      <siri:ProducerRef>MENTZ-prod-asg_1.0.41.451_i-085a4f442cd010b90.eu-central-1.compute.internal</siri:ProducerRef>
+      <siri:ResponseMessageIdentifier>00-194a19a1a1d37619d2be2</siri:ResponseMessageIdentifier>
+      <OJPTripDelivery>
+        <siri:ResponseTimestamp>2026-02-24T16:15:11.3666406+01:00</siri:ResponseTimestamp>
+        <siri:DefaultLanguage>de</siri:DefaultLanguage>
+        <TripResponseContext>
+          <Places>
+            <Place>
+              <StopPlace>
+                <StopPlaceRef>8507100</StopPlaceRef>
+                <StopPlaceName>
+                  <Text xml:lang="de">Thun</Text>
+                </StopPlaceName>
+                <PrivateCode>
+                  <System>EFA</System>
+                  <Value>111104:0:1</Value>
+                </PrivateCode>
+                <TopographicPlaceRef>23006942:9</TopographicPlaceRef>
+              </StopPlace>
+              <Name>
+                <Text xml:lang="de">Thun</Text>
+              </Name>
+              <GeoPosition>
+                <siri:Longitude>7.63045</siri:Longitude>
+                <siri:Latitude>46.75414</siri:Latitude>
+              </GeoPosition>
+            </Place>
+            <Place>
+              <StopPoint>
+                <siri:StopPointRef>ch:1:sloid:7100:1:1</siri:StopPointRef>
+                <StopPointName>
+                  <Text xml:lang="de">Thun</Text>
+                </StopPointName>
+                <PrivateCode>
+                  <System>EFA</System>
+                  <Value>111104:0:1</Value>
+                </PrivateCode>
+                <ParentRef>8507100</ParentRef>
+                <TopographicPlaceRef>23006942:9</TopographicPlaceRef>
+              </StopPoint>
+              <Name>
+                <Text xml:lang="de">Thun</Text>
+              </Name>
+              <GeoPosition>
+                <siri:Longitude>7.63045</siri:Longitude>
+                <siri:Latitude>46.75414</siri:Latitude>
+              </GeoPosition>
+            </Place>
+            <Place>
+              <TopographicPlace>
+                <TopographicPlaceCode>23006942:9</TopographicPlaceCode>
+                <TopographicPlaceName>
+                  <Text xml:lang="de">Thun</Text>
+                </TopographicPlaceName>
+              </TopographicPlace>
+              <Name>
+                <Text xml:lang="de">Thun</Text>
+              </Name>
+              <GeoPosition>
+                <siri:Longitude>7.63045</siri:Longitude>
+                <siri:Latitude>46.75414</siri:Latitude>
+              </GeoPosition>
+            </Place>
+            <Place>
+              <StopPlace>
+                <StopPlaceRef>8507483</StopPlaceRef>
+                <StopPlaceName>
+                  <Text xml:lang="de">Spiez</Text>
+                </StopPlaceName>
+                <PrivateCode>
+                  <System>EFA</System>
+                  <Value>111340:0:4</Value>
+                </PrivateCode>
+                <TopographicPlaceRef>23006768:5</TopographicPlaceRef>
+              </StopPlace>
+              <Name>
+                <Text xml:lang="de">Spiez</Text>
+              </Name>
+              <GeoPosition>
+                <siri:Longitude>7.67954</siri:Longitude>
+                <siri:Latitude>46.68646</siri:Latitude>
+              </GeoPosition>
+            </Place>
+            <Place>
+              <StopPoint>
+                <siri:StopPointRef>ch:1:sloid:7483:0:138485</siri:StopPointRef>
+                <StopPointName>
+                  <Text xml:lang="de">Spiez</Text>
+                </StopPointName>
+                <PrivateCode>
+                  <System>EFA</System>
+                  <Value>111340:0:4</Value>
+                </PrivateCode>
+                <ParentRef>8507483</ParentRef>
+                <TopographicPlaceRef>23006768:5</TopographicPlaceRef>
+              </StopPoint>
+              <Name>
+                <Text xml:lang="de">Spiez</Text>
+              </Name>
+              <GeoPosition>
+                <siri:Longitude>7.67954</siri:Longitude>
+                <siri:Latitude>46.68646</siri:Latitude>
+              </GeoPosition>
+            </Place>
+            <Place>
+              <TopographicPlace>
+                <TopographicPlaceCode>23006768:5</TopographicPlaceCode>
+                <TopographicPlaceName>
+                  <Text xml:lang="de">Spiez</Text>
+                </TopographicPlaceName>
+              </TopographicPlace>
+              <Name>
+                <Text xml:lang="de">Spiez</Text>
+              </Name>
+              <GeoPosition>
+                <siri:Longitude>7.67954</siri:Longitude>
+                <siri:Latitude>46.68646</siri:Latitude>
+              </GeoPosition>
+            </Place>
+          </Places>
+          <Situations/>
+        </TripResponseContext>
+        <TripResult>
+          <Id>ID-4711509A-25BA-4058-A49E-1B01822DF73F</Id>
+          <Trip>
+            <Id>ID-4711509A-25BA-4058-A49E-1B01822DF73F</Id>
+            <Duration>PT7M36S</Duration>
+            <StartTime>2026-02-24T15:11:42Z</StartTime>
+            <EndTime>2026-02-24T15:19:18Z</EndTime>
+            <Transfers>0</Transfers>
+            <Distance>10174</Distance>
+            <Leg>
+              <Id>1</Id>
+              <Duration>PT7M36S</Duration>
+              <TimedLeg>
+                <LegBoard>
+                  <siri:StopPointRef>ch:1:sloid:7100:1:1</siri:StopPointRef>
+                  <StopPointName>
+                    <Text xml:lang="de">Thun</Text>
+                  </StopPointName>
+                  <NameSuffix>
+                    <Text xml:lang="de">PLATFORM_ACCESS_WITH_ASSISTANCE_WHEN_NOTIFIED</Text>
+                  </NameSuffix>
+                  <PlannedQuay>
+                    <Text xml:lang="de">1</Text>
+                  </PlannedQuay>
+                  <EstimatedQuay>
+                    <Text xml:lang="de">1</Text>
+                  </EstimatedQuay>
+                  <ServiceDeparture>
+                    <TimetabledTime>2026-02-24T15:01:00Z</TimetabledTime>
+                    <EstimatedTime>2026-02-24T15:11:42Z</EstimatedTime>
+                  </ServiceDeparture>
+                  <Order>1</Order>
+                  <siri:ExpectedDepartureOccupancy>
+                    <siri:FareClass>firstClass</siri:FareClass>
+                    <siri:OccupancyLevel>manySeatsAvailable</siri:OccupancyLevel>
+                  </siri:ExpectedDepartureOccupancy>
+                  <siri:ExpectedDepartureOccupancy>
+                    <siri:FareClass>secondClass </siri:FareClass>
+                    <siri:OccupancyLevel>manySeatsAvailable</siri:OccupancyLevel>
+                  </siri:ExpectedDepartureOccupancy>
+                  <Attribute>
+                    <UserText>
+                      <Text xml:lang="de">Aussteigeseite: Links</Text>
+                    </UserText>
+                    <Code>ojp91001NR_InfoCall772_111104_1</Code>
+                    <Importance>50</Importance>
+                  </Attribute>
+                </LegBoard>
+                <LegAlight>
+                  <siri:StopPointRef>ch:1:sloid:7483:0:138485</siri:StopPointRef>
+                  <StopPointName>
+                    <Text xml:lang="de">Spiez</Text>
+                  </StopPointName>
+                  <NameSuffix>
+                    <Text xml:lang="de">PLATFORM_ACCESS_WITHOUT_ASSISTANCE</Text>
+                  </NameSuffix>
+                  <PlannedQuay>
+                    <Text xml:lang="de">3</Text>
+                  </PlannedQuay>
+                  <EstimatedQuay>
+                    <Text xml:lang="de">4</Text>
+                  </EstimatedQuay>
+                  <ServiceArrival>
+                    <TimetabledTime>2026-02-24T15:10:00Z</TimetabledTime>
+                    <EstimatedTime>2026-02-24T15:19:18Z</EstimatedTime>
+                  </ServiceArrival>
+                  <Order>2</Order>
+                  <Attribute>
+                    <UserText>
+                      <Text xml:lang="de">Aussteigeseite: Rechts</Text>
+                    </UserText>
+                    <Code>ojp91001NR_InfoCall772_111340_1</Code>
+                    <Importance>50</Importance>
+                  </Attribute>
+                </LegAlight>
+                <Service>
+                  <OperatingDayRef>2026-02-24</OperatingDayRef>
+                  <JourneyRef>ch:1:sjyid:100015:4177-001</JourneyRef>
+                  <PublicCode>RE1</PublicCode>
+                  <siri:LineRef>ojp:91001:N</siri:LineRef>
+                  <siri:DirectionRef>R</siri:DirectionRef>
+                  <Mode>
+                    <PtMode>rail</PtMode>
+                    <siri:RailSubmode>local</siri:RailSubmode>
+                    <Name>
+                      <Text xml:lang="de">Zug</Text>
+                    </Name>
+                    <ShortName>
+                      <Text xml:lang="de">RE</Text>
+                    </ShortName>
+                  </Mode>
+                  <ProductCategory>
+                    <Name>
+                      <Text xml:lang="de">RegioExpress</Text>
+                    </Name>
+                    <ShortName>
+                      <Text xml:lang="de">RE</Text>
+                    </ShortName>
+                    <ProductCategoryRef>24</ProductCategoryRef>
+                  </ProductCategory>
+                  <PublishedServiceName>
+                    <Text xml:lang="de">RE1</Text>
+                  </PublishedServiceName>
+                  <TrainNumber>4177</TrainNumber>
+                  <Attribute>
+                    <UserText>
+                      <Text xml:lang="de">Cateringzone / Automaten</Text>
+                    </UserText>
+                    <Code>A__SN</Code>
+                    <Importance>50</Importance>
+                  </Attribute>
+                  <Attribute>
+                    <UserText>
+                      <Text xml:lang="de">Niederflureinstieg</Text>
+                    </UserText>
+                    <Code>A__NF</Code>
+                    <Importance>50</Importance>
+                  </Attribute>
+                  <Attribute>
+                    <UserText>
+                      <Text xml:lang="de">Zug mit mehreren Zielen: Bitte Anschriften am Zug beachten</Text>
+                    </UserText>
+                    <Code>A__FL</Code>
+                    <Importance>50</Importance>
+                  </Attribute>
+                  <OriginText>
+                    <Text xml:lang="de">n/a</Text>
+                  </OriginText>
+                  <siri:OperatorRef>33</siri:OperatorRef>
+                  <DestinationStopPointRef>8507483</DestinationStopPointRef>
+                  <DestinationText>
+                    <Text xml:lang="de">Domodossola (I)/Zweisimmen</Text>
+                  </DestinationText>
+                </Service>
+                <LegTrack>
+                  <TrackSection>
+                    <TrackSectionStart>
+                      <siri:StopPointRef>ch:1:sloid:7100:1:1</siri:StopPointRef>
+                      <Name>
+                        <Text xml:lang="de">Thun</Text>
+                      </Name>
+                    </TrackSectionStart>
+                    <TrackSectionEnd>
+                      <siri:StopPointRef>ch:1:sloid:7483:0:138485</siri:StopPointRef>
+                      <Name>
+                        <Text xml:lang="de">Spiez</Text>
+                      </Name>
+                    </TrackSectionEnd>
+                    
+                    <Duration>PT9M</Duration>
+                    <Length>10174</Length>
+                  </TrackSection>
+                </LegTrack>
+              </TimedLeg>
+              <EmissionCO2>
+                <KilogramPerPersonKm>0.007</KilogramPerPersonKm>
+              </EmissionCO2>
+            </Leg>
+          </Trip>
+        </TripResult>
+      </OJPTripDelivery>
+    </siri:ServiceDelivery>
+  </OJPResponse>
+</OJP>
