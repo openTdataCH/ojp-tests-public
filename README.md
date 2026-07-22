@@ -1,32 +1,39 @@
-# This folder contains tests for OJP 1.0 and OJP 2.0 for Switzerland
-Contact: opendata@sbb.ch
+# OJP tests for Switzerland (OJP 1.0 and 2.0)
 
-This repo contains different tests for OJP instances in Europe. The main focus is the Swiss servers  (see https://opentransportdata.swiss)
+This repository contains tests for OJP instances in Europe, with a primary focus on the Swiss server (see https://opentransportdata.swiss).
 
-# OJP 2.0 SOAPUI
-Some tests for SOAPUI: https://github.com/openTdataCH/ojp-soapui-tests/tree/main/Swiss-OJP-2.0
-You need to add the necessary information directly to the global properties of your SOAPUI.
+## OJP 2.0 — Bruno
 
-# LinkingAlps SOAPUI
-## How to sort
-Add for each kind of system a folder and structure which match the OJP Router Structure with its subsystems. E.g. for the LinkingAlps project and its use cases for passive systems make sub folders like: "LinkingAlps/SBB passive server" or "LinkingApls/STA active server".
+Some tests for Bruno:
+- https://github.com/openTdataCH/ojp-tests-public/tree/main/OJP-Regression-Tests
 
-## Adding test cases
-Make meaningful names for the file containing the testcase
+To use the Bruno collections, set the following environment variables:
+- `BearerToken`
+- `server` (the base URL)
 
-## Remarks
-The term active system is a server which integrates several passive systems, which is referenced in the OJP specification as a distributed OJP router.
-
-We have test cases for OJP 2.0.
-In https://github.com/openTdataCH/ojp-soapui-tests/tree/main/ojp2-req-res-examples there is a pyhton program, that:
-* downloads the develop branch of 
-See also our API-Explorer: https://opentdatach.github.io/api-explorer/
+You can set these as global or local environment variables in Bruno. Our OJP provider also supplies a Postman collection with the same tests, which you can use as well. SoapUI tests are no longer supported.
 
 
-# Automated Request/Response tests
-In the folder ojp2-req-res-examples we do some some generations of from given requests into responses with validation (and unfortunately validation errors).
+## Real-time data
 
-[https://github.com/openTdataCH/ojp-soapui-tests/blob/main/ojp2-req-res-examples/README.md](https://github.com/openTdataCH/ojp-soapui-tests/tree/main/ojp2-req-res-examples)
+### How to use
+
+There are test collections for Postman and Bruno. For real-time use cases, we provide sample data that you can use to test your own environment and to see how it handles exceptional cases.
+
+To obtain an OJP 2.0 INT API key, contact us at the email below. The real-time collection works only against the OJP 2.0 INT instance.
+
+Link: https://github.com/openTdataCH/ojp-tests-public/tree/main/Realtime%20tests
+
+## OJP 2.0 request/response examples and automated tests
+
+We have test cases for OJP 2.0. In the `ojp2-req-res-examples` folder, there is a Python program that:
+- downloads the `develop` branch of the repository,
+- generates responses from the provided requests, and
+- validates the responses (including known validation errors).
+
+Folder link: https://github.com/openTdataCH/ojp-tests-public/tree/main/ojp2-req-res-examples
+
+See also our API Explorer: https://opentdatach.github.io/api-explorer/
 
 # Contact
 If you have questions contact opendata@sbb.ch.
