@@ -1,5 +1,5 @@
 meta {
-  name: OJP 1.0 2026 01
+  name: OJP 1.0 2026 07
 }
 
 auth {
@@ -14,10 +14,10 @@ vars:pre-request {
   friday_timetable_change: 2026-12-11
   saturday_timetable_change: 2026-12-12
   new_timetable_date: 2026-12-12
-  letzter-ATV-Tag18Uhr30: 2026-09-27T16:30:00Z
 }
 
 script:pre-request {
+  // Calculate the isoTimestamp variable
   const mymoment = require('moment');
   const now = mymoment().format("yyyy-MM-DDTHH:mm:ssZ");
   bru.setVar('isoTimestamp', now);

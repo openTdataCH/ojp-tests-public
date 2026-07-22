@@ -68,5 +68,668 @@ script:post-response {
 
 settings {
   encodeUrl: true
-  timeout: 0
+}
+
+example {
+  name: LIR-3f_POI_GeoRestriction_OsmTag
+  
+  request: {
+    url: {{server}}
+    method: POST
+    mode: xml
+    body:xml: {
+      <?xml version="1.0" encoding="UTF-8"?>
+      <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+          <OJPRequest>
+              <ServiceRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <RequestorRef>SKIPlusRegTest</RequestorRef>
+                  <ojp:OJPLocationInformationRequest>
+                      <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                      <MessageIdentifier>LIR-3f</MessageIdentifier>
+                      <ojp:InitialInput>
+                          <ojp:GeoRestriction>
+                              <ojp:Circle>
+                                  <ojp:Center>
+                                      <Longitude>8.53464</Longitude>
+                                      <Latitude>47.37682</Latitude>
+                                  </ojp:Center>
+                                  <ojp:Radius>250</ojp:Radius>
+                              </ojp:Circle>
+                          </ojp:GeoRestriction>
+                      </ojp:InitialInput>
+                      <ojp:Restrictions>
+                          <ojp:Type>poi</ojp:Type>
+                          <ojp:PointOfInterestFilter>
+                              <ojp:PointOfInterestCategory>
+                                  <ojp:OsmTag>
+                                      <ojp:Tag>POI</ojp:Tag>
+                                      <ojp:Value>service</ojp:Value>
+                                  </ojp:OsmTag>
+                              </ojp:PointOfInterestCategory>
+                          </ojp:PointOfInterestFilter>
+                      </ojp:Restrictions>
+                  </ojp:OJPLocationInformationRequest>
+              </ServiceRequest>
+          </OJPRequest>
+      </OJP>
+    }
+  }
+  
+  response: {
+    headers: {
+      Server: EFAController/10.6.14.5/OJP-EFA01-I
+      Date: Fri, 01 Dec 2023 16:48:26 GMT
+      Content-Type: text/xml
+      Accept-Ranges: none
+      Content-Length: 1926
+      Last-Modified: Fri, 01 Dec 2023 16:48:26 GMT
+      Connection: Keep-Alive
+      Content-Encoding: gzip
+      Access-Control-Allow-Origin: *
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: xml
+      content: '''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <siri:OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns:ojp="http://www.vdv.de/ojp" version="1.0">
+            <siri:OJPResponse>
+                <siri:ServiceDelivery>
+                    <siri:ResponseTimestamp>2023-12-01T16:48:26Z</siri:ResponseTimestamp>
+                    <siri:ProducerRef>EFAController10.6.14.5-OJP-EFA01-I</siri:ProducerRef>
+                    <siri:Status>true</siri:Status>
+                    <ojp:OJPLocationInformationDelivery>
+                        <siri:ResponseTimestamp>2023-12-01T16:48:26Z</siri:ResponseTimestamp>
+                        <siri:RequestMessageRef>LIR-3f</siri:RequestMessageRef>
+                        <siri:Status>true</siri:Status>
+                        <ojp:CalcTime>19</ojp:CalcTime>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:76853:23026261:-1:Globetrotter, Zürich:Zürich:Globetrotter, Zürich:ANY:POI:950056:5996160:MRCV:ROKAS</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Globetrotter, Zürich</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>service_other</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23026261:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53450</siri:Longitude>
+                                    <siri:Latitude>47.37707</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.888375342</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:62959:23026261:-1:Postomat, Zürich:Zürich:Postomat, Zürich:ANY:POI:950193:5996083:MRCV:ROKAS</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Postomat, Zürich</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>atm</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23026261:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53573</siri:Longitude>
+                                    <siri:Latitude>47.37754</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.713305295</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:79407:23026261:-1:Taxistand, Zürich:Zürich:Taxistand, Zürich:ANY:POI:950212:5996072:MRCV:ROKAS</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Taxistand, Zürich</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>taxi</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23026261:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53590</siri:Longitude>
+                                    <siri:Latitude>47.37760</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.682492971</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:62927:23026261:-1:Credit Suisse Bancomat, Zürich:Zürich:Credit Suisse Bancomat, Zürich:ANY:POI:950157:5996020:MRCV:ROKAS</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Credit Suisse Bancomat, Zürich</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>atm</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23026261:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53541</siri:Longitude>
+                                    <siri:Latitude>47.37792</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.66988796</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:78933:23026261:-1:K&amp;A Kaserne:Zürich:K&amp;A Kaserne:ANY:POI:949915:5996330:MRCV:ROKAS</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">K&amp;A Kaserne</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>social_facility</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23026261:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53323</siri:Longitude>
+                                    <siri:Latitude>47.37603</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.66568625</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:74954:23026261:-1:Coiffeur Salam:Zürich:Coiffeur Salam:ANY:POI:949800:5996143:MRCV:ROKAS</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Coiffeur Salam</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23026261:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53220</siri:Longitude>
+                                    <siri:Latitude>47.37717</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.560644269</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:76812:23026261:-1:Hotelplan, Zürich:Zürich:Hotelplan, Zürich:ANY:POI:950306:5996352:MRCV:ROKAS</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Hotelplan, Zürich</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>service_other</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23026261:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53674</siri:Longitude>
+                                    <siri:Latitude>47.37590</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.560644269</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:75018:23026261:-1:Szena Les Coiffeurs:Zürich:Szena Les Coiffeurs:ANY:POI:950350:5996266:MRCV:ROKAS</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Szena Les Coiffeurs</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23026261:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53714</siri:Longitude>
+                                    <siri:Latitude>47.37642</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.550840318</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:76811:23026261:-1:l'tur:Zürich:l'tur:ANY:POI:950321:5996348:MRCV:ROKAS</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">l'tur</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>service_other</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23026261:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53688</siri:Longitude>
+                                    <siri:Latitude>47.37593</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.545238078</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:62969:23026261:-1:Migros Bank Bancomat, Zürich:Zürich:Migros Bank Bancomat, Zürich:ANY:POI:950252:5996433:MRCV:ROKAS</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Migros Bank Bancomat, Zürich</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>atm</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23026261:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53626</siri:Longitude>
+                                    <siri:Latitude>47.37541</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.538235307</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:74929:23026261:-1:Coiffure Valentino, Zürich:Zürich:Coiffure Valentino, Zürich:ANY:POI:950340:5996340:MRCV:ROKAS</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Coiffure Valentino, Zürich</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23026261:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53705</siri:Longitude>
+                                    <siri:Latitude>47.37597</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.527030826</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:79415:23026261:-1:Taxistand, Zürich:Zürich:Taxistand, Zürich:ANY:POI:950298:5995993:MRCV:ROKAS</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Taxistand, Zürich</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>taxi</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23026261:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53667</siri:Longitude>
+                                    <siri:Latitude>47.37808</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.518627465</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:62984:23026261:-1:UBS Bancomat, Zürich:Zürich:UBS Bancomat, Zürich:ANY:POI:950358:5996318:MRCV:ROKAS</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UBS Bancomat, Zürich</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>atm</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23026261:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53721</siri:Longitude>
+                                    <siri:Latitude>47.37611</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.518627465</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:75023:23026261:-1:The Barber:Zürich:The Barber:ANY:POI:950294:5996424:MRCV:ROKAS</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">The Barber</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23026261:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53664</siri:Longitude>
+                                    <siri:Latitude>47.37546</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.510224104</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:75172:23026261:-1:Saleh, Zürich:Zürich:Saleh, Zürich:ANY:POI:949843:5995978:MRCV:ROKAS</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Saleh, Zürich</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23026261:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53258</siri:Longitude>
+                                    <siri:Latitude>47.37818</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.503221273</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:64028:23026261:-1:Schminkbar, Zürich:Zürich:Schminkbar, Zürich:ANY:POI:949822:5995958:MRCV:ROKAS</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Schminkbar, Zürich</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>beauty</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23026261:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53240</siri:Longitude>
+                                    <siri:Latitude>47.37830</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.462605029</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:62932:23026261:-1:UBS Bancomat, Zürich:Zürich:UBS Bancomat, Zürich:ANY:POI:950340:5996422:MRCV:ROKAS</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UBS Bancomat, Zürich</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>atm</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23026261:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53705</siri:Longitude>
+                                    <siri:Latitude>47.37548</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.462605029</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:74902:23026261:-1:Gidor, Zürich:Zürich:Gidor, Zürich:ANY:POI:950216:5996528:MRCV:ROKAS</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Gidor, Zürich</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23026261:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53594</siri:Longitude>
+                                    <siri:Latitude>47.37483</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.449999988</ojp:Probability>
+                        </ojp:Location>
+                    </ojp:OJPLocationInformationDelivery>
+                </siri:ServiceDelivery>
+            </siri:OJPResponse>
+        </siri:OJP>
+      '''
+    }
+  }
 }

@@ -53,12 +53,16 @@ body:xml {
 
 script:post-response {
   test("Body matches string", function () {
-      expect(res.getBody()?.toString()).to.include("<siri:StopPointRef>8592588</siri:StopPointRef>");
+      const text = res.getBody()?.toString();
+      const hasDidok = text.includes("<siri:StopPointRef>8592588</siri:StopPointRef>");
+      //const hasSloid = text.includes("<siri:StopPointRef>ch:1:sloid:92588</siri:StopPointRef>");
+      const hasSloid = /<siri:StopPointRef>ch:1:sloid:92588:/.test(text);
+  
+      expect(hasDidok || hasSloid, "Weder DIDOK noch SLOID gefunden").to.be.true;
   });
   
 }
 
 settings {
   encodeUrl: true
-  timeout: 0
 }

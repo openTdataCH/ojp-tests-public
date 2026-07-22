@@ -59,5 +59,95 @@ script:post-response {
 
 settings {
   encodeUrl: true
-  timeout: 0
+}
+
+example {
+  name: SER-3b1_GP_walk_MaxDistance=zu-klein
+  
+  request: {
+    url: {{server}}
+    method: POST
+    mode: xml
+    body:xml: {
+      <?xml version="1.0" encoding="UTF-8"?>
+      <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+          <OJPRequest>
+              <ServiceRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <RequestorRef>SKIPlusRegTest</RequestorRef>
+                  <ojp:OJPStopEventRequest>
+                      <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                      <MessageIdentifier>SER-3b1</MessageIdentifier>
+                      <ojp:Location>
+                          <ojp:PlaceRef>
+                              <ojp:GeoPosition>
+                                  <Longitude>8.567587</Longitude>
+                                  <Latitude>47.773983</Latitude>
+                              </ojp:GeoPosition>
+                              <ojp:LocationName>
+                                  <ojp:Text>Hagenturm</ojp:Text>
+                              </ojp:LocationName>
+                          </ojp:PlaceRef>
+                          <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
+                          <ojp:IndividualTransportOptions>
+                              <ojp:Mode>walk</ojp:Mode>
+                              <ojp:MaxDistance>700</ojp:MaxDistance>
+                          </ojp:IndividualTransportOptions>
+                      </ojp:Location>
+                      <ojp:Params>
+                          <ojp:NumberOfResults>1</ojp:NumberOfResults>
+                          <ojp:StopEventType>departure</ojp:StopEventType>
+                      </ojp:Params>
+                  </ojp:OJPStopEventRequest>
+              </ServiceRequest>
+          </OJPRequest>
+      </OJP>
+    }
+  }
+  
+  response: {
+    headers: {
+      Server: EFAController/10.6.14.5/OJP-EFA01-I
+      Date: Fri, 01 Dec 2023 19:27:03 GMT
+      Content-Type: text/xml
+      Accept-Ranges: none
+      Content-Length: 951
+      Last-Modified: Fri, 01 Dec 2023 19:27:03 GMT
+      Connection: Keep-Alive
+      Access-Control-Allow-Origin: *
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: xml
+      content: '''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <siri:OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns:ojp="http://www.vdv.de/ojp" version="1.0">
+            <siri:OJPResponse>
+                <siri:ServiceDelivery>
+                    <siri:ResponseTimestamp>2023-12-01T19:27:03Z</siri:ResponseTimestamp>
+                    <siri:ProducerRef>EFAController10.6.14.5-OJP-EFA01-I</siri:ProducerRef>
+                    <siri:Status>true</siri:Status>
+                    <ojp:OJPStopEventDelivery>
+                        <siri:ResponseTimestamp>2023-12-01T19:27:03Z</siri:ResponseTimestamp>
+                        <siri:RequestMessageRef>SER-3b1</siri:RequestMessageRef>
+                        <siri:Status>false</siri:Status>
+                        <siri:ErrorCondition>
+                            <siri:NoInfoForTopicError number="0">
+                                <siri:ErrorText>STOPEVENT_NOEVENTFOUND</siri:ErrorText>
+                            </siri:NoInfoForTopicError>
+                            <siri:Description>STOPEVENT_NOEVENTFOUND</siri:Description>
+                        </siri:ErrorCondition>
+                        <ojp:CalcTime>811</ojp:CalcTime>
+                    </ojp:OJPStopEventDelivery>
+                </siri:ServiceDelivery>
+            </siri:OJPResponse>
+        </siri:OJP>
+      '''
+    }
+  }
 }

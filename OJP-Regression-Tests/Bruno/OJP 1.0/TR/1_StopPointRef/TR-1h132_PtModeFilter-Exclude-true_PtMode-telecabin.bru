@@ -30,7 +30,7 @@ body:xml {
                   <MessageIdentifier>TR-1h132</MessageIdentifier>
                   <ojp:Origin>
                       <ojp:PlaceRef>
-                          <StopPointRef>8500249</StopPointRef>
+                          <StopPointRef>ch:1:sloid:249</StopPointRef>
                           <ojp:LocationName>
                               <ojp:Text>Bern Matte</ojp:Text>
                           </ojp:LocationName>
@@ -39,7 +39,7 @@ body:xml {
                   </ojp:Origin>
                   <ojp:Destination>
                       <ojp:PlaceRef>
-                          <StopPointRef>8500258</StopPointRef>
+                          <StopPointRef>ch:1:sloid:258</StopPointRef>
                           <ojp:LocationName>
                               <ojp:Text>Bern Münsterplattform</ojp:Text>
                           </ojp:LocationName>
@@ -68,5 +68,177 @@ script:post-response {
 
 settings {
   encodeUrl: true
-  timeout: 0
+}
+
+example {
+  name: TR-1h132_PtModeFilter-Exclude-true_PtMode-telecabin
+  
+  request: {
+    url: {{server}}
+    method: POST
+    mode: xml
+    headers: {
+      Content-Type: text/xml
+    }
+  
+    body:xml: {
+      <?xml version="1.0" encoding="UTF-8"?>
+      <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+          <OJPRequest>
+              <ServiceRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <RequestorRef>SKIPlusRegTest</RequestorRef>
+                  <ojp:OJPTripRequest>
+                      <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                      <MessageIdentifier>TR-1h132</MessageIdentifier>
+                      <ojp:Origin>
+                          <ojp:PlaceRef>
+                              <StopPointRef>8500249</StopPointRef>
+                              <ojp:LocationName>
+                                  <ojp:Text>Bern Matte</ojp:Text>
+                              </ojp:LocationName>
+                          </ojp:PlaceRef>
+                          <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
+                      </ojp:Origin>
+                      <ojp:Destination>
+                          <ojp:PlaceRef>
+                              <StopPointRef>8500258</StopPointRef>
+                              <ojp:LocationName>
+                                  <ojp:Text>Bern Münsterplattform</ojp:Text>
+                              </ojp:LocationName>
+                          </ojp:PlaceRef>
+                      </ojp:Destination>
+                      <ojp:Params>
+                          <ojp:PtModeFilter>
+                              <ojp:Exclude>true</ojp:Exclude>
+                              <ojp:PtMode>telecabin</ojp:PtMode>
+                          </ojp:PtModeFilter>
+                          <ojp:NumberOfResults>3</ojp:NumberOfResults>
+                      </ojp:Params>
+                  </ojp:OJPTripRequest>
+              </ServiceRequest>
+          </OJPRequest>
+      </OJP>
+      
+    }
+  }
+  
+  response: {
+    headers: {
+      Server: EFAController/10.6.14.5/OJP-EFA01-I
+      Date: Fri, 01 Dec 2023 16:56:41 GMT
+      Content-Type: text/xml
+      Accept-Ranges: none
+      Content-Length: 992
+      Last-Modified: Fri, 01 Dec 2023 16:56:41 GMT
+      Connection: Keep-Alive
+      Content-Encoding: gzip
+      Access-Control-Allow-Origin: *
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: xml
+      content: '''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <siri:OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns:ojp="http://www.vdv.de/ojp" version="1.0">
+            <siri:OJPResponse>
+                <siri:ServiceDelivery>
+                    <siri:ResponseTimestamp>2023-12-01T16:56:41Z</siri:ResponseTimestamp>
+                    <siri:ProducerRef>EFAController10.6.14.5-OJP-EFA01-I</siri:ProducerRef>
+                    <siri:Status>true</siri:Status>
+                    <ojp:OJPTripDelivery>
+                        <siri:ResponseTimestamp>2023-12-01T16:56:40Z</siri:ResponseTimestamp>
+                        <siri:RequestMessageRef>TR-1h132</siri:RequestMessageRef>
+                        <siri:Status>true</siri:Status>
+                        <ojp:CalcTime>1441</ojp:CalcTime>
+                        <ojp:TripResponseContext>
+                            <ojp:Places>
+                                <ojp:Location>
+                                    <ojp:StopPlace>
+                                        <ojp:StopPlaceRef>8500249</ojp:StopPlaceRef>
+                                        <ojp:StopPlaceName>
+                                            <ojp:Text xml:lang="de">Bern Matte</ojp:Text>
+                                        </ojp:StopPlaceName>
+                                        <ojp:PrivateCode>
+                                            <ojp:System>EFA</ojp:System>
+                                            <ojp:Value>106663</ojp:Value>
+                                        </ojp:PrivateCode>
+                                        <ojp:TopographicPlaceRef>23006351:1</ojp:TopographicPlaceRef>
+                                    </ojp:StopPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Bern Matte</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>7.45251</siri:Longitude>
+                                        <siri:Latitude>46.94657</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:StopPlace>
+                                        <ojp:StopPlaceRef>8500258</ojp:StopPlaceRef>
+                                        <ojp:StopPlaceName>
+                                            <ojp:Text xml:lang="de">Bern Münsterplattform</ojp:Text>
+                                        </ojp:StopPlaceName>
+                                        <ojp:PrivateCode>
+                                            <ojp:System>EFA</ojp:System>
+                                            <ojp:Value>106668</ojp:Value>
+                                        </ojp:PrivateCode>
+                                        <ojp:TopographicPlaceRef>23006351:1</ojp:TopographicPlaceRef>
+                                    </ojp:StopPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Bern Münsterplattform</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>7.45252</siri:Longitude>
+                                        <siri:Latitude>46.94657</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                            </ojp:Places>
+                        </ojp:TripResponseContext>
+                        <ojp:TripResult>
+                            <ojp:ResultId>ID-96A2921B-0FBD-427E-AC7B-812D7B4F42C6</ojp:ResultId>
+                            <ojp:Trip>
+                                <ojp:TripId>ID-96A2921B-0FBD-427E-AC7B-812D7B4F42C6</ojp:TripId>
+                                <ojp:Duration>PT0M</ojp:Duration>
+                                <ojp:StartTime>2023-12-08T11:00:00Z</ojp:StartTime>
+                                <ojp:EndTime>2023-12-08T11:00:00Z</ojp:EndTime>
+                                <ojp:Transfers>0</ojp:Transfers>
+                                <ojp:Distance>0</ojp:Distance>
+                                <ojp:TripLeg>
+                                    <ojp:LegId>1</ojp:LegId>
+                                    <ojp:ContinuousLeg>
+                                        <ojp:LegStart>
+                                            <siri:StopPointRef>8500249</siri:StopPointRef>
+                                            <ojp:LocationName>
+                                                <ojp:Text xml:lang="de">Bern Matte</ojp:Text>
+                                            </ojp:LocationName>
+                                        </ojp:LegStart>
+                                        <ojp:LegEnd>
+                                            <siri:StopPointRef>8500258</siri:StopPointRef>
+                                            <ojp:LocationName>
+                                                <ojp:Text xml:lang="de">Bern Münsterplattform</ojp:Text>
+                                            </ojp:LocationName>
+                                        </ojp:LegEnd>
+                                        <ojp:Service>
+                                            <ojp:IndividualMode>walk</ojp:IndividualMode>
+                                        </ojp:Service>
+                                        <ojp:TimeWindowStart>2023-12-08T11:00:00Z</ojp:TimeWindowStart>
+                                        <ojp:TimeWindowEnd>2023-12-08T11:00:00Z</ojp:TimeWindowEnd>
+                                        <ojp:Duration>PT0M</ojp:Duration>
+                                    </ojp:ContinuousLeg>
+                                </ojp:TripLeg>
+                            </ojp:Trip>
+                        </ojp:TripResult>
+                    </ojp:OJPTripDelivery>
+                </siri:ServiceDelivery>
+            </siri:OJPResponse>
+        </siri:OJP>
+      '''
+    }
+  }
 }

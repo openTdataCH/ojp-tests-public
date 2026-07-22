@@ -30,7 +30,7 @@ body:xml {
                   <MessageIdentifier>SER-1c71</MessageIdentifier>
                   <ojp:Location>
                       <ojp:PlaceRef>
-                          <StopPointRef>8530813</StopPointRef>
+                          <StopPointRef>ch:1:sloid:30813</StopPointRef>
                           <ojp:LocationName>
                               <ojp:Text>Zürich Kreuzplatz</ojp:Text>
                           </ojp:LocationName>
@@ -64,5 +64,801 @@ script:post-response {
 
 settings {
   encodeUrl: true
-  timeout: 0
+}
+
+example {
+  name: SER-1c71_SPoR_PtModeFilter-bus_Exclude-false
+  
+  request: {
+    url: {{server}}
+    method: POST
+    mode: xml
+    headers: {
+      Content-Type: text/xml
+    }
+  
+    body:xml: {
+      <?xml version="1.0" encoding="UTF-8"?>
+      <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+          <OJPRequest>
+              <ServiceRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <RequestorRef>SKIPlusRegTest</RequestorRef>
+                  <ojp:OJPStopEventRequest>
+                      <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                      <MessageIdentifier>SER-1c71</MessageIdentifier>
+                      <ojp:Location>
+                          <ojp:PlaceRef>
+                              <StopPointRef>8530813</StopPointRef>
+                              <ojp:LocationName>
+                                  <ojp:Text>Zürich Kreuzplatz</ojp:Text>
+                              </ojp:LocationName>
+                          </ojp:PlaceRef>
+                          <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
+                      </ojp:Location>
+                      <ojp:Params>
+                          <ojp:PtModeFilter>
+                              <ojp:Exclude>false</ojp:Exclude>
+                              <ojp:PtMode>bus</ojp:PtMode>
+                          </ojp:PtModeFilter>
+                          <ojp:NumberOfResults>10</ojp:NumberOfResults>
+                          <ojp:StopEventType>departure</ojp:StopEventType>
+                      </ojp:Params>
+                  </ojp:OJPStopEventRequest>
+              </ServiceRequest>
+          </OJPRequest>
+      </OJP>
+    }
+  }
+  
+  response: {
+    headers: {
+      Server: EFAController/10.6.14.5/OJP-EFA01-I
+      Date: Fri, 01 Dec 2023 17:01:24 GMT
+      Content-Type: text/xml
+      Accept-Ranges: none
+      Content-Length: 2479
+      Last-Modified: Fri, 01 Dec 2023 17:01:24 GMT
+      Connection: Keep-Alive
+      Content-Encoding: gzip
+      Access-Control-Allow-Origin: *
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: xml
+      content: '''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <siri:OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns:ojp="http://www.vdv.de/ojp" version="1.0">
+            <siri:OJPResponse>
+                <siri:ServiceDelivery>
+                    <siri:ResponseTimestamp>2023-12-01T17:01:24Z</siri:ResponseTimestamp>
+                    <siri:ProducerRef>EFAController10.6.14.5-OJP-EFA01-I</siri:ProducerRef>
+                    <siri:Status>true</siri:Status>
+                    <ojp:OJPStopEventDelivery>
+                        <siri:ResponseTimestamp>2023-12-01T17:01:23Z</siri:ResponseTimestamp>
+                        <siri:RequestMessageRef>SER-1c71</siri:RequestMessageRef>
+                        <siri:Status>true</siri:Status>
+                        <ojp:CalcTime>465</ojp:CalcTime>
+                        <ojp:StopEventResponseContext>
+                            <ojp:Places>
+                                <ojp:Location>
+                                    <ojp:StopPlace>
+                                        <ojp:StopPlaceRef>8530813</ojp:StopPlaceRef>
+                                        <ojp:StopPlaceName>
+                                            <ojp:Text xml:lang="de">Kreuzplatz</ojp:Text>
+                                        </ojp:StopPlaceName>
+                                        <ojp:PrivateCode>
+                                            <ojp:System>EFA</ojp:System>
+                                            <ojp:Value>113258</ojp:Value>
+                                        </ojp:PrivateCode>
+                                        <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                    </ojp:StopPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Zürich, Kreuzplatz</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>8.55408</siri:Longitude>
+                                        <siri:Latitude>47.36488</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:TopographicPlace>
+                                        <ojp:TopographicPlaceCode>23026261:27</ojp:TopographicPlaceCode>
+                                        <ojp:TopographicPlaceName>
+                                            <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                        </ojp:TopographicPlaceName>
+                                    </ojp:TopographicPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>0.0</siri:Longitude>
+                                        <siri:Latitude>0.0</siri:Latitude>
+                                        <siri:Precision>20000000</siri:Precision>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:StopPlace>
+                                        <ojp:StopPlaceRef>8591228</ojp:StopPlaceRef>
+                                        <ojp:StopPlaceName>
+                                            <ojp:Text xml:lang="de">Zürich, Kienastenwies</ojp:Text>
+                                        </ojp:StopPlaceName>
+                                        <ojp:PrivateCode>
+                                            <ojp:System>EFA</ojp:System>
+                                            <ojp:Value>128353</ojp:Value>
+                                        </ojp:PrivateCode>
+                                        <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                    </ojp:StopPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Zürich, Kienastenwies</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>8.60116</siri:Longitude>
+                                        <siri:Latitude>47.35515</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:StopPlace>
+                                        <ojp:StopPlaceRef>8596008</ojp:StopPlaceRef>
+                                        <ojp:StopPlaceName>
+                                            <ojp:Text xml:lang="de">Zürich, Hermetschloo</ojp:Text>
+                                        </ojp:StopPlaceName>
+                                        <ojp:PrivateCode>
+                                            <ojp:System>EFA</ojp:System>
+                                            <ojp:Value>134734</ojp:Value>
+                                        </ojp:PrivateCode>
+                                        <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                    </ojp:StopPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Zürich, Hermetschloo</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>8.47389</siri:Longitude>
+                                        <siri:Latitude>47.39415</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                            </ojp:Places>
+                        </ojp:StopEventResponseContext>
+                        <ojp:StopEventResult>
+                            <ojp:ResultId>ID-7B7EC376-5C06-4BCA-9DA4-940AE01D32EB</ojp:ResultId>
+                            <ojp:StopEvent>
+                                <ojp:ThisCall>
+                                    <ojp:CallAtStop>
+                                        <siri:StopPointRef>8530813</siri:StopPointRef>
+                                        <ojp:StopPointName>
+                                            <ojp:Text xml:lang="de">Zürich, Kreuzplatz</ojp:Text>
+                                        </ojp:StopPointName>
+                                        <ojp:ServiceDeparture>
+                                            <ojp:TimetabledTime>2023-12-08T11:03:00Z</ojp:TimetabledTime>
+                                        </ojp:ServiceDeparture>
+                                        <ojp:Order>14</ojp:Order>
+                                    </ojp:CallAtStop>
+                                </ojp:ThisCall>
+                                <ojp:Service>
+                                    <ojp:OperatingDayRef>2023-12-08</ojp:OperatingDayRef>
+                                    <ojp:JourneyRef>ojp-92-31-G-j23-1-4929-TA</ojp:JourneyRef>
+                                    <siri:LineRef>ojp:92031:G</siri:LineRef>
+                                    <siri:DirectionRef>R</siri:DirectionRef>
+                                    <ojp:Mode>
+                                        <ojp:PtMode>bus</ojp:PtMode>
+                                        <siri:BusSubmode>localBusService</siri:BusSubmode>
+                                        <ojp:Name>
+                                            <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                        </ojp:Name>
+                                        <ojp:ShortName>
+                                            <ojp:Text xml:lang="de">B</ojp:Text>
+                                        </ojp:ShortName>
+                                    </ojp:Mode>
+                                    <ojp:PublishedLineName>
+                                        <ojp:Text xml:lang="de">31</ojp:Text>
+                                    </ojp:PublishedLineName>
+                                    <ojp:OperatorRef>ojp:849</ojp:OperatorRef>
+                                    <ojp:Attribute>
+                                        <ojp:Text>
+                                            <ojp:Text xml:lang="de">Niederflureinstieg</ojp:Text>
+                                        </ojp:Text>
+                                        <ojp:Code>A__NF</ojp:Code>
+                                        <siri:AccessFacility>palletAccess_lowFloor</siri:AccessFacility>
+                                    </ojp:Attribute>
+                                    <ojp:OriginStopPointRef>8591228</ojp:OriginStopPointRef>
+                                    <ojp:OriginText>
+                                        <ojp:Text xml:lang="de">Zürich, Kienastenwies</ojp:Text>
+                                    </ojp:OriginText>
+                                    <ojp:DestinationStopPointRef>8596008</ojp:DestinationStopPointRef>
+                                    <ojp:DestinationText>
+                                        <ojp:Text xml:lang="de">Zürich, Hermetschloo</ojp:Text>
+                                    </ojp:DestinationText>
+                                </ojp:Service>
+                                <ojp:Extension>
+                                    <ojp:TransportTypeName>
+                                        <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                    </ojp:TransportTypeName>
+                                    <ojp:PublishedJourneyNumber>
+                                        <ojp:Text xml:lang="de">15159</ojp:Text>
+                                    </ojp:PublishedJourneyNumber>
+                                    <ojp:OperatorName>
+                                        <ojp:Text xml:lang="de">Verkehrsbetriebe Zürich</ojp:Text>
+                                    </ojp:OperatorName>
+                                </ojp:Extension>
+                            </ojp:StopEvent>
+                        </ojp:StopEventResult>
+                        <ojp:StopEventResult>
+                            <ojp:ResultId>ID-04310F0E-F29F-43E0-88B4-A84CA6BB4443</ojp:ResultId>
+                            <ojp:StopEvent>
+                                <ojp:ThisCall>
+                                    <ojp:CallAtStop>
+                                        <siri:StopPointRef>8530813</siri:StopPointRef>
+                                        <ojp:StopPointName>
+                                            <ojp:Text xml:lang="de">Zürich, Kreuzplatz</ojp:Text>
+                                        </ojp:StopPointName>
+                                        <ojp:ServiceDeparture>
+                                            <ojp:TimetabledTime>2023-12-08T11:06:00Z</ojp:TimetabledTime>
+                                        </ojp:ServiceDeparture>
+                                        <ojp:Order>22</ojp:Order>
+                                    </ojp:CallAtStop>
+                                </ojp:ThisCall>
+                                <ojp:Service>
+                                    <ojp:OperatingDayRef>2023-12-08</ojp:OperatingDayRef>
+                                    <ojp:JourneyRef>ojp-92-31-G-j23-1-2128-TA</ojp:JourneyRef>
+                                    <siri:LineRef>ojp:92031:G</siri:LineRef>
+                                    <siri:DirectionRef>H</siri:DirectionRef>
+                                    <ojp:Mode>
+                                        <ojp:PtMode>bus</ojp:PtMode>
+                                        <siri:BusSubmode>localBusService</siri:BusSubmode>
+                                        <ojp:Name>
+                                            <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                        </ojp:Name>
+                                        <ojp:ShortName>
+                                            <ojp:Text xml:lang="de">B</ojp:Text>
+                                        </ojp:ShortName>
+                                    </ojp:Mode>
+                                    <ojp:PublishedLineName>
+                                        <ojp:Text xml:lang="de">31</ojp:Text>
+                                    </ojp:PublishedLineName>
+                                    <ojp:OperatorRef>ojp:849</ojp:OperatorRef>
+                                    <ojp:Attribute>
+                                        <ojp:Text>
+                                            <ojp:Text xml:lang="de">Niederflureinstieg</ojp:Text>
+                                        </ojp:Text>
+                                        <ojp:Code>A__NF</ojp:Code>
+                                        <siri:AccessFacility>palletAccess_lowFloor</siri:AccessFacility>
+                                    </ojp:Attribute>
+                                    <ojp:OriginStopPointRef>8596008</ojp:OriginStopPointRef>
+                                    <ojp:OriginText>
+                                        <ojp:Text xml:lang="de">Zürich, Hermetschloo</ojp:Text>
+                                    </ojp:OriginText>
+                                    <ojp:DestinationStopPointRef>8591228</ojp:DestinationStopPointRef>
+                                    <ojp:DestinationText>
+                                        <ojp:Text xml:lang="de">Zürich, Kienastenwies</ojp:Text>
+                                    </ojp:DestinationText>
+                                </ojp:Service>
+                                <ojp:Extension>
+                                    <ojp:TransportTypeName>
+                                        <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                    </ojp:TransportTypeName>
+                                    <ojp:PublishedJourneyNumber>
+                                        <ojp:Text xml:lang="de">14615</ojp:Text>
+                                    </ojp:PublishedJourneyNumber>
+                                    <ojp:OperatorName>
+                                        <ojp:Text xml:lang="de">Verkehrsbetriebe Zürich</ojp:Text>
+                                    </ojp:OperatorName>
+                                </ojp:Extension>
+                            </ojp:StopEvent>
+                        </ojp:StopEventResult>
+                        <ojp:StopEventResult>
+                            <ojp:ResultId>ID-EE243E76-C38A-40C7-9C10-8AC79B9A148A</ojp:ResultId>
+                            <ojp:StopEvent>
+                                <ojp:ThisCall>
+                                    <ojp:CallAtStop>
+                                        <siri:StopPointRef>8530813</siri:StopPointRef>
+                                        <ojp:StopPointName>
+                                            <ojp:Text xml:lang="de">Zürich, Kreuzplatz</ojp:Text>
+                                        </ojp:StopPointName>
+                                        <ojp:ServiceDeparture>
+                                            <ojp:TimetabledTime>2023-12-08T11:10:00Z</ojp:TimetabledTime>
+                                        </ojp:ServiceDeparture>
+                                        <ojp:Order>14</ojp:Order>
+                                    </ojp:CallAtStop>
+                                </ojp:ThisCall>
+                                <ojp:Service>
+                                    <ojp:OperatingDayRef>2023-12-08</ojp:OperatingDayRef>
+                                    <ojp:JourneyRef>ojp-92-31-G-j23-1-5128-TA</ojp:JourneyRef>
+                                    <siri:LineRef>ojp:92031:G</siri:LineRef>
+                                    <siri:DirectionRef>R</siri:DirectionRef>
+                                    <ojp:Mode>
+                                        <ojp:PtMode>bus</ojp:PtMode>
+                                        <siri:BusSubmode>localBusService</siri:BusSubmode>
+                                        <ojp:Name>
+                                            <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                        </ojp:Name>
+                                        <ojp:ShortName>
+                                            <ojp:Text xml:lang="de">B</ojp:Text>
+                                        </ojp:ShortName>
+                                    </ojp:Mode>
+                                    <ojp:PublishedLineName>
+                                        <ojp:Text xml:lang="de">31</ojp:Text>
+                                    </ojp:PublishedLineName>
+                                    <ojp:OperatorRef>ojp:849</ojp:OperatorRef>
+                                    <ojp:Attribute>
+                                        <ojp:Text>
+                                            <ojp:Text xml:lang="de">Niederflureinstieg</ojp:Text>
+                                        </ojp:Text>
+                                        <ojp:Code>A__NF</ojp:Code>
+                                        <siri:AccessFacility>palletAccess_lowFloor</siri:AccessFacility>
+                                    </ojp:Attribute>
+                                    <ojp:OriginStopPointRef>8591228</ojp:OriginStopPointRef>
+                                    <ojp:OriginText>
+                                        <ojp:Text xml:lang="de">Zürich, Kienastenwies</ojp:Text>
+                                    </ojp:OriginText>
+                                    <ojp:DestinationStopPointRef>8596008</ojp:DestinationStopPointRef>
+                                    <ojp:DestinationText>
+                                        <ojp:Text xml:lang="de">Zürich, Hermetschloo</ojp:Text>
+                                    </ojp:DestinationText>
+                                </ojp:Service>
+                                <ojp:Extension>
+                                    <ojp:TransportTypeName>
+                                        <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                    </ojp:TransportTypeName>
+                                    <ojp:PublishedJourneyNumber>
+                                        <ojp:Text xml:lang="de">15543</ojp:Text>
+                                    </ojp:PublishedJourneyNumber>
+                                    <ojp:OperatorName>
+                                        <ojp:Text xml:lang="de">Verkehrsbetriebe Zürich</ojp:Text>
+                                    </ojp:OperatorName>
+                                </ojp:Extension>
+                            </ojp:StopEvent>
+                        </ojp:StopEventResult>
+                        <ojp:StopEventResult>
+                            <ojp:ResultId>ID-542C1FC0-11E8-43D9-A7BE-2717FA70EED3</ojp:ResultId>
+                            <ojp:StopEvent>
+                                <ojp:ThisCall>
+                                    <ojp:CallAtStop>
+                                        <siri:StopPointRef>8530813</siri:StopPointRef>
+                                        <ojp:StopPointName>
+                                            <ojp:Text xml:lang="de">Zürich, Kreuzplatz</ojp:Text>
+                                        </ojp:StopPointName>
+                                        <ojp:ServiceDeparture>
+                                            <ojp:TimetabledTime>2023-12-08T11:13:00Z</ojp:TimetabledTime>
+                                        </ojp:ServiceDeparture>
+                                        <ojp:Order>22</ojp:Order>
+                                    </ojp:CallAtStop>
+                                </ojp:ThisCall>
+                                <ojp:Service>
+                                    <ojp:OperatingDayRef>2023-12-08</ojp:OperatingDayRef>
+                                    <ojp:JourneyRef>ojp-92-31-G-j23-1-2316-TA</ojp:JourneyRef>
+                                    <siri:LineRef>ojp:92031:G</siri:LineRef>
+                                    <siri:DirectionRef>H</siri:DirectionRef>
+                                    <ojp:Mode>
+                                        <ojp:PtMode>bus</ojp:PtMode>
+                                        <siri:BusSubmode>localBusService</siri:BusSubmode>
+                                        <ojp:Name>
+                                            <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                        </ojp:Name>
+                                        <ojp:ShortName>
+                                            <ojp:Text xml:lang="de">B</ojp:Text>
+                                        </ojp:ShortName>
+                                    </ojp:Mode>
+                                    <ojp:PublishedLineName>
+                                        <ojp:Text xml:lang="de">31</ojp:Text>
+                                    </ojp:PublishedLineName>
+                                    <ojp:OperatorRef>ojp:849</ojp:OperatorRef>
+                                    <ojp:Attribute>
+                                        <ojp:Text>
+                                            <ojp:Text xml:lang="de">Niederflureinstieg</ojp:Text>
+                                        </ojp:Text>
+                                        <ojp:Code>A__NF</ojp:Code>
+                                        <siri:AccessFacility>palletAccess_lowFloor</siri:AccessFacility>
+                                    </ojp:Attribute>
+                                    <ojp:OriginStopPointRef>8596008</ojp:OriginStopPointRef>
+                                    <ojp:OriginText>
+                                        <ojp:Text xml:lang="de">Zürich, Hermetschloo</ojp:Text>
+                                    </ojp:OriginText>
+                                    <ojp:DestinationStopPointRef>8591228</ojp:DestinationStopPointRef>
+                                    <ojp:DestinationText>
+                                        <ojp:Text xml:lang="de">Zürich, Kienastenwies</ojp:Text>
+                                    </ojp:DestinationText>
+                                </ojp:Service>
+                                <ojp:Extension>
+                                    <ojp:TransportTypeName>
+                                        <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                    </ojp:TransportTypeName>
+                                    <ojp:PublishedJourneyNumber>
+                                        <ojp:Text xml:lang="de">14928</ojp:Text>
+                                    </ojp:PublishedJourneyNumber>
+                                    <ojp:OperatorName>
+                                        <ojp:Text xml:lang="de">Verkehrsbetriebe Zürich</ojp:Text>
+                                    </ojp:OperatorName>
+                                </ojp:Extension>
+                            </ojp:StopEvent>
+                        </ojp:StopEventResult>
+                        <ojp:StopEventResult>
+                            <ojp:ResultId>ID-20F87803-627C-44BC-AA2D-C4CB4D022010</ojp:ResultId>
+                            <ojp:StopEvent>
+                                <ojp:ThisCall>
+                                    <ojp:CallAtStop>
+                                        <siri:StopPointRef>8530813</siri:StopPointRef>
+                                        <ojp:StopPointName>
+                                            <ojp:Text xml:lang="de">Zürich, Kreuzplatz</ojp:Text>
+                                        </ojp:StopPointName>
+                                        <ojp:ServiceDeparture>
+                                            <ojp:TimetabledTime>2023-12-08T11:18:00Z</ojp:TimetabledTime>
+                                        </ojp:ServiceDeparture>
+                                        <ojp:Order>14</ojp:Order>
+                                    </ojp:CallAtStop>
+                                </ojp:ThisCall>
+                                <ojp:Service>
+                                    <ojp:OperatingDayRef>2023-12-08</ojp:OperatingDayRef>
+                                    <ojp:JourneyRef>ojp-92-31-G-j23-1-4912-TA</ojp:JourneyRef>
+                                    <siri:LineRef>ojp:92031:G</siri:LineRef>
+                                    <siri:DirectionRef>R</siri:DirectionRef>
+                                    <ojp:Mode>
+                                        <ojp:PtMode>bus</ojp:PtMode>
+                                        <siri:BusSubmode>localBusService</siri:BusSubmode>
+                                        <ojp:Name>
+                                            <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                        </ojp:Name>
+                                        <ojp:ShortName>
+                                            <ojp:Text xml:lang="de">B</ojp:Text>
+                                        </ojp:ShortName>
+                                    </ojp:Mode>
+                                    <ojp:PublishedLineName>
+                                        <ojp:Text xml:lang="de">31</ojp:Text>
+                                    </ojp:PublishedLineName>
+                                    <ojp:OperatorRef>ojp:849</ojp:OperatorRef>
+                                    <ojp:Attribute>
+                                        <ojp:Text>
+                                            <ojp:Text xml:lang="de">Niederflureinstieg</ojp:Text>
+                                        </ojp:Text>
+                                        <ojp:Code>A__NF</ojp:Code>
+                                        <siri:AccessFacility>palletAccess_lowFloor</siri:AccessFacility>
+                                    </ojp:Attribute>
+                                    <ojp:OriginStopPointRef>8591228</ojp:OriginStopPointRef>
+                                    <ojp:OriginText>
+                                        <ojp:Text xml:lang="de">Zürich, Kienastenwies</ojp:Text>
+                                    </ojp:OriginText>
+                                    <ojp:DestinationStopPointRef>8596008</ojp:DestinationStopPointRef>
+                                    <ojp:DestinationText>
+                                        <ojp:Text xml:lang="de">Zürich, Hermetschloo</ojp:Text>
+                                    </ojp:DestinationText>
+                                </ojp:Service>
+                                <ojp:Extension>
+                                    <ojp:TransportTypeName>
+                                        <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                    </ojp:TransportTypeName>
+                                    <ojp:PublishedJourneyNumber>
+                                        <ojp:Text xml:lang="de">15846</ojp:Text>
+                                    </ojp:PublishedJourneyNumber>
+                                    <ojp:OperatorName>
+                                        <ojp:Text xml:lang="de">Verkehrsbetriebe Zürich</ojp:Text>
+                                    </ojp:OperatorName>
+                                </ojp:Extension>
+                            </ojp:StopEvent>
+                        </ojp:StopEventResult>
+                        <ojp:StopEventResult>
+                            <ojp:ResultId>ID-3FE5A95F-B0CF-49C4-871F-6C8C6158D770</ojp:ResultId>
+                            <ojp:StopEvent>
+                                <ojp:ThisCall>
+                                    <ojp:CallAtStop>
+                                        <siri:StopPointRef>8530813</siri:StopPointRef>
+                                        <ojp:StopPointName>
+                                            <ojp:Text xml:lang="de">Zürich, Kreuzplatz</ojp:Text>
+                                        </ojp:StopPointName>
+                                        <ojp:ServiceDeparture>
+                                            <ojp:TimetabledTime>2023-12-08T11:21:00Z</ojp:TimetabledTime>
+                                        </ojp:ServiceDeparture>
+                                        <ojp:Order>22</ojp:Order>
+                                    </ojp:CallAtStop>
+                                </ojp:ThisCall>
+                                <ojp:Service>
+                                    <ojp:OperatingDayRef>2023-12-08</ojp:OperatingDayRef>
+                                    <ojp:JourneyRef>ojp-92-31-G-j23-1-2116-TA</ojp:JourneyRef>
+                                    <siri:LineRef>ojp:92031:G</siri:LineRef>
+                                    <siri:DirectionRef>H</siri:DirectionRef>
+                                    <ojp:Mode>
+                                        <ojp:PtMode>bus</ojp:PtMode>
+                                        <siri:BusSubmode>localBusService</siri:BusSubmode>
+                                        <ojp:Name>
+                                            <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                        </ojp:Name>
+                                        <ojp:ShortName>
+                                            <ojp:Text xml:lang="de">B</ojp:Text>
+                                        </ojp:ShortName>
+                                    </ojp:Mode>
+                                    <ojp:PublishedLineName>
+                                        <ojp:Text xml:lang="de">31</ojp:Text>
+                                    </ojp:PublishedLineName>
+                                    <ojp:OperatorRef>ojp:849</ojp:OperatorRef>
+                                    <ojp:Attribute>
+                                        <ojp:Text>
+                                            <ojp:Text xml:lang="de">Niederflureinstieg</ojp:Text>
+                                        </ojp:Text>
+                                        <ojp:Code>A__NF</ojp:Code>
+                                        <siri:AccessFacility>palletAccess_lowFloor</siri:AccessFacility>
+                                    </ojp:Attribute>
+                                    <ojp:OriginStopPointRef>8596008</ojp:OriginStopPointRef>
+                                    <ojp:OriginText>
+                                        <ojp:Text xml:lang="de">Zürich, Hermetschloo</ojp:Text>
+                                    </ojp:OriginText>
+                                    <ojp:DestinationStopPointRef>8591228</ojp:DestinationStopPointRef>
+                                    <ojp:DestinationText>
+                                        <ojp:Text xml:lang="de">Zürich, Kienastenwies</ojp:Text>
+                                    </ojp:DestinationText>
+                                </ojp:Service>
+                                <ojp:Extension>
+                                    <ojp:TransportTypeName>
+                                        <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                    </ojp:TransportTypeName>
+                                    <ojp:PublishedJourneyNumber>
+                                        <ojp:Text xml:lang="de">15277</ojp:Text>
+                                    </ojp:PublishedJourneyNumber>
+                                    <ojp:OperatorName>
+                                        <ojp:Text xml:lang="de">Verkehrsbetriebe Zürich</ojp:Text>
+                                    </ojp:OperatorName>
+                                </ojp:Extension>
+                            </ojp:StopEvent>
+                        </ojp:StopEventResult>
+                        <ojp:StopEventResult>
+                            <ojp:ResultId>ID-9F2917ED-6E00-40F0-87AD-A9957811064B</ojp:ResultId>
+                            <ojp:StopEvent>
+                                <ojp:ThisCall>
+                                    <ojp:CallAtStop>
+                                        <siri:StopPointRef>8530813</siri:StopPointRef>
+                                        <ojp:StopPointName>
+                                            <ojp:Text xml:lang="de">Zürich, Kreuzplatz</ojp:Text>
+                                        </ojp:StopPointName>
+                                        <ojp:ServiceDeparture>
+                                            <ojp:TimetabledTime>2023-12-08T11:25:00Z</ojp:TimetabledTime>
+                                        </ojp:ServiceDeparture>
+                                        <ojp:Order>14</ojp:Order>
+                                    </ojp:CallAtStop>
+                                </ojp:ThisCall>
+                                <ojp:Service>
+                                    <ojp:OperatingDayRef>2023-12-08</ojp:OperatingDayRef>
+                                    <ojp:JourneyRef>ojp-92-31-G-j23-1-5074-TA</ojp:JourneyRef>
+                                    <siri:LineRef>ojp:92031:G</siri:LineRef>
+                                    <siri:DirectionRef>R</siri:DirectionRef>
+                                    <ojp:Mode>
+                                        <ojp:PtMode>bus</ojp:PtMode>
+                                        <siri:BusSubmode>localBusService</siri:BusSubmode>
+                                        <ojp:Name>
+                                            <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                        </ojp:Name>
+                                        <ojp:ShortName>
+                                            <ojp:Text xml:lang="de">B</ojp:Text>
+                                        </ojp:ShortName>
+                                    </ojp:Mode>
+                                    <ojp:PublishedLineName>
+                                        <ojp:Text xml:lang="de">31</ojp:Text>
+                                    </ojp:PublishedLineName>
+                                    <ojp:OperatorRef>ojp:849</ojp:OperatorRef>
+                                    <ojp:Attribute>
+                                        <ojp:Text>
+                                            <ojp:Text xml:lang="de">Niederflureinstieg</ojp:Text>
+                                        </ojp:Text>
+                                        <ojp:Code>A__NF</ojp:Code>
+                                        <siri:AccessFacility>palletAccess_lowFloor</siri:AccessFacility>
+                                    </ojp:Attribute>
+                                    <ojp:OriginStopPointRef>8591228</ojp:OriginStopPointRef>
+                                    <ojp:OriginText>
+                                        <ojp:Text xml:lang="de">Zürich, Kienastenwies</ojp:Text>
+                                    </ojp:OriginText>
+                                    <ojp:DestinationStopPointRef>8596008</ojp:DestinationStopPointRef>
+                                    <ojp:DestinationText>
+                                        <ojp:Text xml:lang="de">Zürich, Hermetschloo</ojp:Text>
+                                    </ojp:DestinationText>
+                                </ojp:Service>
+                                <ojp:Extension>
+                                    <ojp:TransportTypeName>
+                                        <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                    </ojp:TransportTypeName>
+                                    <ojp:PublishedJourneyNumber>
+                                        <ojp:Text xml:lang="de">16202</ojp:Text>
+                                    </ojp:PublishedJourneyNumber>
+                                    <ojp:OperatorName>
+                                        <ojp:Text xml:lang="de">Verkehrsbetriebe Zürich</ojp:Text>
+                                    </ojp:OperatorName>
+                                </ojp:Extension>
+                            </ojp:StopEvent>
+                        </ojp:StopEventResult>
+                        <ojp:StopEventResult>
+                            <ojp:ResultId>ID-0B3D8336-24C0-46D5-BDF2-406568BDEFA9</ojp:ResultId>
+                            <ojp:StopEvent>
+                                <ojp:ThisCall>
+                                    <ojp:CallAtStop>
+                                        <siri:StopPointRef>8530813</siri:StopPointRef>
+                                        <ojp:StopPointName>
+                                            <ojp:Text xml:lang="de">Zürich, Kreuzplatz</ojp:Text>
+                                        </ojp:StopPointName>
+                                        <ojp:ServiceDeparture>
+                                            <ojp:TimetabledTime>2023-12-08T11:28:00Z</ojp:TimetabledTime>
+                                        </ojp:ServiceDeparture>
+                                        <ojp:Order>22</ojp:Order>
+                                    </ojp:CallAtStop>
+                                </ojp:ThisCall>
+                                <ojp:Service>
+                                    <ojp:OperatingDayRef>2023-12-08</ojp:OperatingDayRef>
+                                    <ojp:JourneyRef>ojp-92-31-G-j23-1-2322-TA</ojp:JourneyRef>
+                                    <siri:LineRef>ojp:92031:G</siri:LineRef>
+                                    <siri:DirectionRef>H</siri:DirectionRef>
+                                    <ojp:Mode>
+                                        <ojp:PtMode>bus</ojp:PtMode>
+                                        <siri:BusSubmode>localBusService</siri:BusSubmode>
+                                        <ojp:Name>
+                                            <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                        </ojp:Name>
+                                        <ojp:ShortName>
+                                            <ojp:Text xml:lang="de">B</ojp:Text>
+                                        </ojp:ShortName>
+                                    </ojp:Mode>
+                                    <ojp:PublishedLineName>
+                                        <ojp:Text xml:lang="de">31</ojp:Text>
+                                    </ojp:PublishedLineName>
+                                    <ojp:OperatorRef>ojp:849</ojp:OperatorRef>
+                                    <ojp:Attribute>
+                                        <ojp:Text>
+                                            <ojp:Text xml:lang="de">Niederflureinstieg</ojp:Text>
+                                        </ojp:Text>
+                                        <ojp:Code>A__NF</ojp:Code>
+                                        <siri:AccessFacility>palletAccess_lowFloor</siri:AccessFacility>
+                                    </ojp:Attribute>
+                                    <ojp:OriginStopPointRef>8596008</ojp:OriginStopPointRef>
+                                    <ojp:OriginText>
+                                        <ojp:Text xml:lang="de">Zürich, Hermetschloo</ojp:Text>
+                                    </ojp:OriginText>
+                                    <ojp:DestinationStopPointRef>8591228</ojp:DestinationStopPointRef>
+                                    <ojp:DestinationText>
+                                        <ojp:Text xml:lang="de">Zürich, Kienastenwies</ojp:Text>
+                                    </ojp:DestinationText>
+                                </ojp:Service>
+                                <ojp:Extension>
+                                    <ojp:TransportTypeName>
+                                        <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                    </ojp:TransportTypeName>
+                                    <ojp:PublishedJourneyNumber>
+                                        <ojp:Text xml:lang="de">15603</ojp:Text>
+                                    </ojp:PublishedJourneyNumber>
+                                    <ojp:OperatorName>
+                                        <ojp:Text xml:lang="de">Verkehrsbetriebe Zürich</ojp:Text>
+                                    </ojp:OperatorName>
+                                </ojp:Extension>
+                            </ojp:StopEvent>
+                        </ojp:StopEventResult>
+                        <ojp:StopEventResult>
+                            <ojp:ResultId>ID-FDC1A6FF-2A83-4FC1-BDAB-8AB4674F50F8</ojp:ResultId>
+                            <ojp:StopEvent>
+                                <ojp:ThisCall>
+                                    <ojp:CallAtStop>
+                                        <siri:StopPointRef>8530813</siri:StopPointRef>
+                                        <ojp:StopPointName>
+                                            <ojp:Text xml:lang="de">Zürich, Kreuzplatz</ojp:Text>
+                                        </ojp:StopPointName>
+                                        <ojp:ServiceDeparture>
+                                            <ojp:TimetabledTime>2023-12-08T11:33:00Z</ojp:TimetabledTime>
+                                        </ojp:ServiceDeparture>
+                                        <ojp:Order>14</ojp:Order>
+                                    </ojp:CallAtStop>
+                                </ojp:ThisCall>
+                                <ojp:Service>
+                                    <ojp:OperatingDayRef>2023-12-08</ojp:OperatingDayRef>
+                                    <ojp:JourneyRef>ojp-92-31-G-j23-1-4891-TA</ojp:JourneyRef>
+                                    <siri:LineRef>ojp:92031:G</siri:LineRef>
+                                    <siri:DirectionRef>R</siri:DirectionRef>
+                                    <ojp:Mode>
+                                        <ojp:PtMode>bus</ojp:PtMode>
+                                        <siri:BusSubmode>localBusService</siri:BusSubmode>
+                                        <ojp:Name>
+                                            <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                        </ojp:Name>
+                                        <ojp:ShortName>
+                                            <ojp:Text xml:lang="de">B</ojp:Text>
+                                        </ojp:ShortName>
+                                    </ojp:Mode>
+                                    <ojp:PublishedLineName>
+                                        <ojp:Text xml:lang="de">31</ojp:Text>
+                                    </ojp:PublishedLineName>
+                                    <ojp:OperatorRef>ojp:849</ojp:OperatorRef>
+                                    <ojp:Attribute>
+                                        <ojp:Text>
+                                            <ojp:Text xml:lang="de">Niederflureinstieg</ojp:Text>
+                                        </ojp:Text>
+                                        <ojp:Code>A__NF</ojp:Code>
+                                        <siri:AccessFacility>palletAccess_lowFloor</siri:AccessFacility>
+                                    </ojp:Attribute>
+                                    <ojp:OriginStopPointRef>8591228</ojp:OriginStopPointRef>
+                                    <ojp:OriginText>
+                                        <ojp:Text xml:lang="de">Zürich, Kienastenwies</ojp:Text>
+                                    </ojp:OriginText>
+                                    <ojp:DestinationStopPointRef>8596008</ojp:DestinationStopPointRef>
+                                    <ojp:DestinationText>
+                                        <ojp:Text xml:lang="de">Zürich, Hermetschloo</ojp:Text>
+                                    </ojp:DestinationText>
+                                </ojp:Service>
+                                <ojp:Extension>
+                                    <ojp:TransportTypeName>
+                                        <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                    </ojp:TransportTypeName>
+                                    <ojp:PublishedJourneyNumber>
+                                        <ojp:Text xml:lang="de">16498</ojp:Text>
+                                    </ojp:PublishedJourneyNumber>
+                                    <ojp:OperatorName>
+                                        <ojp:Text xml:lang="de">Verkehrsbetriebe Zürich</ojp:Text>
+                                    </ojp:OperatorName>
+                                </ojp:Extension>
+                            </ojp:StopEvent>
+                        </ojp:StopEventResult>
+                        <ojp:StopEventResult>
+                            <ojp:ResultId>ID-799B601E-9EA1-4305-8053-4C53D46C1A90</ojp:ResultId>
+                            <ojp:StopEvent>
+                                <ojp:ThisCall>
+                                    <ojp:CallAtStop>
+                                        <siri:StopPointRef>8530813</siri:StopPointRef>
+                                        <ojp:StopPointName>
+                                            <ojp:Text xml:lang="de">Zürich, Kreuzplatz</ojp:Text>
+                                        </ojp:StopPointName>
+                                        <ojp:ServiceDeparture>
+                                            <ojp:TimetabledTime>2023-12-08T11:36:00Z</ojp:TimetabledTime>
+                                        </ojp:ServiceDeparture>
+                                        <ojp:Order>22</ojp:Order>
+                                    </ojp:CallAtStop>
+                                </ojp:ThisCall>
+                                <ojp:Service>
+                                    <ojp:OperatingDayRef>2023-12-08</ojp:OperatingDayRef>
+                                    <ojp:JourneyRef>ojp-92-31-G-j23-1-2121-TA</ojp:JourneyRef>
+                                    <siri:LineRef>ojp:92031:G</siri:LineRef>
+                                    <siri:DirectionRef>H</siri:DirectionRef>
+                                    <ojp:Mode>
+                                        <ojp:PtMode>bus</ojp:PtMode>
+                                        <siri:BusSubmode>localBusService</siri:BusSubmode>
+                                        <ojp:Name>
+                                            <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                        </ojp:Name>
+                                        <ojp:ShortName>
+                                            <ojp:Text xml:lang="de">B</ojp:Text>
+                                        </ojp:ShortName>
+                                    </ojp:Mode>
+                                    <ojp:PublishedLineName>
+                                        <ojp:Text xml:lang="de">31</ojp:Text>
+                                    </ojp:PublishedLineName>
+                                    <ojp:OperatorRef>ojp:849</ojp:OperatorRef>
+                                    <ojp:Attribute>
+                                        <ojp:Text>
+                                            <ojp:Text xml:lang="de">Niederflureinstieg</ojp:Text>
+                                        </ojp:Text>
+                                        <ojp:Code>A__NF</ojp:Code>
+                                        <siri:AccessFacility>palletAccess_lowFloor</siri:AccessFacility>
+                                    </ojp:Attribute>
+                                    <ojp:OriginStopPointRef>8596008</ojp:OriginStopPointRef>
+                                    <ojp:OriginText>
+                                        <ojp:Text xml:lang="de">Zürich, Hermetschloo</ojp:Text>
+                                    </ojp:OriginText>
+                                    <ojp:DestinationStopPointRef>8591228</ojp:DestinationStopPointRef>
+                                    <ojp:DestinationText>
+                                        <ojp:Text xml:lang="de">Zürich, Kienastenwies</ojp:Text>
+                                    </ojp:DestinationText>
+                                </ojp:Service>
+                                <ojp:Extension>
+                                    <ojp:TransportTypeName>
+                                        <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                    </ojp:TransportTypeName>
+                                    <ojp:PublishedJourneyNumber>
+                                        <ojp:Text xml:lang="de">15947</ojp:Text>
+                                    </ojp:PublishedJourneyNumber>
+                                    <ojp:OperatorName>
+                                        <ojp:Text xml:lang="de">Verkehrsbetriebe Zürich</ojp:Text>
+                                    </ojp:OperatorName>
+                                </ojp:Extension>
+                            </ojp:StopEvent>
+                        </ojp:StopEventResult>
+                    </ojp:OJPStopEventDelivery>
+                </siri:ServiceDelivery>
+            </siri:OJPResponse>
+        </siri:OJP>
+      '''
+    }
+  }
 }

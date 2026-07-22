@@ -30,7 +30,7 @@ body:xml {
                   <MessageIdentifier>TR-1s</MessageIdentifier>
                   <ojp:Origin>
                       <ojp:PlaceRef>
-                          <StopPointRef>8591441</StopPointRef>
+                          <StopPointRef>ch:1:sloid:91441</StopPointRef>
                           <ojp:LocationName>
                               <ojp:Text>Zielweg, Zürich</ojp:Text>
                           </ojp:LocationName>
@@ -43,7 +43,7 @@ body:xml {
                   </ojp:Origin>
                   <ojp:Destination>
                       <ojp:PlaceRef>
-                          <StopPointRef>8503057</StopPointRef>
+                          <StopPointRef>ch:1:sloid:3057</StopPointRef>
                           <ojp:LocationName>
                               <ojp:Text>Uetliberg</ojp:Text>
                           </ojp:LocationName>
@@ -82,5 +82,202 @@ script:post-response {
 
 settings {
   encodeUrl: true
-  timeout: 0
+}
+
+example {
+  name: TR-1s_Höhendaten
+  
+  request: {
+    url: {{server}}
+    method: POST
+    mode: text
+    headers: {
+      Content-Type: application/x-www-form-urlencoded
+    }
+  
+    body:text: {
+      <?xml version="1.0" encoding="UTF-8"?>
+      <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+          <OJPRequest>
+              <ServiceRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <RequestorRef>SKIPlusRegTest</RequestorRef>
+                  <ojp:OJPTripRequest>
+                      <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                      <MessageIdentifier>TR-1s</MessageIdentifier>
+                      <ojp:Origin>
+                          <ojp:PlaceRef>
+                              <StopPointRef>8591441</StopPointRef>
+                              <ojp:LocationName>
+                                  <ojp:Text>Zielweg, Zürich</ojp:Text>
+                              </ojp:LocationName>
+                          </ojp:PlaceRef>
+                          <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
+                          <ojp:IndividualTransportOptions>
+                              <ojp:Mode>walk</ojp:Mode>
+                              <ojp:MaxDuration>PT100M</ojp:MaxDuration>
+                          </ojp:IndividualTransportOptions>
+                      </ojp:Origin>
+                      <ojp:Destination>
+                          <ojp:PlaceRef>
+                              <StopPointRef>8503057</StopPointRef>
+                              <ojp:LocationName>
+                                  <ojp:Text>Uetliberg</ojp:Text>
+                              </ojp:LocationName>
+                          </ojp:PlaceRef>
+                      </ojp:Destination>
+                      <ojp:Params>
+                          <ojp:NumberOfResultsAfter>1</ojp:NumberOfResultsAfter>
+                          <ojp:IncludeTrackSections>false</ojp:IncludeTrackSections>
+                          <ojp:IncludeLegProjection>false</ojp:IncludeLegProjection>
+                          <ojp:IncludeTurnDescription>false</ojp:IncludeTurnDescription>
+                          <ojp:IncludeIntermediateStops>false</ojp:IncludeIntermediateStops>
+                          <ojp:ItModesToCover>walk</ojp:ItModesToCover>
+                          <ojp:PtModeFilter>
+                              <ojp:Exclude>false</ojp:Exclude>
+                              <ojp:PtMode>telecabin</ojp:PtMode>
+                          </ojp:PtModeFilter>
+                      </ojp:Params>
+                  </ojp:OJPTripRequest>
+              </ServiceRequest>
+          </OJPRequest>
+      </OJP>
+    }
+  }
+  
+  response: {
+    headers: {
+      Server: EFAController/10.6.15.3/OJP-EFA01-I
+      Date: Tue, 23 Jan 2024 12:53:02 GMT
+      Content-Type: text/xml
+      Accept-Ranges: none
+      Content-Length: 1137
+      Last-Modified: Tue, 23 Jan 2024 12:53:02 GMT
+      Connection: Keep-Alive
+      Content-Encoding: gzip
+      Access-Control-Allow-Origin: *
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: xml
+      content: '''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <siri:OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns:ojp="http://www.vdv.de/ojp" version="1.0">
+            <siri:OJPResponse>
+                <siri:ServiceDelivery>
+                    <siri:ResponseTimestamp>2024-01-23T12:53:02Z</siri:ResponseTimestamp>
+                    <siri:ProducerRef>EFAController10.6.15.3-OJP-EFA01-I</siri:ProducerRef>
+                    <siri:ResponseMessageIdentifier>000c6441fb12faaf</siri:ResponseMessageIdentifier>
+                    <siri:Status>true</siri:Status>
+                    <ojp:OJPTripDelivery>
+                        <siri:ResponseTimestamp>2024-01-23T12:53:01Z</siri:ResponseTimestamp>
+                        <siri:RequestMessageRef>TR-1s</siri:RequestMessageRef>
+                        <siri:Status>true</siri:Status>
+                        <ojp:CalcTime>1212</ojp:CalcTime>
+                        <ojp:TripResponseContext>
+                            <ojp:Places>
+                                <ojp:Location>
+                                    <ojp:StopPlace>
+                                        <ojp:StopPlaceRef>8591441</ojp:StopPlaceRef>
+                                        <ojp:StopPlaceName>
+                                            <ojp:Text xml:lang="de">Zürich, Zielweg</ojp:Text>
+                                        </ojp:StopPlaceName>
+                                        <ojp:PrivateCode>
+                                            <ojp:System>EFA</ojp:System>
+                                            <ojp:Value>128552</ojp:Value>
+                                        </ojp:PrivateCode>
+                                        <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                    </ojp:StopPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Zürich, Zielweg</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>8.49759</siri:Longitude>
+                                        <siri:Latitude>47.35882</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:TopographicPlace>
+                                        <ojp:TopographicPlaceCode>23026261:27</ojp:TopographicPlaceCode>
+                                        <ojp:TopographicPlaceName>
+                                            <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                        </ojp:TopographicPlaceName>
+                                    </ojp:TopographicPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>8.49759</siri:Longitude>
+                                        <siri:Latitude>47.35882</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:StopPlace>
+                                        <ojp:StopPlaceRef>8503057</ojp:StopPlaceRef>
+                                        <ojp:StopPlaceName>
+                                            <ojp:Text xml:lang="de">Uetliberg</ojp:Text>
+                                        </ojp:StopPlaceName>
+                                        <ojp:PrivateCode>
+                                            <ojp:System>EFA</ojp:System>
+                                            <ojp:Value>108300</ojp:Value>
+                                        </ojp:PrivateCode>
+                                        <ojp:TopographicPlaceRef>23026013:8</ojp:TopographicPlaceRef>
+                                    </ojp:StopPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Uetliberg</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>8.48755</siri:Longitude>
+                                        <siri:Latitude>47.35207</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                            </ojp:Places>
+                        </ojp:TripResponseContext>
+                        <ojp:TripResult>
+                            <ojp:ResultId>ID-A72EB840-6CED-41D6-9AE3-E32949917179</ojp:ResultId>
+                            <ojp:Trip>
+                                <ojp:TripId>ID-A72EB840-6CED-41D6-9AE3-E32949917179</ojp:TripId>
+                                <ojp:Duration>PT44M</ojp:Duration>
+                                <ojp:StartTime>2024-01-23T12:11:00Z</ojp:StartTime>
+                                <ojp:EndTime>2024-01-23T12:54:34Z</ojp:EndTime>
+                                <ojp:Transfers>0</ojp:Transfers>
+                                <ojp:Distance>2088</ojp:Distance>
+                                <ojp:TripLeg>
+                                    <ojp:LegId>1</ojp:LegId>
+                                    <ojp:ContinuousLeg>
+                                        <ojp:LegStart>
+                                            <siri:StopPointRef>8591441</siri:StopPointRef>
+                                            <ojp:LocationName>
+                                                <ojp:Text xml:lang="de">Zürich, Zielweg</ojp:Text>
+                                            </ojp:LocationName>
+                                        </ojp:LegStart>
+                                        <ojp:LegEnd>
+                                            <siri:StopPointRef>8503057</siri:StopPointRef>
+                                            <ojp:LocationName>
+                                                <ojp:Text xml:lang="de">Uetliberg</ojp:Text>
+                                            </ojp:LocationName>
+                                        </ojp:LegEnd>
+                                        <ojp:Service>
+                                            <ojp:IndividualMode>walk</ojp:IndividualMode>
+                                        </ojp:Service>
+                                        <ojp:TimeWindowStart>2024-01-23T12:11:00Z</ojp:TimeWindowStart>
+                                        <ojp:TimeWindowEnd>2024-01-23T12:54:34Z</ojp:TimeWindowEnd>
+                                        <ojp:Duration>PT44M</ojp:Duration>
+                                        <ojp:Length>2088</ojp:Length>
+                                    </ojp:ContinuousLeg>
+                                </ojp:TripLeg>
+                            </ojp:Trip>
+                        </ojp:TripResult>
+                    </ojp:OJPTripDelivery>
+                </siri:ServiceDelivery>
+            </siri:OJPResponse>
+        </siri:OJP>
+      '''
+    }
+  }
 }

@@ -30,7 +30,7 @@ body:xml {
                   <MessageIdentifier>ODV_2b</MessageIdentifier>
                   <ojp:Origin>
                       <ojp:PlaceRef>
-                          <StopPlaceRef>8506916</StopPlaceRef>
+                          <StopPlaceRef>ch:1:sloid:6916</StopPlaceRef>
                           <LocationName>
                               <Text>Bettens, village (Bettens)</Text>
                           </LocationName>
@@ -39,7 +39,7 @@ body:xml {
                   </ojp:Origin>
                   <Destination>
                       <PlaceRef>
-                          <StopPlaceRef>8507970</StopPlaceRef>
+                          <StopPlaceRef>ch:1:sloid:7970</StopPlaceRef>
                           <LocationName>
                               <Text>Villars-le-Terroir, poste (Villars-le-Terroir)</Text>
                           </LocationName>
@@ -74,5 +74,606 @@ script:post-response {
 
 settings {
   encodeUrl: true
-  timeout: 0
+}
+
+example {
+  name: ODV_2b_Publicar-Vaud-Nuit_Renens-Orbe-RueDavall_00:03-mit-ODV
+  
+  request: {
+    url: {{server}}
+    method: POST
+    mode: xml
+    headers: {
+      Content-Type: text/xml
+    }
+  
+    body:xml: {
+      <?xml version="1.0" encoding="UTF-8"?>
+      <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+          <OJPRequest>
+              <ServiceRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <RequestorRef>SKIPlusRegTest</RequestorRef>
+                  <ojp:OJPTripRequest>
+                      <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                      <MessageIdentifier>ODV_2b</MessageIdentifier>
+                      <ojp:Origin>
+                          <ojp:PlaceRef>
+                              <StopPointRef>8501118</StopPointRef>
+                              <ojp:LocationName>
+                                  <ojp:Text>Renens VD (Renens VD)</ojp:Text>
+                              </ojp:LocationName>
+                          </ojp:PlaceRef>
+                          <ojp:DepArrTime>{{Samstag0003UhrVorFahrplanwechsel}}</ojp:DepArrTime>
+                      </ojp:Origin>
+                      <ojp:Destination>
+                          <ojp:PlaceRef>
+                              <ojp:GeoPosition>
+                                  <Longitude>6.532931</Longitude>
+                                  <Latitude>46.722742</Latitude>
+                              </ojp:GeoPosition>
+                              <ojp:LocationName>
+                                  <ojp:Text>Rue Davall (Orbe)</ojp:Text>
+                              </ojp:LocationName>
+                          </ojp:PlaceRef>
+                      </ojp:Destination>
+                      <ojp:Params>
+                          <ojp:NumberOfResults>1</ojp:NumberOfResults>
+                          <ojp:IncludeTrackSections>false</ojp:IncludeTrackSections>
+                          <ojp:IncludeLegProjection>false</ojp:IncludeLegProjection>
+                          <ojp:IncludeTurnDescription>false</ojp:IncludeTurnDescription>
+                          <ojp:IncludeIntermediateStops>false</ojp:IncludeIntermediateStops>
+                      </ojp:Params>
+                  </ojp:OJPTripRequest>
+              </ServiceRequest>
+          </OJPRequest>
+      </OJP>
+      
+    }
+  }
+  
+  response: {
+    headers: {
+      Date: Tue, 23 Jul 2024 15:46:57 GMT
+      Content-Type: text/xml
+      Content-Length: 2371
+      Connection: keep-alive
+      Accept-Ranges: none
+      Access-Control-Allow-Origin: *
+      Content-Encoding: gzip
+      Last-Modified: Tue, 23 Jul 2024 15:46:57 GMT
+      Vary: Origin
+      X-Ratelimit-Limit: -1
+      X-Ratelimit-Remaining: 0
+      X-Ratelimit-Reset: 0
+      Strict-Transport-Security: max-age=15724800; includeSubDomains
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: xml
+      content: '''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <siri:OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns:ojp="http://www.vdv.de/ojp" version="1.0">
+            <siri:OJPResponse>
+                <siri:ServiceDelivery>
+                    <siri:ResponseTimestamp>2024-07-23T15:46:57Z</siri:ResponseTimestamp>
+                    <siri:ProducerRef>optmentzEFAControllerEFAController10.6.19.33-build-1649-1fceb307b381</siri:ProducerRef>
+                    <siri:ResponseMessageIdentifier>efcda371db0d4b92</siri:ResponseMessageIdentifier>
+                    <siri:Status>true</siri:Status>
+                    <ojp:OJPTripDelivery>
+                        <siri:ResponseTimestamp>2024-07-23T15:46:56Z</siri:ResponseTimestamp>
+                        <siri:RequestMessageRef>ODV_2b</siri:RequestMessageRef>
+                        <siri:Status>true</siri:Status>
+                        <ojp:CalcTime>1021</ojp:CalcTime>
+                        <ojp:TripResponseContext>
+                            <ojp:Places>
+                                <ojp:Location>
+                                    <ojp:StopPlace>
+                                        <ojp:StopPlaceRef>8501118</ojp:StopPlaceRef>
+                                        <ojp:StopPlaceName>
+                                            <ojp:Text xml:lang="de">Renens VD</ojp:Text>
+                                        </ojp:StopPlaceName>
+                                        <ojp:PrivateCode>
+                                            <ojp:System>EFA</ojp:System>
+                                            <ojp:Value>107098</ojp:Value>
+                                        </ojp:PrivateCode>
+                                        <ojp:TopographicPlaceRef>23023591:1</ojp:TopographicPlaceRef>
+                                    </ojp:StopPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Renens VD</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>6.58092</siri:Longitude>
+                                        <siri:Latitude>46.53621</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:StopPoint>
+                                        <siri:StopPointRef>ch:1:sloid:1118:1:1</siri:StopPointRef>
+                                        <ojp:StopPointName>
+                                            <ojp:Text xml:lang="de">Renens VD</ojp:Text>
+                                        </ojp:StopPointName>
+                                        <ojp:PrivateCode>
+                                            <ojp:System>EFA</ojp:System>
+                                            <ojp:Value>107098:0:1</ojp:Value>
+                                        </ojp:PrivateCode>
+                                        <ojp:ParentRef>8501118</ojp:ParentRef>
+                                        <ojp:TopographicPlaceRef>23023591:1</ojp:TopographicPlaceRef>
+                                    </ojp:StopPoint>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Renens VD</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>6.58092</siri:Longitude>
+                                        <siri:Latitude>46.53621</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:TopographicPlace>
+                                        <ojp:TopographicPlaceCode>23023591:1</ojp:TopographicPlaceCode>
+                                        <ojp:TopographicPlaceName>
+                                            <ojp:Text xml:lang="de">Renens VD</ojp:Text>
+                                        </ojp:TopographicPlaceName>
+                                    </ojp:TopographicPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Renens VD</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>6.58092</siri:Longitude>
+                                        <siri:Latitude>46.53621</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:StopPlace>
+                                        <ojp:StopPlaceRef>8501107</ojp:StopPlaceRef>
+                                        <ojp:StopPlaceName>
+                                            <ojp:Text xml:lang="de">Arnex</ojp:Text>
+                                        </ojp:StopPlaceName>
+                                        <ojp:PrivateCode>
+                                            <ojp:System>EFA</ojp:System>
+                                            <ojp:Value>107088</ojp:Value>
+                                        </ojp:PrivateCode>
+                                        <ojp:TopographicPlaceRef>23023743:1</ojp:TopographicPlaceRef>
+                                    </ojp:StopPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Arnex</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>6.51893</siri:Longitude>
+                                        <siri:Latitude>46.69824</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:StopPoint>
+                                        <siri:StopPointRef>ch:1:sloid:1107:0:824</siri:StopPointRef>
+                                        <ojp:StopPointName>
+                                            <ojp:Text xml:lang="de">Arnex</ojp:Text>
+                                        </ojp:StopPointName>
+                                        <ojp:PrivateCode>
+                                            <ojp:System>EFA</ojp:System>
+                                            <ojp:Value>107088:0:2</ojp:Value>
+                                        </ojp:PrivateCode>
+                                        <ojp:ParentRef>8501107</ojp:ParentRef>
+                                        <ojp:TopographicPlaceRef>23023743:1</ojp:TopographicPlaceRef>
+                                    </ojp:StopPoint>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Arnex</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>6.51893</siri:Longitude>
+                                        <siri:Latitude>46.69824</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:TopographicPlace>
+                                        <ojp:TopographicPlaceCode>23023743:1</ojp:TopographicPlaceCode>
+                                        <ojp:TopographicPlaceName>
+                                            <ojp:Text xml:lang="de">Arnex-sur-Orbe</ojp:Text>
+                                        </ojp:TopographicPlaceName>
+                                    </ojp:TopographicPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Arnex-sur-Orbe</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>6.51893</siri:Longitude>
+                                        <siri:Latitude>46.69824</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:StopPlace>
+                                        <ojp:StopPlaceRef>8501103</ojp:StopPlaceRef>
+                                        <ojp:StopPlaceName>
+                                            <ojp:Text xml:lang="de">Vallorbe</ojp:Text>
+                                        </ojp:StopPlaceName>
+                                        <ojp:PrivateCode>
+                                            <ojp:System>EFA</ojp:System>
+                                            <ojp:Value>107084</ojp:Value>
+                                        </ojp:PrivateCode>
+                                        <ojp:TopographicPlaceRef>23023764:3</ojp:TopographicPlaceRef>
+                                    </ojp:StopPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Vallorbe</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>6.37056</siri:Longitude>
+                                        <siri:Latitude>46.71241</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:TopographicPlace>
+                                        <ojp:TopographicPlaceCode>23023764:3</ojp:TopographicPlaceCode>
+                                        <ojp:TopographicPlaceName>
+                                            <ojp:Text xml:lang="de">Vallorbe</ojp:Text>
+                                        </ojp:TopographicPlaceName>
+                                    </ojp:TopographicPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Vallorbe</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>6.37056</siri:Longitude>
+                                        <siri:Latitude>46.71241</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:StopPoint>
+                                        <siri:StopPointRef>ch:1:sloid:1107:0:924</siri:StopPointRef>
+                                        <ojp:StopPointName>
+                                            <ojp:Text xml:lang="de">Arnex</ojp:Text>
+                                        </ojp:StopPointName>
+                                        <ojp:PrivateCode>
+                                            <ojp:System>EFA</ojp:System>
+                                            <ojp:Value>107088:0:1</ojp:Value>
+                                        </ojp:PrivateCode>
+                                        <ojp:ParentRef>8501107</ojp:ParentRef>
+                                        <ojp:TopographicPlaceRef>23023743:-1</ojp:TopographicPlaceRef>
+                                    </ojp:StopPoint>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Arnex</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>6.51885</siri:Longitude>
+                                        <siri:Latitude>46.69809</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:TopographicPlace>
+                                        <ojp:TopographicPlaceCode>23023743:0</ojp:TopographicPlaceCode>
+                                        <ojp:TopographicPlaceName>
+                                            <ojp:Text xml:lang="de">Arnex-sur-Orbe</ojp:Text>
+                                        </ojp:TopographicPlaceName>
+                                    </ojp:TopographicPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Arnex-sur-Orbe</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>6.51893</siri:Longitude>
+                                        <siri:Latitude>46.69824</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                            </ojp:Places>
+                        </ojp:TripResponseContext>
+                        <ojp:TripResult>
+                            <ojp:ResultId>ID-75399D82-073F-408B-BFB9-0ADF80082863</ojp:ResultId>
+                            <ojp:Trip>
+                                <ojp:TripId>ID-75399D82-073F-408B-BFB9-0ADF80082863</ojp:TripId>
+                                <ojp:Duration>PT28M</ojp:Duration>
+                                <ojp:StartTime>2024-12-13T23:08:00Z</ojp:StartTime>
+                                <ojp:EndTime>2024-12-13T23:36:00Z</ojp:EndTime>
+                                <ojp:Transfers>1</ojp:Transfers>
+                                <ojp:Distance>26328</ojp:Distance>
+                                <ojp:TripLeg>
+                                    <ojp:LegId>1</ojp:LegId>
+                                    <ojp:TimedLeg>
+                                        <ojp:LegBoard>
+                                            <siri:StopPointRef>ch:1:sloid:1118:1:1</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Renens VD</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:PlannedQuay>
+                                                <ojp:Text xml:lang="de">1</ojp:Text>
+                                            </ojp:PlannedQuay>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2024-12-13T23:08:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>1</ojp:Order>
+                                        </ojp:LegBoard>
+                                        <ojp:LegAlight>
+                                            <siri:StopPointRef>ch:1:sloid:1107:0:824</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Arnex</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:PlannedQuay>
+                                                <ojp:Text xml:lang="de">2</ojp:Text>
+                                            </ojp:PlannedQuay>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2024-12-13T23:29:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:Order>2</ojp:Order>
+                                        </ojp:LegAlight>
+                                        <ojp:Service>
+                                            <ojp:OperatingDayRef>2024-12-14</ojp:OperatingDayRef>
+                                            <ojp:JourneyRef>ch:1:sjyid:100001:24492-001</ojp:JourneyRef>
+                                            <siri:LineRef>ojp:91004:L</siri:LineRef>
+                                            <siri:DirectionRef>H</siri:DirectionRef>
+                                            <ojp:Mode>
+                                                <ojp:PtMode>rail</ojp:PtMode>
+                                                <siri:RailSubmode>regionalRail</siri:RailSubmode>
+                                                <ojp:Name>
+                                                    <ojp:Text xml:lang="de">Zug</ojp:Text>
+                                                </ojp:Name>
+                                                <ojp:ShortName>
+                                                    <ojp:Text xml:lang="de">R</ojp:Text>
+                                                </ojp:ShortName>
+                                            </ojp:Mode>
+                                            <ojp:PublishedLineName>
+                                                <ojp:Text xml:lang="de">R4</ojp:Text>
+                                            </ojp:PublishedLineName>
+                                            <ojp:OperatorRef>ojp:11</ojp:OperatorRef>
+                                            <ojp:DestinationStopPointRef>8501103</ojp:DestinationStopPointRef>
+                                            <ojp:DestinationText>
+                                                <ojp:Text xml:lang="de">Vallorbe</ojp:Text>
+                                            </ojp:DestinationText>
+                                        </ojp:Service>
+                                        <ojp:Extension>
+                                            <ojp:TransportTypeName>
+                                                <ojp:Text xml:lang="de">Regio</ojp:Text>
+                                            </ojp:TransportTypeName>
+                                            <ojp:PublishedJourneyNumber>
+                                                <ojp:Text xml:lang="de">24492</ojp:Text>
+                                            </ojp:PublishedJourneyNumber>
+                                            <ojp:OperatorName>
+                                                <ojp:Text xml:lang="de">Schweizerische Bundesbahnen SBB</ojp:Text>
+                                            </ojp:OperatorName>
+                                            <ojp:RealtimeTripId>
+                                                <ojp:Text xml:lang="de">ch:1:sjyid:100001:24492-001</ojp:Text>
+                                            </ojp:RealtimeTripId>
+                                        </ojp:Extension>
+                                    </ojp:TimedLeg>
+                                </ojp:TripLeg>
+                                <ojp:TripLeg>
+                                    <ojp:LegId>2</ojp:LegId>
+                                    <ojp:TimedLeg>
+                                        <ojp:LegBoard>
+                                            <siri:StopPointRef>ch:1:sloid:1107:0:924</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Arnex</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2024-12-13T23:30:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>1</ojp:Order>
+                                            <ojp:RequestStop>true</ojp:RequestStop>
+                                        </ojp:LegBoard>
+                                        <ojp:LegAlight>
+                                            <siri:StopPointRef>99999998</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Rue Davall (Orbe)</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2024-12-13T23:36:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:Order>2</ojp:Order>
+                                            <ojp:RequestStop>true</ojp:RequestStop>
+                                        </ojp:LegAlight>
+                                        <ojp:Service>
+                                            <ojp:OperatingDayRef>2024-12-14</ojp:OperatingDayRef>
+                                            <ojp:JourneyRef>odv:99971:_:R:j24:0</ojp:JourneyRef>
+                                            <siri:LineRef>odv:99971:_</siri:LineRef>
+                                            <siri:DirectionRef>R</siri:DirectionRef>
+                                            <ojp:Mode>
+                                                <ojp:PtMode>bus</ojp:PtMode>
+                                                <siri:BusSubmode>demandAndResponseBus</siri:BusSubmode>
+                                                <ojp:Name>
+                                                    <ojp:Text xml:lang="de">Publicar Vaud Nuit</ojp:Text>
+                                                </ojp:Name>
+                                            </ojp:Mode>
+                                            <ojp:PublishedLineName>
+                                                <ojp:Text xml:lang="de">Publicar Vaud</ojp:Text>
+                                            </ojp:PublishedLineName>
+                                            <ojp:OperatorRef>odv:PAG</ojp:OperatorRef>
+                                            <ojp:Attribute>
+                                                <ojp:Text>
+                                                    <ojp:Text xml:lang="de">Zuschlagspflichtig</ojp:Text>
+                                                </ojp:Text>
+                                                <ojp:Code>Z</ojp:Code>
+                                            </ojp:Attribute>
+                                            <ojp:Attribute>
+                                                <ojp:Text>
+                                                    <ojp:Text xml:lang="de">Platzreservierung obligatorisch</ojp:Text>
+                                                </ojp:Text>
+                                                <ojp:Code>RR</ojp:Code>
+                                            </ojp:Attribute>
+                                            <ojp:DestinationText>
+                                                <ojp:Text xml:lang="de">Rue Davall (Orbe)</ojp:Text>
+                                            </ojp:DestinationText>
+                                        </ojp:Service>
+                                        <ojp:Extension>
+                                            <ojp:OperatorName>
+                                                <ojp:Text xml:lang="de">PostAuto AG</ojp:Text>
+                                            </ojp:OperatorName>
+                                        </ojp:Extension>
+                                    </ojp:TimedLeg>
+                                </ojp:TripLeg>
+                            </ojp:Trip>
+                        </ojp:TripResult>
+                        <ojp:TripResult>
+                            <ojp:ResultId>ID-B5880CE0-E76B-40C1-9BBF-CE82D7260CE6</ojp:ResultId>
+                            <ojp:Trip>
+                                <ojp:TripId>ID-B5880CE0-E76B-40C1-9BBF-CE82D7260CE6</ojp:TripId>
+                                <ojp:Duration>PT28M</ojp:Duration>
+                                <ojp:StartTime>2024-12-13T23:08:00Z</ojp:StartTime>
+                                <ojp:EndTime>2024-12-13T23:36:00Z</ojp:EndTime>
+                                <ojp:Transfers>1</ojp:Transfers>
+                                <ojp:Distance>26328</ojp:Distance>
+                                <ojp:TripLeg>
+                                    <ojp:LegId>1</ojp:LegId>
+                                    <ojp:TimedLeg>
+                                        <ojp:LegBoard>
+                                            <siri:StopPointRef>ch:1:sloid:1118:1:1</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Renens VD</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:PlannedQuay>
+                                                <ojp:Text xml:lang="de">1</ojp:Text>
+                                            </ojp:PlannedQuay>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2024-12-13T23:08:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>1</ojp:Order>
+                                        </ojp:LegBoard>
+                                        <ojp:LegAlight>
+                                            <siri:StopPointRef>ch:1:sloid:1107:0:824</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Arnex</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:PlannedQuay>
+                                                <ojp:Text xml:lang="de">2</ojp:Text>
+                                            </ojp:PlannedQuay>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2024-12-13T23:29:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:Order>2</ojp:Order>
+                                        </ojp:LegAlight>
+                                        <ojp:Service>
+                                            <ojp:OperatingDayRef>2024-12-14</ojp:OperatingDayRef>
+                                            <ojp:JourneyRef>ch:1:sjyid:100001:24492-001</ojp:JourneyRef>
+                                            <siri:LineRef>ojp:91004:L</siri:LineRef>
+                                            <siri:DirectionRef>H</siri:DirectionRef>
+                                            <ojp:Mode>
+                                                <ojp:PtMode>rail</ojp:PtMode>
+                                                <siri:RailSubmode>regionalRail</siri:RailSubmode>
+                                                <ojp:Name>
+                                                    <ojp:Text xml:lang="de">Zug</ojp:Text>
+                                                </ojp:Name>
+                                                <ojp:ShortName>
+                                                    <ojp:Text xml:lang="de">R</ojp:Text>
+                                                </ojp:ShortName>
+                                            </ojp:Mode>
+                                            <ojp:PublishedLineName>
+                                                <ojp:Text xml:lang="de">R4</ojp:Text>
+                                            </ojp:PublishedLineName>
+                                            <ojp:OperatorRef>ojp:11</ojp:OperatorRef>
+                                            <ojp:DestinationStopPointRef>8501103</ojp:DestinationStopPointRef>
+                                            <ojp:DestinationText>
+                                                <ojp:Text xml:lang="de">Vallorbe</ojp:Text>
+                                            </ojp:DestinationText>
+                                        </ojp:Service>
+                                        <ojp:Extension>
+                                            <ojp:TransportTypeName>
+                                                <ojp:Text xml:lang="de">Regio</ojp:Text>
+                                            </ojp:TransportTypeName>
+                                            <ojp:PublishedJourneyNumber>
+                                                <ojp:Text xml:lang="de">24492</ojp:Text>
+                                            </ojp:PublishedJourneyNumber>
+                                            <ojp:OperatorName>
+                                                <ojp:Text xml:lang="de">Schweizerische Bundesbahnen SBB</ojp:Text>
+                                            </ojp:OperatorName>
+                                            <ojp:RealtimeTripId>
+                                                <ojp:Text xml:lang="de">ch:1:sjyid:100001:24492-001</ojp:Text>
+                                            </ojp:RealtimeTripId>
+                                        </ojp:Extension>
+                                    </ojp:TimedLeg>
+                                </ojp:TripLeg>
+                                <ojp:TripLeg>
+                                    <ojp:LegId>2</ojp:LegId>
+                                    <ojp:TimedLeg>
+                                        <ojp:LegBoard>
+                                            <siri:StopPointRef>ch:1:sloid:1107:0:924</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Arnex</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2024-12-13T23:30:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>1</ojp:Order>
+                                            <ojp:RequestStop>true</ojp:RequestStop>
+                                        </ojp:LegBoard>
+                                        <ojp:LegAlight>
+                                            <siri:StopPointRef>99999998</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Rue Davall (Orbe)</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2024-12-13T23:36:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:Order>2</ojp:Order>
+                                            <ojp:RequestStop>true</ojp:RequestStop>
+                                        </ojp:LegAlight>
+                                        <ojp:Service>
+                                            <ojp:OperatingDayRef>2024-12-14</ojp:OperatingDayRef>
+                                            <ojp:JourneyRef>odv:99971:_:R:j24:0</ojp:JourneyRef>
+                                            <siri:LineRef>odv:99971:_</siri:LineRef>
+                                            <siri:DirectionRef>R</siri:DirectionRef>
+                                            <ojp:Mode>
+                                                <ojp:PtMode>bus</ojp:PtMode>
+                                                <siri:BusSubmode>demandAndResponseBus</siri:BusSubmode>
+                                                <ojp:Name>
+                                                    <ojp:Text xml:lang="de">Publicar Vaud Nuit</ojp:Text>
+                                                </ojp:Name>
+                                            </ojp:Mode>
+                                            <ojp:PublishedLineName>
+                                                <ojp:Text xml:lang="de">Publicar Vaud</ojp:Text>
+                                            </ojp:PublishedLineName>
+                                            <ojp:OperatorRef>odv:PAG</ojp:OperatorRef>
+                                            <ojp:Attribute>
+                                                <ojp:Text>
+                                                    <ojp:Text xml:lang="de">Zuschlagspflichtig</ojp:Text>
+                                                </ojp:Text>
+                                                <ojp:Code>Z</ojp:Code>
+                                            </ojp:Attribute>
+                                            <ojp:Attribute>
+                                                <ojp:Text>
+                                                    <ojp:Text xml:lang="de">Platzreservierung obligatorisch</ojp:Text>
+                                                </ojp:Text>
+                                                <ojp:Code>RR</ojp:Code>
+                                            </ojp:Attribute>
+                                            <ojp:DestinationText>
+                                                <ojp:Text xml:lang="de">Rue Davall (Orbe)</ojp:Text>
+                                            </ojp:DestinationText>
+                                        </ojp:Service>
+                                        <ojp:Extension>
+                                            <ojp:OperatorName>
+                                                <ojp:Text xml:lang="de">PostAuto AG</ojp:Text>
+                                            </ojp:OperatorName>
+                                        </ojp:Extension>
+                                    </ojp:TimedLeg>
+                                </ojp:TripLeg>
+                            </ojp:Trip>
+                        </ojp:TripResult>
+                    </ojp:OJPTripDelivery>
+                </siri:ServiceDelivery>
+            </siri:OJPResponse>
+        </siri:OJP>
+      '''
+    }
+  }
 }

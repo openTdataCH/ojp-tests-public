@@ -1,7 +1,7 @@
 meta {
   name: Shr-3a1 LIR Leihrad Zürich
   type: http
-  seq: 1
+  seq: 3
 }
 
 post {
@@ -57,19 +57,1312 @@ body:xml {
 
 script:post-response {
   test("Body matches string bicycle_rental", function () {
-      expect(res.getBody()?.toString()
-  ).to.include("<ojp:Value>bicycle_rental</ojp:Value>");
+      expect(res.getBody()?.toString()).to.include("<ojp:Value>bicycle_rental</ojp:Value>");
   });
   test("Body matches string num_docks and vehicles available", function () {
-      expect(res.getBody()?.toString()
-  ).to.include("ojp:num_vehicles_available")
-      expect(res.getBody()?.toString()
-  ).to.include("ojp:num_docks_available");;
+      expect(res.getBody()?.toString()).to.include("ojp:num_vehicles_available")
+      expect(res.getBody()?.toString()).to.include("ojp:num_docks_available");;
   });
   
 }
 
 settings {
   encodeUrl: true
-  timeout: 0
+}
+
+example {
+  name: Shr-3a1 LIR Leihrad Zürich
+  
+  request: {
+    url: {{server}}
+    method: POST
+    mode: xml
+    headers: {
+      Content-Type: text/xml
+    }
+  
+    body:xml: {
+      <OJP xmlns="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd" version="1.0">
+          <OJPRequest>
+              <ServiceRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <RequestorRef>SKIPlusRegTest</RequestorRef>
+                  <ojp:OJPLocationInformationRequest>
+                      <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                      <MessageIdentifier>Shr-3a</MessageIdentifier>
+                      <ojp:InitialInput>
+                          <ojp:GeoRestriction>
+                              <ojp:Circle> <!--Anfrag mittels Circle oder Rectangle-->
+                                  <ojp:Center> <!--Koordinate, zu welcher Objekte geliefert werden sollen-->
+                                      <Longitude>8.538788</Longitude> <!--WGS84 Lon-->
+                                      <Latitude>47.374773</Latitude> <!--WGS84 Lat-->
+                                  </ojp:Center>
+                                  <ojp:Radius>500</ojp:Radius>  <!--Radius in Meter um Koordinate-->
+                              </ojp:Circle>
+                          </ojp:GeoRestriction>
+                      </ojp:InitialInput>
+                      <ojp:Restrictions>
+                          <ojp:Type>poi</ojp:Type>
+                          <ojp:PointOfInterestFilter>
+                              <ojp:PointOfInterestCategory>
+                                  <ojp:OsmTag>
+                                      <ojp:Tag>amenity</ojp:Tag>
+                                      <ojp:Value>bicycle_rental</ojp:Value>
+                                  </ojp:OsmTag>
+                              </ojp:PointOfInterestCategory>
+                          </ojp:PointOfInterestFilter>
+                      </ojp:Restrictions>
+                  </ojp:OJPLocationInformationRequest>
+              </ServiceRequest>
+          </OJPRequest>
+      </OJP>
+    }
+  }
+  
+  response: {
+    headers: {
+      Date: Wed, 17 Dec 2025 15:35:51 GMT
+      Content-Type: text/xml
+      Content-Length: 3193
+      Connection: keep-alive
+      Accept-Ranges: none
+      Access-Control-Allow-Origin: *
+      Content-Encoding: gzip
+      Last-Modified: Wed, 17 Dec 2025 15:35:51 GMT
+      Vary: Origin
+      X-Ratelimit-Limit: -1
+      X-Ratelimit-Remaining: 0
+      X-Ratelimit-Reset: 0
+      Strict-Transport-Security: max-age=31536000; includeSubDomains
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: xml
+      content: '''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <siri:OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns:ojp="http://www.vdv.de/ojp" version="1.0">
+            <siri:OJPResponse>
+                <siri:ServiceDelivery>
+                    <siri:ResponseTimestamp>2025-12-17T15:35:51Z</siri:ResponseTimestamp>
+                    <siri:ProducerRef>optmentzEFAControllerEFAController11.0.8.39-build-320-8f1cefd9dded</siri:ProducerRef>
+                    <siri:ResponseMessageIdentifier>86304efbc715ee570000f451</siri:ResponseMessageIdentifier>
+                    <siri:Status>true</siri:Status>
+                    <ojp:OJPLocationInformationDelivery>
+                        <siri:ResponseTimestamp>2025-12-17T15:35:51Z</siri:ResponseTimestamp>
+                        <siri:RequestMessageRef>Shr-3a</siri:RequestMessageRef>
+                        <siri:Status>true</siri:Status>
+                        <ojp:CalcTime>77</ojp:CalcTime>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:45327:23026261:-1:Migros City:Zürich:Migros City:ANY:POI:950256:5996481:MRCV:ROKAS</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Migros City</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>parking_deck</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>parking</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23026261:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53629</siri:Longitude>
+                                    <siri:Latitude>47.37512</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.525075078</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:45318:23026261:-1:Parkhaus Jelmoli:Zürich:Parkhaus Jelmoli:ANY:POI:950250:5996712:MRCV:ROKAS</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Parkhaus Jelmoli</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>parking_deck</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>parking</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23026261:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53624</siri:Longitude>
+                                    <siri:Latitude>47.37371</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.449999988</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950398:5996505:MRCV:Lime City partners from Partners::RegionFeedMediator </ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53757</siri:Longitude>
+                                    <siri:Latitude>47.37497</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>64cfbe7a-06c9-4592-a31b-11096bcca4af</ojp:Code>
+                                    <siri:HireFacility>recreationDeviceHire</siri:HireFacility>
+                                    <ojp:InfoURL/>
+                                </ojp:Attribute>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950392:5996500:MRCV:Lime City partners from Partners::RegionFeedMediator </ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53752</siri:Longitude>
+                                    <siri:Latitude>47.37500</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>0bb5ffee-9172-4ba8-894a-9ffac9f80f86</ojp:Code>
+                                    <siri:HireFacility>recreationDeviceHire</siri:HireFacility>
+                                    <ojp:InfoURL/>
+                                </ojp:Attribute>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950368:5996441:MRCV:Lime City partners from Partners::RegionFeedMediator </ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53730</siri:Longitude>
+                                    <siri:Latitude>47.37536</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>8f92a251-ee10-42a6-874a-d9212e0c36b8</ojp:Code>
+                                    <siri:HireFacility>recreationDeviceHire</siri:HireFacility>
+                                    <ojp:InfoURL/>
+                                </ojp:Attribute>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950496:5996346:MRCV:Lime City partners from Partners::RegionFeedMediator </ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53845</siri:Longitude>
+                                    <siri:Latitude>47.37594</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>5a0090a0-5639-40bf-8b66-1f135ae6928a</ojp:Code>
+                                    <siri:HireFacility>recreationDeviceHire</siri:HireFacility>
+                                    <ojp:InfoURL/>
+                                </ojp:Attribute>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950302:5996441:MRCV:Lime City partners from Partners::RegionFeedMediator </ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53671</siri:Longitude>
+                                    <siri:Latitude>47.37536</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>f1755fef-280b-4098-af99-afe03d56c9e1</ojp:Code>
+                                    <siri:HireFacility>recreationDeviceHire</siri:HireFacility>
+                                    <ojp:InfoURL/>
+                                </ojp:Attribute>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950427:5996243:MRCV:Lime City partners from Partners::RegionFeedMediator </ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53783</siri:Longitude>
+                                    <siri:Latitude>47.37656</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>b0aab937-2308-495e-8271-87e40b3ac065</ojp:Code>
+                                    <siri:HireFacility>recreationDeviceHire</siri:HireFacility>
+                                    <ojp:InfoURL/>
+                                </ojp:Attribute>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950523:5996859:MRCV:Lime City partners from Partners::RegionFeedMediator </ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53869</siri:Longitude>
+                                    <siri:Latitude>47.37282</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>f9dc8c69-5746-42f9-9336-b88ececd1b86</ojp:Code>
+                                    <siri:HireFacility>recreationDeviceHire</siri:HireFacility>
+                                    <ojp:InfoURL/>
+                                </ojp:Attribute>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950196:5996575:MRCV:Lime City partners from Partners::RegionFeedMediator </ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53576</siri:Longitude>
+                                    <siri:Latitude>47.37454</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>76597554-97b0-46ef-8c46-1b4e0c933766</ojp:Code>
+                                    <siri:HireFacility>recreationDeviceHire</siri:HireFacility>
+                                    <ojp:InfoURL/>
+                                </ojp:Attribute>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950174:5996485:MRCV:Lime City partners from Partners::RegionFeedMediator </ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53556</siri:Longitude>
+                                    <siri:Latitude>47.37509</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>3124597c-b64b-4420-b6b4-fd53d480c93d</ojp:Code>
+                                    <siri:HireFacility>recreationDeviceHire</siri:HireFacility>
+                                    <ojp:InfoURL/>
+                                </ojp:Attribute>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950725:5996171:MRCV:Lime City partners from Partners::RegionFeedMediator </ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.54051</siri:Longitude>
+                                    <siri:Latitude>47.37700</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>9a21c465-2ce8-46c2-8720-55933434c57e</ojp:Code>
+                                    <siri:HireFacility>recreationDeviceHire</siri:HireFacility>
+                                    <ojp:InfoURL/>
+                                </ojp:Attribute>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950377:5996147:MRCV:Lime City partners from Partners::RegionFeedMediator </ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53738</siri:Longitude>
+                                    <siri:Latitude>47.37715</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>59c02e5c-c400-4be7-b1ab-c8fd952db3c4</ojp:Code>
+                                    <siri:HireFacility>recreationDeviceHire</siri:HireFacility>
+                                    <ojp:InfoURL/>
+                                </ojp:Attribute>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950372:5996145:MRCV:Lime City partners from Partners::RegionFeedMediator </ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53734</siri:Longitude>
+                                    <siri:Latitude>47.37716</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>3ea05c72-0716-4d52-b6c1-93d5d5ee3982</ojp:Code>
+                                    <siri:HireFacility>recreationDeviceHire</siri:HireFacility>
+                                    <ojp:InfoURL/>
+                                </ojp:Attribute>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950453:5996068:MRCV:Lime City partners from Partners::RegionFeedMediator </ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53806</siri:Longitude>
+                                    <siri:Latitude>47.37763</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>ed9b3054-38b4-4ab4-b978-7754ae70f1c3</ojp:Code>
+                                    <siri:HireFacility>recreationDeviceHire</siri:HireFacility>
+                                    <ojp:InfoURL/>
+                                </ojp:Attribute>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950261:5996984:MRCV:Lime City partners from Partners::RegionFeedMediator </ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53634</siri:Longitude>
+                                    <siri:Latitude>47.37206</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>a0f3dd3f-11b1-4c8d-a6e6-2a11ca992753</ojp:Code>
+                                    <siri:HireFacility>recreationDeviceHire</siri:HireFacility>
+                                    <ojp:InfoURL/>
+                                </ojp:Attribute>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950259:5996996:MRCV:Lime City partners from Partners::RegionFeedMediator </ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53632</siri:Longitude>
+                                    <siri:Latitude>47.37198</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>8f1cd608-0e3a-43a1-a9d8-fd2cb2be16c6</ojp:Code>
+                                    <siri:HireFacility>recreationDeviceHire</siri:HireFacility>
+                                    <ojp:InfoURL/>
+                                </ojp:Attribute>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950259:5996997:MRCV:Lime City partners from Partners::RegionFeedMediator </ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53632</siri:Longitude>
+                                    <siri:Latitude>47.37198</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>49ef08e4-6591-4c10-b975-31db3a1dfafa</ojp:Code>
+                                    <siri:HireFacility>recreationDeviceHire</siri:HireFacility>
+                                    <ojp:InfoURL/>
+                                </ojp:Attribute>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950986:5996921:MRCV:Lime City partners from Partners::RegionFeedMediator </ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.54285</siri:Longitude>
+                                    <siri:Latitude>47.37244</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>bab07a9f-3add-4a77-b368-7c56435c4d73</ojp:Code>
+                                    <siri:HireFacility>recreationDeviceHire</siri:HireFacility>
+                                    <ojp:InfoURL/>
+                                </ojp:Attribute>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950813:5996011:MRCV:Lime City partners from Partners::RegionFeedMediator </ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.54130</siri:Longitude>
+                                    <siri:Latitude>47.37798</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>cca78705-4aa3-4d85-8140-a4e21fde5f5c</ojp:Code>
+                                    <siri:HireFacility>recreationDeviceHire</siri:HireFacility>
+                                    <ojp:InfoURL/>
+                                </ojp:Attribute>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950651:5997121:MRCV:Lime City partners from Partners::RegionFeedMediator </ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53984</siri:Longitude>
+                                    <siri:Latitude>47.37122</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>59caf319-022f-4d10-af36-ff7ca3e80075</ojp:Code>
+                                    <siri:HireFacility>recreationDeviceHire</siri:HireFacility>
+                                    <ojp:InfoURL/>
+                                </ojp:Attribute>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950820:5996013:MRCV:Lime City partners from Partners::RegionFeedMediator </ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.54136</siri:Longitude>
+                                    <siri:Latitude>47.37796</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>70ac56e8-5819-4909-8269-142e39af0ac3</ojp:Code>
+                                    <siri:HireFacility>recreationDeviceHire</siri:HireFacility>
+                                    <ojp:InfoURL/>
+                                </ojp:Attribute>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950816:5996005:MRCV:Lime City partners from Partners::RegionFeedMediator </ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.54133</siri:Longitude>
+                                    <siri:Latitude>47.37801</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>07aa9ecf-4996-4dd5-bd22-680c1bcc0eaf</ojp:Code>
+                                    <siri:HireFacility>recreationDeviceHire</siri:HireFacility>
+                                    <ojp:InfoURL/>
+                                </ojp:Attribute>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950657:5997157:MRCV:Lime City partners from Partners::RegionFeedMediator </ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53990</siri:Longitude>
+                                    <siri:Latitude>47.37100</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>f66381cd-2750-444c-bf79-dffa9e7aabf7</ojp:Code>
+                                    <siri:HireFacility>recreationDeviceHire</siri:HireFacility>
+                                    <ojp:InfoURL/>
+                                </ojp:Attribute>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:951182:5996574:MRCV:Lime City partners from Partners::RegionFeedMediator </ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.54461</siri:Longitude>
+                                    <siri:Latitude>47.37455</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>d4c0245e-951d-4c24-9524-01d806f6a258</ojp:Code>
+                                    <siri:HireFacility>recreationDeviceHire</siri:HireFacility>
+                                    <ojp:InfoURL/>
+                                </ojp:Attribute>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950236:5997138:MRCV:Lime City partners from Partners::RegionFeedMediator </ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53612</siri:Longitude>
+                                    <siri:Latitude>47.37112</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>7cb22df6-f7d4-41f2-93a1-4c548b358001</ojp:Code>
+                                    <siri:HireFacility>recreationDeviceHire</siri:HireFacility>
+                                    <ojp:InfoURL/>
+                                </ojp:Attribute>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:949826:5996583:MRCV:Lime City partners from Partners::RegionFeedMediator </ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53243</siri:Longitude>
+                                    <siri:Latitude>47.37450</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>1094ace5-a056-4caa-a5c2-1cb695c06310</ojp:Code>
+                                    <siri:HireFacility>recreationDeviceHire</siri:HireFacility>
+                                    <ojp:InfoURL/>
+                                </ojp:Attribute>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950671:5996514:MRCV:Velospot Werdmühleplatz - Zürich</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Werdmühleplatz - Zürich</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Velospot</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.54002</siri:Longitude>
+                                    <siri:Latitude>47.37492</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">Werdmühleplatz - Zürich</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>1236</ojp:Code>
+                                    <siri:HireFacility>cycleHire</siri:HireFacility>
+                                    <ojp:InfoURL>app.publibike.ch/station?id=1236</ojp:InfoURL>
+                                </ojp:Attribute>
+                                <ojp:Extension>
+                                    <ojp:LocationExtensionStructure>
+                                        <ojp:num_vehicles_available>4</ojp:num_vehicles_available>
+                                        <ojp:num_docks_available>-1</ojp:num_docks_available>
+                                    </ojp:LocationExtensionStructure>
+                                </ojp:Extension>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950612:5996672:MRCV:Velospot Rennweg - Zürich</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Rennweg - Zürich</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Velospot</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53949</siri:Longitude>
+                                    <siri:Latitude>47.37395</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">Rennweg - Zürich</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>1160</ojp:Code>
+                                    <siri:HireFacility>cycleHire</siri:HireFacility>
+                                    <ojp:InfoURL>app.publibike.ch/station?id=1160</ojp:InfoURL>
+                                </ojp:Attribute>
+                                <ojp:Extension>
+                                    <ojp:LocationExtensionStructure>
+                                        <ojp:num_vehicles_available>8</ojp:num_vehicles_available>
+                                        <ojp:num_docks_available>-1</ojp:num_docks_available>
+                                    </ojp:LocationExtensionStructure>
+                                </ojp:Extension>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950811:5996356:MRCV:Velospot Beatenplatz - Zürich</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Beatenplatz - Zürich</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Velospot</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.54128</siri:Longitude>
+                                    <siri:Latitude>47.37588</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">Beatenplatz - Zürich</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>1176</ojp:Code>
+                                    <siri:HireFacility>cycleHire</siri:HireFacility>
+                                    <ojp:InfoURL>app.publibike.ch/station?id=1176</ojp:InfoURL>
+                                </ojp:Attribute>
+                                <ojp:Extension>
+                                    <ojp:LocationExtensionStructure>
+                                        <ojp:num_vehicles_available>10</ojp:num_vehicles_available>
+                                        <ojp:num_docks_available>-1</ojp:num_docks_available>
+                                    </ojp:LocationExtensionStructure>
+                                </ojp:Extension>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950156:5996359:MRCV:Velospot Gessnerallee - Zürich</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Gessnerallee - Zürich</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Velospot</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53540</siri:Longitude>
+                                    <siri:Latitude>47.37586</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">Gessnerallee - Zürich</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>1130</ojp:Code>
+                                    <siri:HireFacility>cycleHire</siri:HireFacility>
+                                    <ojp:InfoURL>app.publibike.ch/station?id=1130</ojp:InfoURL>
+                                </ojp:Attribute>
+                                <ojp:Extension>
+                                    <ojp:LocationExtensionStructure>
+                                        <ojp:num_vehicles_available>3</ojp:num_vehicles_available>
+                                        <ojp:num_docks_available>-1</ojp:num_docks_available>
+                                    </ojp:LocationExtensionStructure>
+                                </ojp:Extension>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950207:5996111:MRCV:Velospot Sihlpost - Zürich</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Sihlpost - Zürich</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Velospot</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53585</siri:Longitude>
+                                    <siri:Latitude>47.37737</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">Sihlpost - Zürich</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>1148</ojp:Code>
+                                    <siri:HireFacility>cycleHire</siri:HireFacility>
+                                    <ojp:InfoURL>app.publibike.ch/station?id=1148</ojp:InfoURL>
+                                </ojp:Attribute>
+                                <ojp:Extension>
+                                    <ojp:LocationExtensionStructure>
+                                        <ojp:num_vehicles_available>4</ojp:num_vehicles_available>
+                                        <ojp:num_docks_available>-1</ojp:num_docks_available>
+                                    </ojp:LocationExtensionStructure>
+                                </ojp:Extension>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:951060:5996406:MRCV:Velospot Central - Zürich</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Central - Zürich</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Velospot</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.54352</siri:Longitude>
+                                    <siri:Latitude>47.37557</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">Central - Zürich</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>1226</ojp:Code>
+                                    <siri:HireFacility>cycleHire</siri:HireFacility>
+                                    <ojp:InfoURL>app.publibike.ch/station?id=1226</ojp:InfoURL>
+                                </ojp:Attribute>
+                                <ojp:Extension>
+                                    <ojp:LocationExtensionStructure>
+                                        <ojp:num_vehicles_available>10</ojp:num_vehicles_available>
+                                        <ojp:num_docks_available>-1</ojp:num_docks_available>
+                                    </ojp:LocationExtensionStructure>
+                                </ojp:Extension>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950055:5996820:MRCV:Velospot Sihlstrasse - Zürich</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Sihlstrasse - Zürich</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Velospot</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53449</siri:Longitude>
+                                    <siri:Latitude>47.37305</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">Sihlstrasse - Zürich</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>1162</ojp:Code>
+                                    <siri:HireFacility>cycleHire</siri:HireFacility>
+                                    <ojp:InfoURL>app.publibike.ch/station?id=1162</ojp:InfoURL>
+                                </ojp:Attribute>
+                                <ojp:Extension>
+                                    <ojp:LocationExtensionStructure>
+                                        <ojp:num_vehicles_available>13</ojp:num_vehicles_available>
+                                        <ojp:num_docks_available>-1</ojp:num_docks_available>
+                                    </ojp:LocationExtensionStructure>
+                                </ojp:Extension>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:950234:5997143:MRCV:Velospot Pelikanplatz - Zürich</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Pelikanplatz - Zürich</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Velospot</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53610</siri:Longitude>
+                                    <siri:Latitude>47.37109</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">Pelikanplatz - Zürich</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>1212</ojp:Code>
+                                    <siri:HireFacility>cycleHire</siri:HireFacility>
+                                    <ojp:InfoURL>app.publibike.ch/station?id=1212</ojp:InfoURL>
+                                </ojp:Attribute>
+                                <ojp:Extension>
+                                    <ojp:LocationExtensionStructure>
+                                        <ojp:num_vehicles_available>9</ojp:num_vehicles_available>
+                                        <ojp:num_docks_available>-1</ojp:num_docks_available>
+                                    </ojp:LocationExtensionStructure>
+                                </ojp:Extension>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                    </ojp:OJPLocationInformationDelivery>
+                </siri:ServiceDelivery>
+            </siri:OJPResponse>
+        </siri:OJP>
+      '''
+    }
+  }
 }

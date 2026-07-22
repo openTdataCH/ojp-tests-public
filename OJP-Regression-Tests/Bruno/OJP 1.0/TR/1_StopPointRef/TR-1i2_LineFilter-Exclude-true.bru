@@ -30,7 +30,7 @@ body:xml {
                   <MessageIdentifier>TR-1i2</MessageIdentifier>
                   <ojp:Origin>
                       <ojp:PlaceRef>
-                          <StopPointRef>8592588</StopPointRef>
+                          <StopPointRef>ch:1:sloid:92588</StopPointRef>
                           <ojp:LocationName>
                               <ojp:Text>Schaffhausen, Wiesli</ojp:Text>
                           </ojp:LocationName>
@@ -39,7 +39,7 @@ body:xml {
                   </ojp:Origin>
                   <ojp:Destination>
                       <ojp:PlaceRef>
-                          <StopPointRef>8503495</StopPointRef>
+                          <StopPointRef>ch:1:sloid:3495</StopPointRef>
                           <ojp:LocationName>
                               <ojp:Text>Schaffhausen, Bahnhof</ojp:Text>
                           </ojp:LocationName>
@@ -71,5 +71,891 @@ script:post-response {
 
 settings {
   encodeUrl: true
-  timeout: 0
+}
+
+example {
+  name: TR-1i2_LineFilter-Exclude-true notOK EFABA-2770
+  
+  request: {
+    url: {{server}}
+    method: POST
+    mode: xml
+    headers: {
+      Content-Type: text/xml
+    }
+  
+    body:xml: {
+      <?xml version="1.0" encoding="UTF-8"?>
+      <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+          <OJPRequest>
+              <ServiceRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <RequestorRef>SKIPlusRegTest</RequestorRef>
+                  <ojp:OJPTripRequest>
+                      <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                      <MessageIdentifier>TR-1i2</MessageIdentifier>
+                      <ojp:Origin>
+                          <ojp:PlaceRef>
+                              <StopPointRef>8592588</StopPointRef>
+                              <ojp:LocationName>
+                                  <ojp:Text>Schaffhausen, Wiesli</ojp:Text>
+                              </ojp:LocationName>
+                          </ojp:PlaceRef>
+                          <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
+                      </ojp:Origin>
+                      <ojp:Destination>
+                          <ojp:PlaceRef>
+                              <StopPointRef>8503495</StopPointRef>
+                              <ojp:LocationName>
+                                  <ojp:Text>Schaffhausen, Bahnhof</ojp:Text>
+                              </ojp:LocationName>
+                          </ojp:PlaceRef>
+                      </ojp:Destination>
+                      <ojp:Params>
+                          <ojp:LineFilter>
+                              <ojp:Line>
+                                  <LineRef>ojp:92007:D</LineRef>
+                              </ojp:Line>
+                              <ojp:Exclude>true</ojp:Exclude>
+                          </ojp:LineFilter>
+                          <ojp:NumberOfResults>5</ojp:NumberOfResults>
+                          <ojp:IncludeIntermediateStops>true</ojp:IncludeIntermediateStops>
+                      </ojp:Params>
+                  </ojp:OJPTripRequest>
+              </ServiceRequest>
+          </OJPRequest>
+      </OJP>
+      
+    }
+  }
+  
+  response: {
+    headers: {
+      Server: EFAController/10.6.14.5/OJP-EFA01-I
+      Date: Fri, 01 Dec 2023 16:59:52 GMT
+      Content-Type: text/xml
+      Accept-Ranges: none
+      Content-Length: 3098
+      Last-Modified: Fri, 01 Dec 2023 16:59:52 GMT
+      Connection: Keep-Alive
+      Content-Encoding: gzip
+      Access-Control-Allow-Origin: *
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: xml
+      content: '''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <siri:OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns:ojp="http://www.vdv.de/ojp" version="1.0">
+            <siri:OJPResponse>
+                <siri:ServiceDelivery>
+                    <siri:ResponseTimestamp>2023-12-01T16:59:52Z</siri:ResponseTimestamp>
+                    <siri:ProducerRef>EFAController10.6.14.5-OJP-EFA01-I</siri:ProducerRef>
+                    <siri:Status>true</siri:Status>
+                    <ojp:OJPTripDelivery>
+                        <siri:ResponseTimestamp>2023-12-01T16:59:51Z</siri:ResponseTimestamp>
+                        <siri:RequestMessageRef>TR-1i2</siri:RequestMessageRef>
+                        <siri:Status>true</siri:Status>
+                        <ojp:CalcTime>887</ojp:CalcTime>
+                        <ojp:TripResponseContext>
+                            <ojp:Places>
+                                <ojp:Location>
+                                    <ojp:StopPlace>
+                                        <ojp:StopPlaceRef>8592588</ojp:StopPlaceRef>
+                                        <ojp:StopPlaceName>
+                                            <ojp:Text xml:lang="de">Schaffhausen, Wiesli</ojp:Text>
+                                        </ojp:StopPlaceName>
+                                        <ojp:PrivateCode>
+                                            <ojp:System>EFA</ojp:System>
+                                            <ojp:Value>129555</ojp:Value>
+                                        </ojp:PrivateCode>
+                                        <ojp:TopographicPlaceRef>23017939:4</ojp:TopographicPlaceRef>
+                                    </ojp:StopPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Schaffhausen, Wiesli</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>8.62124</siri:Longitude>
+                                        <siri:Latitude>47.70122</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:TopographicPlace>
+                                        <ojp:TopographicPlaceCode>23017939:4</ojp:TopographicPlaceCode>
+                                        <ojp:TopographicPlaceName>
+                                            <ojp:Text xml:lang="de">Schaffhausen</ojp:Text>
+                                        </ojp:TopographicPlaceName>
+                                    </ojp:TopographicPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Schaffhausen</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>8.62124</siri:Longitude>
+                                        <siri:Latitude>47.70122</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:StopPlace>
+                                        <ojp:StopPlaceRef>8573458</ojp:StopPlaceRef>
+                                        <ojp:StopPlaceName>
+                                            <ojp:Text xml:lang="de">Schaffhausen, Schützenhaus</ojp:Text>
+                                        </ojp:StopPlaceName>
+                                        <ojp:PrivateCode>
+                                            <ojp:System>EFA</ojp:System>
+                                            <ojp:Value>116423</ojp:Value>
+                                        </ojp:PrivateCode>
+                                        <ojp:TopographicPlaceRef>23017939:4</ojp:TopographicPlaceRef>
+                                    </ojp:StopPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Schaffhausen, Schützenhaus</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>8.62641</siri:Longitude>
+                                        <siri:Latitude>47.70016</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:StopPlace>
+                                        <ojp:StopPlaceRef>8573457</ojp:StopPlaceRef>
+                                        <ojp:StopPlaceName>
+                                            <ojp:Text xml:lang="de">Schaffhausen, Steigbrunnen</ojp:Text>
+                                        </ojp:StopPlaceName>
+                                        <ojp:PrivateCode>
+                                            <ojp:System>EFA</ojp:System>
+                                            <ojp:Value>116422</ojp:Value>
+                                        </ojp:PrivateCode>
+                                        <ojp:TopographicPlaceRef>23017939:4</ojp:TopographicPlaceRef>
+                                    </ojp:StopPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Schaffhausen, Steigbrunnen</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>8.62762</siri:Longitude>
+                                        <siri:Latitude>47.69851</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:StopPlace>
+                                        <ojp:StopPlaceRef>8573456</ojp:StopPlaceRef>
+                                        <ojp:StopPlaceName>
+                                            <ojp:Text xml:lang="de">Schaffhausen, Promenade</ojp:Text>
+                                        </ojp:StopPlaceName>
+                                        <ojp:PrivateCode>
+                                            <ojp:System>EFA</ojp:System>
+                                            <ojp:Value>116421</ojp:Value>
+                                        </ojp:PrivateCode>
+                                        <ojp:TopographicPlaceRef>23017939:4</ojp:TopographicPlaceRef>
+                                    </ojp:StopPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Schaffhausen, Promenade</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>8.62957</siri:Longitude>
+                                        <siri:Latitude>47.69568</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:StopPlace>
+                                        <ojp:StopPlaceRef>8503495</ojp:StopPlaceRef>
+                                        <ojp:StopPlaceName>
+                                            <ojp:Text xml:lang="de">Schaffhausen, Bahnhof</ojp:Text>
+                                        </ojp:StopPlaceName>
+                                        <ojp:PrivateCode>
+                                            <ojp:System>EFA</ojp:System>
+                                            <ojp:Value>108627</ojp:Value>
+                                        </ojp:PrivateCode>
+                                        <ojp:TopographicPlaceRef>23017939:4</ojp:TopographicPlaceRef>
+                                    </ojp:StopPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Schaffhausen, Bahnhof</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>8.63275</siri:Longitude>
+                                        <siri:Latitude>47.69786</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:StopPlace>
+                                        <ojp:StopPlaceRef>8592562</ojp:StopPlaceRef>
+                                        <ojp:StopPlaceName>
+                                            <ojp:Text xml:lang="de">Schaffhausen, Krummacker</ojp:Text>
+                                        </ojp:StopPlaceName>
+                                        <ojp:PrivateCode>
+                                            <ojp:System>EFA</ojp:System>
+                                            <ojp:Value>129531</ojp:Value>
+                                        </ojp:PrivateCode>
+                                        <ojp:TopographicPlaceRef>23017939:4</ojp:TopographicPlaceRef>
+                                    </ojp:StopPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Schaffhausen, Krummacker</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>8.66023</siri:Longitude>
+                                        <siri:Latitude>47.72672</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                            </ojp:Places>
+                        </ojp:TripResponseContext>
+                        <ojp:TripResult>
+                            <ojp:ResultId>ID-D018AC78-9B69-406A-BD5D-E7F03168DB39</ojp:ResultId>
+                            <ojp:Trip>
+                                <ojp:TripId>ID-D018AC78-9B69-406A-BD5D-E7F03168DB39</ojp:TripId>
+                                <ojp:Duration>PT5M</ojp:Duration>
+                                <ojp:StartTime>2023-12-08T10:53:00Z</ojp:StartTime>
+                                <ojp:EndTime>2023-12-08T10:58:00Z</ojp:EndTime>
+                                <ojp:Transfers>0</ojp:Transfers>
+                                <ojp:Distance>1435</ojp:Distance>
+                                <ojp:TripLeg>
+                                    <ojp:LegId>1</ojp:LegId>
+                                    <ojp:TimedLeg>
+                                        <ojp:LegBoard>
+                                            <siri:StopPointRef>8592588</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Wiesli</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">PLATFORM_ACCESS_WITH_ASSISTANCE</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2023-12-08T10:53:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>1</ojp:Order>
+                                        </ojp:LegBoard>
+                                        <ojp:LegIntermediates>
+                                            <siri:StopPointRef>8573458</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Schützenhaus</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2023-12-08T10:54:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2023-12-08T10:54:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>2</ojp:Order>
+                                        </ojp:LegIntermediates>
+                                        <ojp:LegIntermediates>
+                                            <siri:StopPointRef>8573457</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Steigbrunnen</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2023-12-08T10:54:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2023-12-08T10:54:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>3</ojp:Order>
+                                        </ojp:LegIntermediates>
+                                        <ojp:LegIntermediates>
+                                            <siri:StopPointRef>8573456</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Promenade</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2023-12-08T10:55:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2023-12-08T10:55:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>4</ojp:Order>
+                                        </ojp:LegIntermediates>
+                                        <ojp:LegAlight>
+                                            <siri:StopPointRef>8503495</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Bahnhof</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">PLATFORM_ACCESS_WITH_ASSISTANCE</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2023-12-08T10:58:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:Order>5</ojp:Order>
+                                        </ojp:LegAlight>
+                                        <ojp:Service>
+                                            <ojp:OperatingDayRef>2023-12-08</ojp:OperatingDayRef>
+                                            <ojp:JourneyRef>ojp-92-3-B-j23-1-453-TA</ojp:JourneyRef>
+                                            <siri:LineRef>ojp:92003:B</siri:LineRef>
+                                            <siri:DirectionRef>R</siri:DirectionRef>
+                                            <ojp:Mode>
+                                                <ojp:PtMode>bus</ojp:PtMode>
+                                                <siri:BusSubmode>localBusService</siri:BusSubmode>
+                                                <ojp:Name>
+                                                    <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                                </ojp:Name>
+                                                <ojp:ShortName>
+                                                    <ojp:Text xml:lang="de">B</ojp:Text>
+                                                </ojp:ShortName>
+                                            </ojp:Mode>
+                                            <ojp:PublishedLineName>
+                                                <ojp:Text xml:lang="de">3</ojp:Text>
+                                            </ojp:PublishedLineName>
+                                            <ojp:OperatorRef>ojp:836</ojp:OperatorRef>
+                                            <ojp:Attribute>
+                                                <ojp:Text>
+                                                    <ojp:Text xml:lang="de">Niederflureinstieg</ojp:Text>
+                                                </ojp:Text>
+                                                <ojp:Code>A__NF</ojp:Code>
+                                                <siri:AccessFacility>palletAccess_lowFloor</siri:AccessFacility>
+                                            </ojp:Attribute>
+                                            <ojp:DestinationStopPointRef>8592562</ojp:DestinationStopPointRef>
+                                            <ojp:DestinationText>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Krummacker</ojp:Text>
+                                            </ojp:DestinationText>
+                                        </ojp:Service>
+                                        <ojp:Extension>
+                                            <ojp:TransportTypeName>
+                                                <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                            </ojp:TransportTypeName>
+                                            <ojp:PublishedJourneyNumber>
+                                                <ojp:Text xml:lang="de">31076</ojp:Text>
+                                            </ojp:PublishedJourneyNumber>
+                                            <ojp:OperatorName>
+                                                <ojp:Text xml:lang="de">Verkehrsbetriebe Schaffhausen</ojp:Text>
+                                            </ojp:OperatorName>
+                                        </ojp:Extension>
+                                    </ojp:TimedLeg>
+                                </ojp:TripLeg>
+                            </ojp:Trip>
+                        </ojp:TripResult>
+                        <ojp:TripResult>
+                            <ojp:ResultId>ID-98E50F40-2EB1-4DC9-B065-514B8C3FE8C5</ojp:ResultId>
+                            <ojp:Trip>
+                                <ojp:TripId>ID-98E50F40-2EB1-4DC9-B065-514B8C3FE8C5</ojp:TripId>
+                                <ojp:Duration>PT5M</ojp:Duration>
+                                <ojp:StartTime>2023-12-08T11:03:00Z</ojp:StartTime>
+                                <ojp:EndTime>2023-12-08T11:08:00Z</ojp:EndTime>
+                                <ojp:Transfers>0</ojp:Transfers>
+                                <ojp:Distance>1435</ojp:Distance>
+                                <ojp:TripLeg>
+                                    <ojp:LegId>1</ojp:LegId>
+                                    <ojp:TimedLeg>
+                                        <ojp:LegBoard>
+                                            <siri:StopPointRef>8592588</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Wiesli</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">PLATFORM_ACCESS_WITH_ASSISTANCE</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2023-12-08T11:03:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>1</ojp:Order>
+                                        </ojp:LegBoard>
+                                        <ojp:LegIntermediates>
+                                            <siri:StopPointRef>8573458</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Schützenhaus</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2023-12-08T11:04:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2023-12-08T11:04:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>2</ojp:Order>
+                                        </ojp:LegIntermediates>
+                                        <ojp:LegIntermediates>
+                                            <siri:StopPointRef>8573457</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Steigbrunnen</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2023-12-08T11:04:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2023-12-08T11:04:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>3</ojp:Order>
+                                        </ojp:LegIntermediates>
+                                        <ojp:LegIntermediates>
+                                            <siri:StopPointRef>8573456</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Promenade</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2023-12-08T11:05:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2023-12-08T11:05:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>4</ojp:Order>
+                                        </ojp:LegIntermediates>
+                                        <ojp:LegAlight>
+                                            <siri:StopPointRef>8503495</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Bahnhof</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">PLATFORM_ACCESS_WITH_ASSISTANCE</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2023-12-08T11:08:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:Order>5</ojp:Order>
+                                        </ojp:LegAlight>
+                                        <ojp:Service>
+                                            <ojp:OperatingDayRef>2023-12-08</ojp:OperatingDayRef>
+                                            <ojp:JourneyRef>ojp-92-3-B-j23-1-484-TA</ojp:JourneyRef>
+                                            <siri:LineRef>ojp:92003:B</siri:LineRef>
+                                            <siri:DirectionRef>R</siri:DirectionRef>
+                                            <ojp:Mode>
+                                                <ojp:PtMode>bus</ojp:PtMode>
+                                                <siri:BusSubmode>localBusService</siri:BusSubmode>
+                                                <ojp:Name>
+                                                    <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                                </ojp:Name>
+                                                <ojp:ShortName>
+                                                    <ojp:Text xml:lang="de">B</ojp:Text>
+                                                </ojp:ShortName>
+                                            </ojp:Mode>
+                                            <ojp:PublishedLineName>
+                                                <ojp:Text xml:lang="de">3</ojp:Text>
+                                            </ojp:PublishedLineName>
+                                            <ojp:OperatorRef>ojp:836</ojp:OperatorRef>
+                                            <ojp:Attribute>
+                                                <ojp:Text>
+                                                    <ojp:Text xml:lang="de">Niederflureinstieg</ojp:Text>
+                                                </ojp:Text>
+                                                <ojp:Code>A__NF</ojp:Code>
+                                                <siri:AccessFacility>palletAccess_lowFloor</siri:AccessFacility>
+                                            </ojp:Attribute>
+                                            <ojp:DestinationStopPointRef>8592562</ojp:DestinationStopPointRef>
+                                            <ojp:DestinationText>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Krummacker</ojp:Text>
+                                            </ojp:DestinationText>
+                                        </ojp:Service>
+                                        <ojp:Extension>
+                                            <ojp:TransportTypeName>
+                                                <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                            </ojp:TransportTypeName>
+                                            <ojp:PublishedJourneyNumber>
+                                                <ojp:Text xml:lang="de">31078</ojp:Text>
+                                            </ojp:PublishedJourneyNumber>
+                                            <ojp:OperatorName>
+                                                <ojp:Text xml:lang="de">Verkehrsbetriebe Schaffhausen</ojp:Text>
+                                            </ojp:OperatorName>
+                                        </ojp:Extension>
+                                    </ojp:TimedLeg>
+                                </ojp:TripLeg>
+                            </ojp:Trip>
+                        </ojp:TripResult>
+                        <ojp:TripResult>
+                            <ojp:ResultId>ID-47EDF9E1-EDC5-4A44-8E14-3A992DC2D293</ojp:ResultId>
+                            <ojp:Trip>
+                                <ojp:TripId>ID-47EDF9E1-EDC5-4A44-8E14-3A992DC2D293</ojp:TripId>
+                                <ojp:Duration>PT5M</ojp:Duration>
+                                <ojp:StartTime>2023-12-08T11:13:00Z</ojp:StartTime>
+                                <ojp:EndTime>2023-12-08T11:18:00Z</ojp:EndTime>
+                                <ojp:Transfers>0</ojp:Transfers>
+                                <ojp:Distance>1435</ojp:Distance>
+                                <ojp:TripLeg>
+                                    <ojp:LegId>1</ojp:LegId>
+                                    <ojp:TimedLeg>
+                                        <ojp:LegBoard>
+                                            <siri:StopPointRef>8592588</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Wiesli</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">PLATFORM_ACCESS_WITH_ASSISTANCE</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2023-12-08T11:13:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>1</ojp:Order>
+                                        </ojp:LegBoard>
+                                        <ojp:LegIntermediates>
+                                            <siri:StopPointRef>8573458</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Schützenhaus</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2023-12-08T11:14:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2023-12-08T11:14:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>2</ojp:Order>
+                                        </ojp:LegIntermediates>
+                                        <ojp:LegIntermediates>
+                                            <siri:StopPointRef>8573457</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Steigbrunnen</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2023-12-08T11:14:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2023-12-08T11:14:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>3</ojp:Order>
+                                        </ojp:LegIntermediates>
+                                        <ojp:LegIntermediates>
+                                            <siri:StopPointRef>8573456</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Promenade</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2023-12-08T11:15:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2023-12-08T11:15:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>4</ojp:Order>
+                                        </ojp:LegIntermediates>
+                                        <ojp:LegAlight>
+                                            <siri:StopPointRef>8503495</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Bahnhof</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">PLATFORM_ACCESS_WITH_ASSISTANCE</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2023-12-08T11:18:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:Order>5</ojp:Order>
+                                        </ojp:LegAlight>
+                                        <ojp:Service>
+                                            <ojp:OperatingDayRef>2023-12-08</ojp:OperatingDayRef>
+                                            <ojp:JourneyRef>ojp-92-3-B-j23-1-472-TA</ojp:JourneyRef>
+                                            <siri:LineRef>ojp:92003:B</siri:LineRef>
+                                            <siri:DirectionRef>R</siri:DirectionRef>
+                                            <ojp:Mode>
+                                                <ojp:PtMode>bus</ojp:PtMode>
+                                                <siri:BusSubmode>localBusService</siri:BusSubmode>
+                                                <ojp:Name>
+                                                    <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                                </ojp:Name>
+                                                <ojp:ShortName>
+                                                    <ojp:Text xml:lang="de">B</ojp:Text>
+                                                </ojp:ShortName>
+                                            </ojp:Mode>
+                                            <ojp:PublishedLineName>
+                                                <ojp:Text xml:lang="de">3</ojp:Text>
+                                            </ojp:PublishedLineName>
+                                            <ojp:OperatorRef>ojp:836</ojp:OperatorRef>
+                                            <ojp:Attribute>
+                                                <ojp:Text>
+                                                    <ojp:Text xml:lang="de">Niederflureinstieg</ojp:Text>
+                                                </ojp:Text>
+                                                <ojp:Code>A__NF</ojp:Code>
+                                                <siri:AccessFacility>palletAccess_lowFloor</siri:AccessFacility>
+                                            </ojp:Attribute>
+                                            <ojp:DestinationStopPointRef>8592562</ojp:DestinationStopPointRef>
+                                            <ojp:DestinationText>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Krummacker</ojp:Text>
+                                            </ojp:DestinationText>
+                                        </ojp:Service>
+                                        <ojp:Extension>
+                                            <ojp:TransportTypeName>
+                                                <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                            </ojp:TransportTypeName>
+                                            <ojp:PublishedJourneyNumber>
+                                                <ojp:Text xml:lang="de">31080</ojp:Text>
+                                            </ojp:PublishedJourneyNumber>
+                                            <ojp:OperatorName>
+                                                <ojp:Text xml:lang="de">Verkehrsbetriebe Schaffhausen</ojp:Text>
+                                            </ojp:OperatorName>
+                                        </ojp:Extension>
+                                    </ojp:TimedLeg>
+                                </ojp:TripLeg>
+                            </ojp:Trip>
+                        </ojp:TripResult>
+                        <ojp:TripResult>
+                            <ojp:ResultId>ID-AA817472-18B2-41A7-9425-5A8234C2F562</ojp:ResultId>
+                            <ojp:Trip>
+                                <ojp:TripId>ID-AA817472-18B2-41A7-9425-5A8234C2F562</ojp:TripId>
+                                <ojp:Duration>PT5M</ojp:Duration>
+                                <ojp:StartTime>2023-12-08T11:23:00Z</ojp:StartTime>
+                                <ojp:EndTime>2023-12-08T11:28:00Z</ojp:EndTime>
+                                <ojp:Transfers>0</ojp:Transfers>
+                                <ojp:Distance>1435</ojp:Distance>
+                                <ojp:TripLeg>
+                                    <ojp:LegId>1</ojp:LegId>
+                                    <ojp:TimedLeg>
+                                        <ojp:LegBoard>
+                                            <siri:StopPointRef>8592588</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Wiesli</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">PLATFORM_ACCESS_WITH_ASSISTANCE</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2023-12-08T11:23:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>1</ojp:Order>
+                                        </ojp:LegBoard>
+                                        <ojp:LegIntermediates>
+                                            <siri:StopPointRef>8573458</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Schützenhaus</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2023-12-08T11:24:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2023-12-08T11:24:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>2</ojp:Order>
+                                        </ojp:LegIntermediates>
+                                        <ojp:LegIntermediates>
+                                            <siri:StopPointRef>8573457</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Steigbrunnen</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2023-12-08T11:24:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2023-12-08T11:24:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>3</ojp:Order>
+                                        </ojp:LegIntermediates>
+                                        <ojp:LegIntermediates>
+                                            <siri:StopPointRef>8573456</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Promenade</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2023-12-08T11:25:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2023-12-08T11:25:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>4</ojp:Order>
+                                        </ojp:LegIntermediates>
+                                        <ojp:LegAlight>
+                                            <siri:StopPointRef>8503495</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Bahnhof</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">PLATFORM_ACCESS_WITH_ASSISTANCE</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2023-12-08T11:28:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:Order>5</ojp:Order>
+                                        </ojp:LegAlight>
+                                        <ojp:Service>
+                                            <ojp:OperatingDayRef>2023-12-08</ojp:OperatingDayRef>
+                                            <ojp:JourneyRef>ojp-92-3-B-j23-1-426-TA</ojp:JourneyRef>
+                                            <siri:LineRef>ojp:92003:B</siri:LineRef>
+                                            <siri:DirectionRef>R</siri:DirectionRef>
+                                            <ojp:Mode>
+                                                <ojp:PtMode>bus</ojp:PtMode>
+                                                <siri:BusSubmode>localBusService</siri:BusSubmode>
+                                                <ojp:Name>
+                                                    <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                                </ojp:Name>
+                                                <ojp:ShortName>
+                                                    <ojp:Text xml:lang="de">B</ojp:Text>
+                                                </ojp:ShortName>
+                                            </ojp:Mode>
+                                            <ojp:PublishedLineName>
+                                                <ojp:Text xml:lang="de">3</ojp:Text>
+                                            </ojp:PublishedLineName>
+                                            <ojp:OperatorRef>ojp:836</ojp:OperatorRef>
+                                            <ojp:Attribute>
+                                                <ojp:Text>
+                                                    <ojp:Text xml:lang="de">Niederflureinstieg</ojp:Text>
+                                                </ojp:Text>
+                                                <ojp:Code>A__NF</ojp:Code>
+                                                <siri:AccessFacility>palletAccess_lowFloor</siri:AccessFacility>
+                                            </ojp:Attribute>
+                                            <ojp:DestinationStopPointRef>8592562</ojp:DestinationStopPointRef>
+                                            <ojp:DestinationText>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Krummacker</ojp:Text>
+                                            </ojp:DestinationText>
+                                        </ojp:Service>
+                                        <ojp:Extension>
+                                            <ojp:TransportTypeName>
+                                                <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                            </ojp:TransportTypeName>
+                                            <ojp:PublishedJourneyNumber>
+                                                <ojp:Text xml:lang="de">31082</ojp:Text>
+                                            </ojp:PublishedJourneyNumber>
+                                            <ojp:OperatorName>
+                                                <ojp:Text xml:lang="de">Verkehrsbetriebe Schaffhausen</ojp:Text>
+                                            </ojp:OperatorName>
+                                        </ojp:Extension>
+                                    </ojp:TimedLeg>
+                                </ojp:TripLeg>
+                            </ojp:Trip>
+                        </ojp:TripResult>
+                        <ojp:TripResult>
+                            <ojp:ResultId>ID-B267F194-8DB3-4103-BC4F-A38C87332006</ojp:ResultId>
+                            <ojp:Trip>
+                                <ojp:TripId>ID-B267F194-8DB3-4103-BC4F-A38C87332006</ojp:TripId>
+                                <ojp:Duration>PT5M</ojp:Duration>
+                                <ojp:StartTime>2023-12-08T11:33:00Z</ojp:StartTime>
+                                <ojp:EndTime>2023-12-08T11:38:00Z</ojp:EndTime>
+                                <ojp:Transfers>0</ojp:Transfers>
+                                <ojp:Distance>1435</ojp:Distance>
+                                <ojp:TripLeg>
+                                    <ojp:LegId>1</ojp:LegId>
+                                    <ojp:TimedLeg>
+                                        <ojp:LegBoard>
+                                            <siri:StopPointRef>8592588</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Wiesli</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">PLATFORM_ACCESS_WITH_ASSISTANCE</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2023-12-08T11:33:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>1</ojp:Order>
+                                        </ojp:LegBoard>
+                                        <ojp:LegIntermediates>
+                                            <siri:StopPointRef>8573458</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Schützenhaus</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2023-12-08T11:34:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2023-12-08T11:34:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>2</ojp:Order>
+                                        </ojp:LegIntermediates>
+                                        <ojp:LegIntermediates>
+                                            <siri:StopPointRef>8573457</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Steigbrunnen</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2023-12-08T11:34:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2023-12-08T11:34:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>3</ojp:Order>
+                                        </ojp:LegIntermediates>
+                                        <ojp:LegIntermediates>
+                                            <siri:StopPointRef>8573456</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Promenade</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2023-12-08T11:35:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2023-12-08T11:35:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>4</ojp:Order>
+                                        </ojp:LegIntermediates>
+                                        <ojp:LegAlight>
+                                            <siri:StopPointRef>8503495</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Bahnhof</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">PLATFORM_ACCESS_WITH_ASSISTANCE</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2023-12-08T11:38:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:Order>5</ojp:Order>
+                                        </ojp:LegAlight>
+                                        <ojp:Service>
+                                            <ojp:OperatingDayRef>2023-12-08</ojp:OperatingDayRef>
+                                            <ojp:JourneyRef>ojp-92-3-B-j23-1-422-TA</ojp:JourneyRef>
+                                            <siri:LineRef>ojp:92003:B</siri:LineRef>
+                                            <siri:DirectionRef>R</siri:DirectionRef>
+                                            <ojp:Mode>
+                                                <ojp:PtMode>bus</ojp:PtMode>
+                                                <siri:BusSubmode>localBusService</siri:BusSubmode>
+                                                <ojp:Name>
+                                                    <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                                </ojp:Name>
+                                                <ojp:ShortName>
+                                                    <ojp:Text xml:lang="de">B</ojp:Text>
+                                                </ojp:ShortName>
+                                            </ojp:Mode>
+                                            <ojp:PublishedLineName>
+                                                <ojp:Text xml:lang="de">3</ojp:Text>
+                                            </ojp:PublishedLineName>
+                                            <ojp:OperatorRef>ojp:836</ojp:OperatorRef>
+                                            <ojp:Attribute>
+                                                <ojp:Text>
+                                                    <ojp:Text xml:lang="de">Niederflureinstieg</ojp:Text>
+                                                </ojp:Text>
+                                                <ojp:Code>A__NF</ojp:Code>
+                                                <siri:AccessFacility>palletAccess_lowFloor</siri:AccessFacility>
+                                            </ojp:Attribute>
+                                            <ojp:DestinationStopPointRef>8592562</ojp:DestinationStopPointRef>
+                                            <ojp:DestinationText>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Krummacker</ojp:Text>
+                                            </ojp:DestinationText>
+                                        </ojp:Service>
+                                        <ojp:Extension>
+                                            <ojp:TransportTypeName>
+                                                <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                            </ojp:TransportTypeName>
+                                            <ojp:PublishedJourneyNumber>
+                                                <ojp:Text xml:lang="de">31084</ojp:Text>
+                                            </ojp:PublishedJourneyNumber>
+                                            <ojp:OperatorName>
+                                                <ojp:Text xml:lang="de">Verkehrsbetriebe Schaffhausen</ojp:Text>
+                                            </ojp:OperatorName>
+                                        </ojp:Extension>
+                                    </ojp:TimedLeg>
+                                </ojp:TripLeg>
+                            </ojp:Trip>
+                        </ojp:TripResult>
+                        <ojp:TripResult>
+                            <ojp:ResultId>ID-8BB7A1A9-D732-4752-AF7E-1A6A94ED699A</ojp:ResultId>
+                            <ojp:Trip>
+                                <ojp:TripId>ID-8BB7A1A9-D732-4752-AF7E-1A6A94ED699A</ojp:TripId>
+                                <ojp:Duration>PT18M</ojp:Duration>
+                                <ojp:StartTime>2023-12-08T11:00:00Z</ojp:StartTime>
+                                <ojp:EndTime>2023-12-08T11:17:36Z</ojp:EndTime>
+                                <ojp:Transfers>0</ojp:Transfers>
+                                <ojp:Distance>1205</ojp:Distance>
+                                <ojp:TripLeg>
+                                    <ojp:LegId>1</ojp:LegId>
+                                    <ojp:ContinuousLeg>
+                                        <ojp:LegStart>
+                                            <siri:StopPointRef>8592588</siri:StopPointRef>
+                                            <ojp:LocationName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Wiesli</ojp:Text>
+                                            </ojp:LocationName>
+                                        </ojp:LegStart>
+                                        <ojp:LegEnd>
+                                            <siri:StopPointRef>8503495</siri:StopPointRef>
+                                            <ojp:LocationName>
+                                                <ojp:Text xml:lang="de">Schaffhausen, Bahnhof</ojp:Text>
+                                            </ojp:LocationName>
+                                        </ojp:LegEnd>
+                                        <ojp:Service>
+                                            <ojp:IndividualMode>walk</ojp:IndividualMode>
+                                        </ojp:Service>
+                                        <ojp:TimeWindowStart>2023-12-08T11:00:00Z</ojp:TimeWindowStart>
+                                        <ojp:TimeWindowEnd>2023-12-08T11:17:36Z</ojp:TimeWindowEnd>
+                                        <ojp:Duration>PT18M</ojp:Duration>
+                                        <ojp:Length>1205</ojp:Length>
+                                    </ojp:ContinuousLeg>
+                                </ojp:TripLeg>
+                            </ojp:Trip>
+                        </ojp:TripResult>
+                    </ojp:OJPTripDelivery>
+                </siri:ServiceDelivery>
+            </siri:OJPResponse>
+        </siri:OJP>
+      '''
+    }
+  }
 }

@@ -50,5 +50,100 @@ script:post-response {
 
 settings {
   encodeUrl: true
-  timeout: 0
+}
+
+example {
+  name: LIR-2a_Address
+  
+  request: {
+    url: {{server}}
+    method: POST
+    mode: xml
+    body:xml: {
+      <?xml version="1.0" encoding="UTF-8"?>
+      <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+          <OJPRequest>
+              <ServiceRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <RequestorRef>SKIPlusRegTest</RequestorRef>
+                  <ojp:OJPLocationInformationRequest>
+                      <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                      <MessageIdentifier>LIR-2a</MessageIdentifier>
+                      <ojp:InitialInput>
+                          <ojp:LocationName>Staffelstrasse 12 8045</ojp:LocationName>
+                      </ojp:InitialInput>
+                      <ojp:Restrictions>
+                          <ojp:Type>address</ojp:Type>
+                          <ojp:NumberOfResults>10</ojp:NumberOfResults>
+                      </ojp:Restrictions>
+                  </ojp:OJPLocationInformationRequest>
+              </ServiceRequest>
+          </OJPRequest>
+      </OJP>
+    }
+  }
+  
+  response: {
+    headers: {
+      Server: EFAController/10.6.14.5/OJP-EFA01-I
+      Date: Fri, 01 Dec 2023 16:48:05 GMT
+      Content-Type: text/xml
+      Accept-Ranges: none
+      Content-Length: 1755
+      Last-Modified: Fri, 01 Dec 2023 16:48:05 GMT
+      Connection: Keep-Alive
+      Access-Control-Allow-Origin: *
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: xml
+      content: '''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <siri:OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns:ojp="http://www.vdv.de/ojp" version="1.0">
+            <siri:OJPResponse>
+                <siri:ServiceDelivery>
+                    <siri:ResponseTimestamp>2023-12-01T16:48:05Z</siri:ResponseTimestamp>
+                    <siri:ProducerRef>EFAController10.6.14.5-OJP-EFA01-I</siri:ProducerRef>
+                    <siri:Status>true</siri:Status>
+                    <ojp:OJPLocationInformationDelivery>
+                        <siri:ResponseTimestamp>2023-12-01T16:48:05Z</siri:ResponseTimestamp>
+                        <siri:RequestMessageRef>LIR-2a</siri:RequestMessageRef>
+                        <siri:Status>true</siri:Status>
+                        <ojp:CalcTime>380</ojp:CalcTime>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:Address>
+                                    <ojp:AddressCode>streetID:1500000434:12:23026261:-1:Staffelstrasse:Zürich:Staffelstrasse::Staffelstrasse:8045:ANY:DIVA_SINGLEHOUSE:948536:5998789:MRCV:sbb:0</ojp:AddressCode>
+                                    <ojp:AddressName>
+                                        <ojp:Text xml:lang="de">Zürich, Staffelstrasse 12</ojp:Text>
+                                    </ojp:AddressName>
+                                    <ojp:PostCode>8045</ojp:PostCode>
+                                    <ojp:TopographicPlaceName>Zürich</ojp:TopographicPlaceName>
+                                    <ojp:TopographicPlaceRef>23026261:-1</ojp:TopographicPlaceRef>
+                                    <ojp:Street>Staffelstrasse</ojp:Street>
+                                    <ojp:HouseNumber>12</ojp:HouseNumber>
+                                </ojp:Address>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Staffelstrasse 12 (Zürich)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.52084</siri:Longitude>
+                                    <siri:Latitude>47.36107</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                    </ojp:OJPLocationInformationDelivery>
+                </siri:ServiceDelivery>
+            </siri:OJPResponse>
+        </siri:OJP>
+      '''
+    }
+  }
 }

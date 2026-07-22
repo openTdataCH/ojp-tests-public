@@ -30,7 +30,7 @@ body:xml {
                   <MessageIdentifier>TR-1p3</MessageIdentifier>
                   <ojp:Origin>
                       <ojp:PlaceRef>
-                          <StopPointRef>8503000</StopPointRef>
+                          <StopPointRef>ch:1:sloid:3000</StopPointRef>
                           <ojp:LocationName>
                               <ojp:Text>Zürich HB</ojp:Text>
                           </ojp:LocationName>
@@ -39,7 +39,7 @@ body:xml {
                   </ojp:Origin>
                   <ojp:Destination>
                       <ojp:PlaceRef>
-                          <StopPointRef>8503091</StopPointRef>
+                          <StopPointRef>ch:1:sloid:3091</StopPointRef>
                           <ojp:LocationName>
                               <ojp:Text>Zürich Giesshübel</ojp:Text>
                           </ojp:LocationName>
@@ -68,5 +68,957 @@ script:post-response {
 
 settings {
   encodeUrl: true
-  timeout: 0
+}
+
+example {
+  name: TR-1p3_OptimisationMethod-leastWalking notOK EFABA-2771
+  
+  request: {
+    url: {{server}}
+    method: POST
+    mode: xml
+    headers: {
+      Content-Type: text/xml
+    }
+  
+    body:xml: {
+      <?xml version="1.0" encoding="UTF-8"?>
+      <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+          <OJPRequest>
+              <ServiceRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <RequestorRef>SKIPlusRegTest</RequestorRef>
+                  <ojp:OJPTripRequest>
+                      <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                      <MessageIdentifier>TR-1p3</MessageIdentifier>
+                      <ojp:Origin>
+                          <ojp:PlaceRef>
+                              <StopPointRef>8503000</StopPointRef>
+                              <ojp:LocationName>
+                                  <ojp:Text>Zürich HB</ojp:Text>
+                              </ojp:LocationName>
+                          </ojp:PlaceRef>
+                          <ojp:DepArrTime>{{friday_timetable_change}}T11:17:00Z</ojp:DepArrTime>
+                      </ojp:Origin>
+                      <ojp:Destination>
+                          <ojp:PlaceRef>
+                              <StopPointRef>8503091</StopPointRef>
+                              <ojp:LocationName>
+                                  <ojp:Text>Zürich Giesshübel</ojp:Text>
+                              </ojp:LocationName>
+                          </ojp:PlaceRef>
+                      </ojp:Destination>
+                      <ojp:Params>
+                          <ojp:NumberOfResults>5</ojp:NumberOfResults>
+                          <ojp:OptimisationMethod>leastWalking</ojp:OptimisationMethod>
+                      </ojp:Params>
+                  </ojp:OJPTripRequest>
+              </ServiceRequest>
+          </OJPRequest>
+      </OJP>
+      
+    }
+  }
+  
+  response: {
+    headers: {
+      Server: EFAController/10.6.14.5/OJP-EFA01-I
+      Date: Fri, 01 Dec 2023 17:02:38 GMT
+      Content-Type: text/xml
+      Accept-Ranges: none
+      Content-Length: 3475
+      Last-Modified: Fri, 01 Dec 2023 17:02:38 GMT
+      Connection: Keep-Alive
+      Content-Encoding: gzip
+      Access-Control-Allow-Origin: *
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: xml
+      content: '''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <siri:OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns:ojp="http://www.vdv.de/ojp" version="1.0">
+            <siri:OJPResponse>
+                <siri:ServiceDelivery>
+                    <siri:ResponseTimestamp>2023-12-01T17:02:38Z</siri:ResponseTimestamp>
+                    <siri:ProducerRef>EFAController10.6.14.5-OJP-EFA01-I</siri:ProducerRef>
+                    <siri:Status>true</siri:Status>
+                    <ojp:OJPTripDelivery>
+                        <siri:ResponseTimestamp>2023-12-01T17:02:37Z</siri:ResponseTimestamp>
+                        <siri:RequestMessageRef>TR-1p3</siri:RequestMessageRef>
+                        <siri:Status>true</siri:Status>
+                        <ojp:CalcTime>1201</ojp:CalcTime>
+                        <ojp:TripResponseContext>
+                            <ojp:Places>
+                                <ojp:Location>
+                                    <ojp:StopPlace>
+                                        <ojp:StopPlaceRef>8503000</ojp:StopPlaceRef>
+                                        <ojp:StopPlaceName>
+                                            <ojp:Text xml:lang="de">Zürich HB</ojp:Text>
+                                        </ojp:StopPlaceName>
+                                        <ojp:PrivateCode>
+                                            <ojp:System>EFA</ojp:System>
+                                            <ojp:Value>108276</ojp:Value>
+                                        </ojp:PrivateCode>
+                                        <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                    </ojp:StopPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Zürich HB</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>8.54021</siri:Longitude>
+                                        <siri:Latitude>47.37818</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:TopographicPlace>
+                                        <ojp:TopographicPlaceCode>23026261:27</ojp:TopographicPlaceCode>
+                                        <ojp:TopographicPlaceName>
+                                            <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                        </ojp:TopographicPlaceName>
+                                    </ojp:TopographicPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>8.54021</siri:Longitude>
+                                        <siri:Latitude>47.37818</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:StopPlace>
+                                        <ojp:StopPlaceRef>8503088</ojp:StopPlaceRef>
+                                        <ojp:StopPlaceName>
+                                            <ojp:Text xml:lang="de">Zürich HB SZU</ojp:Text>
+                                        </ojp:StopPlaceName>
+                                        <ojp:PrivateCode>
+                                            <ojp:System>EFA</ojp:System>
+                                            <ojp:Value>108326</ojp:Value>
+                                        </ojp:PrivateCode>
+                                        <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                    </ojp:StopPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Zürich HB SZU</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>8.53939</siri:Longitude>
+                                        <siri:Latitude>47.37753</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:StopPoint>
+                                        <siri:StopPointRef>ch:1:sloid:3088:0:99992</siri:StopPointRef>
+                                        <ojp:StopPointName>
+                                            <ojp:Text xml:lang="de">Zürich HB SZU</ojp:Text>
+                                        </ojp:StopPointName>
+                                        <ojp:PrivateCode>
+                                            <ojp:System>EFA</ojp:System>
+                                            <ojp:Value>108326:0:21</ojp:Value>
+                                        </ojp:PrivateCode>
+                                        <ojp:ParentRef>8503088</ojp:ParentRef>
+                                        <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                    </ojp:StopPoint>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Zürich HB SZU</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>8.53939</siri:Longitude>
+                                        <siri:Latitude>47.37753</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:StopPlace>
+                                        <ojp:StopPlaceRef>8503091</ojp:StopPlaceRef>
+                                        <ojp:StopPlaceName>
+                                            <ojp:Text xml:lang="de">Zürich Giesshübel</ojp:Text>
+                                        </ojp:StopPlaceName>
+                                        <ojp:PrivateCode>
+                                            <ojp:System>EFA</ojp:System>
+                                            <ojp:Value>108329</ojp:Value>
+                                        </ojp:PrivateCode>
+                                        <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                    </ojp:StopPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Zürich Giesshübel</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>8.52202</siri:Longitude>
+                                        <siri:Latitude>47.36261</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:StopPoint>
+                                        <siri:StopPointRef>ch:1:sloid:3091:0:185066</siri:StopPointRef>
+                                        <ojp:StopPointName>
+                                            <ojp:Text xml:lang="de">Zürich Giesshübel</ojp:Text>
+                                        </ojp:StopPointName>
+                                        <ojp:PrivateCode>
+                                            <ojp:System>EFA</ojp:System>
+                                            <ojp:Value>108329:0:1</ojp:Value>
+                                        </ojp:PrivateCode>
+                                        <ojp:ParentRef>8503091</ojp:ParentRef>
+                                        <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                    </ojp:StopPoint>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Zürich Giesshübel</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>8.52202</siri:Longitude>
+                                        <siri:Latitude>47.36261</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:StopPlace>
+                                        <ojp:StopPlaceRef>8503098</ojp:StopPlaceRef>
+                                        <ojp:StopPlaceName>
+                                            <ojp:Text xml:lang="de">Sihlwald</ojp:Text>
+                                        </ojp:StopPlaceName>
+                                        <ojp:PrivateCode>
+                                            <ojp:System>EFA</ojp:System>
+                                            <ojp:Value>108335</ojp:Value>
+                                        </ojp:PrivateCode>
+                                        <ojp:TopographicPlaceRef>23026295:8</ojp:TopographicPlaceRef>
+                                    </ojp:StopPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Sihlwald</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>8.55751</siri:Longitude>
+                                        <siri:Latitude>47.26829</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:TopographicPlace>
+                                        <ojp:TopographicPlaceCode>23026295:8</ojp:TopographicPlaceCode>
+                                        <ojp:TopographicPlaceName>
+                                            <ojp:Text xml:lang="de">Sihlwald</ojp:Text>
+                                        </ojp:TopographicPlaceName>
+                                    </ojp:TopographicPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Sihlwald</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>8.55751</siri:Longitude>
+                                        <siri:Latitude>47.26829</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:StopPlace>
+                                        <ojp:StopPlaceRef>8503097</ojp:StopPlaceRef>
+                                        <ojp:StopPlaceName>
+                                            <ojp:Text xml:lang="de">Langnau-Gattikon</ojp:Text>
+                                        </ojp:StopPlaceName>
+                                        <ojp:PrivateCode>
+                                            <ojp:System>EFA</ojp:System>
+                                            <ojp:Value>108334</ojp:Value>
+                                        </ojp:PrivateCode>
+                                        <ojp:TopographicPlaceRef>23026136:3</ojp:TopographicPlaceRef>
+                                    </ojp:StopPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Langnau-Gattikon</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>8.54383</siri:Longitude>
+                                        <siri:Latitude>47.28731</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                                <ojp:Location>
+                                    <ojp:TopographicPlace>
+                                        <ojp:TopographicPlaceCode>23026136:3</ojp:TopographicPlaceCode>
+                                        <ojp:TopographicPlaceName>
+                                            <ojp:Text xml:lang="de">Langnau am Albis</ojp:Text>
+                                        </ojp:TopographicPlaceName>
+                                    </ojp:TopographicPlace>
+                                    <ojp:LocationName>
+                                        <ojp:Text xml:lang="de">Langnau am Albis</ojp:Text>
+                                    </ojp:LocationName>
+                                    <ojp:GeoPosition>
+                                        <siri:Longitude>8.54383</siri:Longitude>
+                                        <siri:Latitude>47.28731</siri:Latitude>
+                                    </ojp:GeoPosition>
+                                </ojp:Location>
+                            </ojp:Places>
+                        </ojp:TripResponseContext>
+                        <ojp:TripResult>
+                            <ojp:ResultId>ID-6A05DED4-48B2-488E-9410-6E9C57CBE6E9</ojp:ResultId>
+                            <ojp:Trip>
+                                <ojp:TripId>ID-6A05DED4-48B2-488E-9410-6E9C57CBE6E9</ojp:TripId>
+                                <ojp:Duration>PT10M</ojp:Duration>
+                                <ojp:StartTime>2023-12-08T11:11:00Z</ojp:StartTime>
+                                <ojp:EndTime>2023-12-08T11:21:00Z</ojp:EndTime>
+                                <ojp:Transfers>0</ojp:Transfers>
+                                <ojp:Distance>6334</ojp:Distance>
+                                <ojp:TripLeg>
+                                    <ojp:LegId>1</ojp:LegId>
+                                    <ojp:TransferLeg>
+                                        <ojp:TransferMode>walk</ojp:TransferMode>
+                                        <ojp:LegStart>
+                                            <siri:StopPointRef>8503000</siri:StopPointRef>
+                                            <ojp:LocationName>
+                                                <ojp:Text xml:lang="de">Zürich HB</ojp:Text>
+                                            </ojp:LocationName>
+                                        </ojp:LegStart>
+                                        <ojp:LegEnd>
+                                            <siri:StopPointRef>ch:1:sloid:3088:0:99992</siri:StopPointRef>
+                                            <ojp:LocationName>
+                                                <ojp:Text xml:lang="de">Zürich HB SZU</ojp:Text>
+                                            </ojp:LocationName>
+                                        </ojp:LegEnd>
+                                        <ojp:TimeWindowStart>2023-12-08T11:11:00Z</ojp:TimeWindowStart>
+                                        <ojp:TimeWindowEnd>2023-12-08T11:18:00Z</ojp:TimeWindowEnd>
+                                        <ojp:Duration>PT7M</ojp:Duration>
+                                        <ojp:WalkDuration>PT7M</ojp:WalkDuration>
+                                        <ojp:BufferTime>PT0M</ojp:BufferTime>
+                                        <ojp:PathGuidance>
+                                            <ojp:PathGuidanceSection>
+                                                <ojp:TrackSection>
+                                                    <ojp:TrackStart>
+                                                        <siri:StopPointRef>8503000</siri:StopPointRef>
+                                                        <ojp:LocationName>
+                                                            <ojp:Text xml:lang="de">Zürich HB</ojp:Text>
+                                                        </ojp:LocationName>
+                                                    </ojp:TrackStart>
+                                                    <ojp:TrackEnd>
+                                                        <siri:StopPointRef>8503088</siri:StopPointRef>
+                                                        <ojp:LocationName>
+                                                            <ojp:Text xml:lang="de">Zürich HB SZU</ojp:Text>
+                                                        </ojp:LocationName>
+                                                    </ojp:TrackEnd>
+                                                    <ojp:Extension>
+                                                        <ojp:GeoReferenceFrom>1007657040:140:MRCV:100</ojp:GeoReferenceFrom>
+                                                        <ojp:GeoReferenceTo>1012162164:653:MRCV:100</ojp:GeoReferenceTo>
+                                                        <ojp:LevelFrom>0</ojp:LevelFrom>
+                                                        <ojp:LevelTo>0</ojp:LevelTo>
+                                                    </ojp:Extension>
+                                                </ojp:TrackSection>
+                                                <ojp:PathLink>
+                                                    <ojp:Transition>level</ojp:Transition>
+                                                    <ojp:AccessFeatureType>footpath</ojp:AccessFeatureType>
+                                                </ojp:PathLink>
+                                            </ojp:PathGuidanceSection>
+                                        </ojp:PathGuidance>
+                                    </ojp:TransferLeg>
+                                </ojp:TripLeg>
+                                <ojp:TripLeg>
+                                    <ojp:LegId>2</ojp:LegId>
+                                    <ojp:TimedLeg>
+                                        <ojp:LegBoard>
+                                            <siri:StopPointRef>ch:1:sloid:3088:0:99992</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Zürich HB SZU</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:PlannedQuay>
+                                                <ojp:Text xml:lang="de">21</ojp:Text>
+                                            </ojp:PlannedQuay>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2023-12-08T11:18:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>1</ojp:Order>
+                                        </ojp:LegBoard>
+                                        <ojp:LegAlight>
+                                            <siri:StopPointRef>ch:1:sloid:3091:0:185066</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Zürich Giesshübel</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:PlannedQuay>
+                                                <ojp:Text xml:lang="de">1</ojp:Text>
+                                            </ojp:PlannedQuay>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2023-12-08T11:21:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:Order>3</ojp:Order>
+                                        </ojp:LegAlight>
+                                        <ojp:Service>
+                                            <ojp:OperatingDayRef>2023-12-08</ojp:OperatingDayRef>
+                                            <ojp:JourneyRef>ch:1:sjyid:100058:12523-001</ojp:JourneyRef>
+                                            <siri:LineRef>ojp:91004:A</siri:LineRef>
+                                            <siri:DirectionRef>R</siri:DirectionRef>
+                                            <ojp:Mode>
+                                                <ojp:PtMode>rail</ojp:PtMode>
+                                                <siri:RailSubmode>regionalRail</siri:RailSubmode>
+                                                <ojp:Name>
+                                                    <ojp:Text xml:lang="de">Zug</ojp:Text>
+                                                </ojp:Name>
+                                                <ojp:ShortName>
+                                                    <ojp:Text xml:lang="de">S</ojp:Text>
+                                                </ojp:ShortName>
+                                            </ojp:Mode>
+                                            <ojp:PublishedLineName>
+                                                <ojp:Text xml:lang="de">S4</ojp:Text>
+                                            </ojp:PublishedLineName>
+                                            <ojp:OperatorRef>ojp:78</ojp:OperatorRef>
+                                            <ojp:DestinationStopPointRef>8503098</ojp:DestinationStopPointRef>
+                                            <ojp:DestinationText>
+                                                <ojp:Text xml:lang="de">Sihlwald</ojp:Text>
+                                            </ojp:DestinationText>
+                                        </ojp:Service>
+                                        <ojp:Extension>
+                                            <ojp:TransportTypeName>
+                                                <ojp:Text xml:lang="de">S-Bahn</ojp:Text>
+                                            </ojp:TransportTypeName>
+                                            <ojp:PublishedJourneyNumber>
+                                                <ojp:Text xml:lang="de">12523</ojp:Text>
+                                            </ojp:PublishedJourneyNumber>
+                                            <ojp:OperatorName>
+                                                <ojp:Text xml:lang="de">Sihltal-Zürich-Uetliberg-Bahn</ojp:Text>
+                                            </ojp:OperatorName>
+                                        </ojp:Extension>
+                                    </ojp:TimedLeg>
+                                </ojp:TripLeg>
+                            </ojp:Trip>
+                        </ojp:TripResult>
+                        <ojp:TripResult>
+                            <ojp:ResultId>ID-F4989C1D-8671-4CA8-853A-690ED854CCCE</ojp:ResultId>
+                            <ojp:Trip>
+                                <ojp:TripId>ID-F4989C1D-8671-4CA8-853A-690ED854CCCE</ojp:TripId>
+                                <ojp:Duration>PT10M</ojp:Duration>
+                                <ojp:StartTime>2023-12-08T11:31:00Z</ojp:StartTime>
+                                <ojp:EndTime>2023-12-08T11:41:00Z</ojp:EndTime>
+                                <ojp:Transfers>0</ojp:Transfers>
+                                <ojp:Distance>6334</ojp:Distance>
+                                <ojp:TripLeg>
+                                    <ojp:LegId>1</ojp:LegId>
+                                    <ojp:TransferLeg>
+                                        <ojp:TransferMode>walk</ojp:TransferMode>
+                                        <ojp:LegStart>
+                                            <siri:StopPointRef>8503000</siri:StopPointRef>
+                                            <ojp:LocationName>
+                                                <ojp:Text xml:lang="de">Zürich HB</ojp:Text>
+                                            </ojp:LocationName>
+                                        </ojp:LegStart>
+                                        <ojp:LegEnd>
+                                            <siri:StopPointRef>ch:1:sloid:3088:0:99992</siri:StopPointRef>
+                                            <ojp:LocationName>
+                                                <ojp:Text xml:lang="de">Zürich HB SZU</ojp:Text>
+                                            </ojp:LocationName>
+                                        </ojp:LegEnd>
+                                        <ojp:TimeWindowStart>2023-12-08T11:31:00Z</ojp:TimeWindowStart>
+                                        <ojp:TimeWindowEnd>2023-12-08T11:38:00Z</ojp:TimeWindowEnd>
+                                        <ojp:Duration>PT7M</ojp:Duration>
+                                        <ojp:WalkDuration>PT7M</ojp:WalkDuration>
+                                        <ojp:BufferTime>PT0M</ojp:BufferTime>
+                                        <ojp:PathGuidance>
+                                            <ojp:PathGuidanceSection>
+                                                <ojp:TrackSection>
+                                                    <ojp:TrackStart>
+                                                        <siri:StopPointRef>8503000</siri:StopPointRef>
+                                                        <ojp:LocationName>
+                                                            <ojp:Text xml:lang="de">Zürich HB</ojp:Text>
+                                                        </ojp:LocationName>
+                                                    </ojp:TrackStart>
+                                                    <ojp:TrackEnd>
+                                                        <siri:StopPointRef>8503088</siri:StopPointRef>
+                                                        <ojp:LocationName>
+                                                            <ojp:Text xml:lang="de">Zürich HB SZU</ojp:Text>
+                                                        </ojp:LocationName>
+                                                    </ojp:TrackEnd>
+                                                    <ojp:Extension>
+                                                        <ojp:GeoReferenceFrom>1007657040:140:MRCV:100</ojp:GeoReferenceFrom>
+                                                        <ojp:GeoReferenceTo>1012162164:653:MRCV:100</ojp:GeoReferenceTo>
+                                                        <ojp:LevelFrom>0</ojp:LevelFrom>
+                                                        <ojp:LevelTo>0</ojp:LevelTo>
+                                                    </ojp:Extension>
+                                                </ojp:TrackSection>
+                                                <ojp:PathLink>
+                                                    <ojp:Transition>level</ojp:Transition>
+                                                    <ojp:AccessFeatureType>footpath</ojp:AccessFeatureType>
+                                                </ojp:PathLink>
+                                            </ojp:PathGuidanceSection>
+                                        </ojp:PathGuidance>
+                                    </ojp:TransferLeg>
+                                </ojp:TripLeg>
+                                <ojp:TripLeg>
+                                    <ojp:LegId>2</ojp:LegId>
+                                    <ojp:TimedLeg>
+                                        <ojp:LegBoard>
+                                            <siri:StopPointRef>ch:1:sloid:3088:0:99992</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Zürich HB SZU</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:PlannedQuay>
+                                                <ojp:Text xml:lang="de">21</ojp:Text>
+                                            </ojp:PlannedQuay>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2023-12-08T11:38:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>1</ojp:Order>
+                                        </ojp:LegBoard>
+                                        <ojp:LegAlight>
+                                            <siri:StopPointRef>ch:1:sloid:3091:0:185066</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Zürich Giesshübel</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:PlannedQuay>
+                                                <ojp:Text xml:lang="de">1</ojp:Text>
+                                            </ojp:PlannedQuay>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2023-12-08T11:41:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:Order>3</ojp:Order>
+                                        </ojp:LegAlight>
+                                        <ojp:Service>
+                                            <ojp:OperatingDayRef>2023-12-08</ojp:OperatingDayRef>
+                                            <ojp:JourneyRef>ch:1:sjyid:100058:12527-001</ojp:JourneyRef>
+                                            <siri:LineRef>ojp:91004:A</siri:LineRef>
+                                            <siri:DirectionRef>R</siri:DirectionRef>
+                                            <ojp:Mode>
+                                                <ojp:PtMode>rail</ojp:PtMode>
+                                                <siri:RailSubmode>regionalRail</siri:RailSubmode>
+                                                <ojp:Name>
+                                                    <ojp:Text xml:lang="de">Zug</ojp:Text>
+                                                </ojp:Name>
+                                                <ojp:ShortName>
+                                                    <ojp:Text xml:lang="de">S</ojp:Text>
+                                                </ojp:ShortName>
+                                            </ojp:Mode>
+                                            <ojp:PublishedLineName>
+                                                <ojp:Text xml:lang="de">S4</ojp:Text>
+                                            </ojp:PublishedLineName>
+                                            <ojp:OperatorRef>ojp:78</ojp:OperatorRef>
+                                            <ojp:DestinationStopPointRef>8503097</ojp:DestinationStopPointRef>
+                                            <ojp:DestinationText>
+                                                <ojp:Text xml:lang="de">Langnau-Gattikon</ojp:Text>
+                                            </ojp:DestinationText>
+                                        </ojp:Service>
+                                        <ojp:Extension>
+                                            <ojp:TransportTypeName>
+                                                <ojp:Text xml:lang="de">S-Bahn</ojp:Text>
+                                            </ojp:TransportTypeName>
+                                            <ojp:PublishedJourneyNumber>
+                                                <ojp:Text xml:lang="de">12527</ojp:Text>
+                                            </ojp:PublishedJourneyNumber>
+                                            <ojp:OperatorName>
+                                                <ojp:Text xml:lang="de">Sihltal-Zürich-Uetliberg-Bahn</ojp:Text>
+                                            </ojp:OperatorName>
+                                        </ojp:Extension>
+                                    </ojp:TimedLeg>
+                                </ojp:TripLeg>
+                            </ojp:Trip>
+                        </ojp:TripResult>
+                        <ojp:TripResult>
+                            <ojp:ResultId>ID-DA856D7D-D2C6-46C6-B012-09AF90003D87</ojp:ResultId>
+                            <ojp:Trip>
+                                <ojp:TripId>ID-DA856D7D-D2C6-46C6-B012-09AF90003D87</ojp:TripId>
+                                <ojp:Duration>PT10M</ojp:Duration>
+                                <ojp:StartTime>2023-12-08T11:51:00Z</ojp:StartTime>
+                                <ojp:EndTime>2023-12-08T12:01:00Z</ojp:EndTime>
+                                <ojp:Transfers>0</ojp:Transfers>
+                                <ojp:Distance>6334</ojp:Distance>
+                                <ojp:TripLeg>
+                                    <ojp:LegId>1</ojp:LegId>
+                                    <ojp:TransferLeg>
+                                        <ojp:TransferMode>walk</ojp:TransferMode>
+                                        <ojp:LegStart>
+                                            <siri:StopPointRef>8503000</siri:StopPointRef>
+                                            <ojp:LocationName>
+                                                <ojp:Text xml:lang="de">Zürich HB</ojp:Text>
+                                            </ojp:LocationName>
+                                        </ojp:LegStart>
+                                        <ojp:LegEnd>
+                                            <siri:StopPointRef>ch:1:sloid:3088:0:99992</siri:StopPointRef>
+                                            <ojp:LocationName>
+                                                <ojp:Text xml:lang="de">Zürich HB SZU</ojp:Text>
+                                            </ojp:LocationName>
+                                        </ojp:LegEnd>
+                                        <ojp:TimeWindowStart>2023-12-08T11:51:00Z</ojp:TimeWindowStart>
+                                        <ojp:TimeWindowEnd>2023-12-08T11:58:00Z</ojp:TimeWindowEnd>
+                                        <ojp:Duration>PT7M</ojp:Duration>
+                                        <ojp:WalkDuration>PT7M</ojp:WalkDuration>
+                                        <ojp:BufferTime>PT0M</ojp:BufferTime>
+                                        <ojp:PathGuidance>
+                                            <ojp:PathGuidanceSection>
+                                                <ojp:TrackSection>
+                                                    <ojp:TrackStart>
+                                                        <siri:StopPointRef>8503000</siri:StopPointRef>
+                                                        <ojp:LocationName>
+                                                            <ojp:Text xml:lang="de">Zürich HB</ojp:Text>
+                                                        </ojp:LocationName>
+                                                    </ojp:TrackStart>
+                                                    <ojp:TrackEnd>
+                                                        <siri:StopPointRef>8503088</siri:StopPointRef>
+                                                        <ojp:LocationName>
+                                                            <ojp:Text xml:lang="de">Zürich HB SZU</ojp:Text>
+                                                        </ojp:LocationName>
+                                                    </ojp:TrackEnd>
+                                                    <ojp:Extension>
+                                                        <ojp:GeoReferenceFrom>1007657040:140:MRCV:100</ojp:GeoReferenceFrom>
+                                                        <ojp:GeoReferenceTo>1012162164:653:MRCV:100</ojp:GeoReferenceTo>
+                                                        <ojp:LevelFrom>0</ojp:LevelFrom>
+                                                        <ojp:LevelTo>0</ojp:LevelTo>
+                                                    </ojp:Extension>
+                                                </ojp:TrackSection>
+                                                <ojp:PathLink>
+                                                    <ojp:Transition>level</ojp:Transition>
+                                                    <ojp:AccessFeatureType>footpath</ojp:AccessFeatureType>
+                                                </ojp:PathLink>
+                                            </ojp:PathGuidanceSection>
+                                        </ojp:PathGuidance>
+                                    </ojp:TransferLeg>
+                                </ojp:TripLeg>
+                                <ojp:TripLeg>
+                                    <ojp:LegId>2</ojp:LegId>
+                                    <ojp:TimedLeg>
+                                        <ojp:LegBoard>
+                                            <siri:StopPointRef>ch:1:sloid:3088:0:99992</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Zürich HB SZU</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:PlannedQuay>
+                                                <ojp:Text xml:lang="de">21</ojp:Text>
+                                            </ojp:PlannedQuay>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2023-12-08T11:58:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>1</ojp:Order>
+                                        </ojp:LegBoard>
+                                        <ojp:LegAlight>
+                                            <siri:StopPointRef>ch:1:sloid:3091:0:185066</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Zürich Giesshübel</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:PlannedQuay>
+                                                <ojp:Text xml:lang="de">1</ojp:Text>
+                                            </ojp:PlannedQuay>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2023-12-08T12:01:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:Order>3</ojp:Order>
+                                        </ojp:LegAlight>
+                                        <ojp:Service>
+                                            <ojp:OperatingDayRef>2023-12-08</ojp:OperatingDayRef>
+                                            <ojp:JourneyRef>ch:1:sjyid:100058:12531-001</ojp:JourneyRef>
+                                            <siri:LineRef>ojp:91004:A</siri:LineRef>
+                                            <siri:DirectionRef>R</siri:DirectionRef>
+                                            <ojp:Mode>
+                                                <ojp:PtMode>rail</ojp:PtMode>
+                                                <siri:RailSubmode>regionalRail</siri:RailSubmode>
+                                                <ojp:Name>
+                                                    <ojp:Text xml:lang="de">Zug</ojp:Text>
+                                                </ojp:Name>
+                                                <ojp:ShortName>
+                                                    <ojp:Text xml:lang="de">S</ojp:Text>
+                                                </ojp:ShortName>
+                                            </ojp:Mode>
+                                            <ojp:PublishedLineName>
+                                                <ojp:Text xml:lang="de">S4</ojp:Text>
+                                            </ojp:PublishedLineName>
+                                            <ojp:OperatorRef>ojp:78</ojp:OperatorRef>
+                                            <ojp:DestinationStopPointRef>8503097</ojp:DestinationStopPointRef>
+                                            <ojp:DestinationText>
+                                                <ojp:Text xml:lang="de">Langnau-Gattikon</ojp:Text>
+                                            </ojp:DestinationText>
+                                        </ojp:Service>
+                                        <ojp:Extension>
+                                            <ojp:TransportTypeName>
+                                                <ojp:Text xml:lang="de">S-Bahn</ojp:Text>
+                                            </ojp:TransportTypeName>
+                                            <ojp:PublishedJourneyNumber>
+                                                <ojp:Text xml:lang="de">12531</ojp:Text>
+                                            </ojp:PublishedJourneyNumber>
+                                            <ojp:OperatorName>
+                                                <ojp:Text xml:lang="de">Sihltal-Zürich-Uetliberg-Bahn</ojp:Text>
+                                            </ojp:OperatorName>
+                                        </ojp:Extension>
+                                    </ojp:TimedLeg>
+                                </ojp:TripLeg>
+                            </ojp:Trip>
+                        </ojp:TripResult>
+                        <ojp:TripResult>
+                            <ojp:ResultId>ID-BF0CB7AC-A101-4916-934F-FF299A69C16B</ojp:ResultId>
+                            <ojp:Trip>
+                                <ojp:TripId>ID-BF0CB7AC-A101-4916-934F-FF299A69C16B</ojp:TripId>
+                                <ojp:Duration>PT10M</ojp:Duration>
+                                <ojp:StartTime>2023-12-08T12:11:00Z</ojp:StartTime>
+                                <ojp:EndTime>2023-12-08T12:21:00Z</ojp:EndTime>
+                                <ojp:Transfers>0</ojp:Transfers>
+                                <ojp:Distance>6334</ojp:Distance>
+                                <ojp:TripLeg>
+                                    <ojp:LegId>1</ojp:LegId>
+                                    <ojp:TransferLeg>
+                                        <ojp:TransferMode>walk</ojp:TransferMode>
+                                        <ojp:LegStart>
+                                            <siri:StopPointRef>8503000</siri:StopPointRef>
+                                            <ojp:LocationName>
+                                                <ojp:Text xml:lang="de">Zürich HB</ojp:Text>
+                                            </ojp:LocationName>
+                                        </ojp:LegStart>
+                                        <ojp:LegEnd>
+                                            <siri:StopPointRef>ch:1:sloid:3088:0:99992</siri:StopPointRef>
+                                            <ojp:LocationName>
+                                                <ojp:Text xml:lang="de">Zürich HB SZU</ojp:Text>
+                                            </ojp:LocationName>
+                                        </ojp:LegEnd>
+                                        <ojp:TimeWindowStart>2023-12-08T12:11:00Z</ojp:TimeWindowStart>
+                                        <ojp:TimeWindowEnd>2023-12-08T12:18:00Z</ojp:TimeWindowEnd>
+                                        <ojp:Duration>PT7M</ojp:Duration>
+                                        <ojp:WalkDuration>PT7M</ojp:WalkDuration>
+                                        <ojp:BufferTime>PT0M</ojp:BufferTime>
+                                        <ojp:PathGuidance>
+                                            <ojp:PathGuidanceSection>
+                                                <ojp:TrackSection>
+                                                    <ojp:TrackStart>
+                                                        <siri:StopPointRef>8503000</siri:StopPointRef>
+                                                        <ojp:LocationName>
+                                                            <ojp:Text xml:lang="de">Zürich HB</ojp:Text>
+                                                        </ojp:LocationName>
+                                                    </ojp:TrackStart>
+                                                    <ojp:TrackEnd>
+                                                        <siri:StopPointRef>8503088</siri:StopPointRef>
+                                                        <ojp:LocationName>
+                                                            <ojp:Text xml:lang="de">Zürich HB SZU</ojp:Text>
+                                                        </ojp:LocationName>
+                                                    </ojp:TrackEnd>
+                                                    <ojp:Extension>
+                                                        <ojp:GeoReferenceFrom>1007657040:140:MRCV:100</ojp:GeoReferenceFrom>
+                                                        <ojp:GeoReferenceTo>1012162164:653:MRCV:100</ojp:GeoReferenceTo>
+                                                        <ojp:LevelFrom>0</ojp:LevelFrom>
+                                                        <ojp:LevelTo>0</ojp:LevelTo>
+                                                    </ojp:Extension>
+                                                </ojp:TrackSection>
+                                                <ojp:PathLink>
+                                                    <ojp:Transition>level</ojp:Transition>
+                                                    <ojp:AccessFeatureType>footpath</ojp:AccessFeatureType>
+                                                </ojp:PathLink>
+                                            </ojp:PathGuidanceSection>
+                                        </ojp:PathGuidance>
+                                    </ojp:TransferLeg>
+                                </ojp:TripLeg>
+                                <ojp:TripLeg>
+                                    <ojp:LegId>2</ojp:LegId>
+                                    <ojp:TimedLeg>
+                                        <ojp:LegBoard>
+                                            <siri:StopPointRef>ch:1:sloid:3088:0:99992</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Zürich HB SZU</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:PlannedQuay>
+                                                <ojp:Text xml:lang="de">21</ojp:Text>
+                                            </ojp:PlannedQuay>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2023-12-08T12:18:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>1</ojp:Order>
+                                        </ojp:LegBoard>
+                                        <ojp:LegAlight>
+                                            <siri:StopPointRef>ch:1:sloid:3091:0:185066</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Zürich Giesshübel</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:PlannedQuay>
+                                                <ojp:Text xml:lang="de">1</ojp:Text>
+                                            </ojp:PlannedQuay>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2023-12-08T12:21:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:Order>3</ojp:Order>
+                                        </ojp:LegAlight>
+                                        <ojp:Service>
+                                            <ojp:OperatingDayRef>2023-12-08</ojp:OperatingDayRef>
+                                            <ojp:JourneyRef>ch:1:sjyid:100058:12535-001</ojp:JourneyRef>
+                                            <siri:LineRef>ojp:91004:A</siri:LineRef>
+                                            <siri:DirectionRef>R</siri:DirectionRef>
+                                            <ojp:Mode>
+                                                <ojp:PtMode>rail</ojp:PtMode>
+                                                <siri:RailSubmode>regionalRail</siri:RailSubmode>
+                                                <ojp:Name>
+                                                    <ojp:Text xml:lang="de">Zug</ojp:Text>
+                                                </ojp:Name>
+                                                <ojp:ShortName>
+                                                    <ojp:Text xml:lang="de">S</ojp:Text>
+                                                </ojp:ShortName>
+                                            </ojp:Mode>
+                                            <ojp:PublishedLineName>
+                                                <ojp:Text xml:lang="de">S4</ojp:Text>
+                                            </ojp:PublishedLineName>
+                                            <ojp:OperatorRef>ojp:78</ojp:OperatorRef>
+                                            <ojp:DestinationStopPointRef>8503098</ojp:DestinationStopPointRef>
+                                            <ojp:DestinationText>
+                                                <ojp:Text xml:lang="de">Sihlwald</ojp:Text>
+                                            </ojp:DestinationText>
+                                        </ojp:Service>
+                                        <ojp:Extension>
+                                            <ojp:TransportTypeName>
+                                                <ojp:Text xml:lang="de">S-Bahn</ojp:Text>
+                                            </ojp:TransportTypeName>
+                                            <ojp:PublishedJourneyNumber>
+                                                <ojp:Text xml:lang="de">12535</ojp:Text>
+                                            </ojp:PublishedJourneyNumber>
+                                            <ojp:OperatorName>
+                                                <ojp:Text xml:lang="de">Sihltal-Zürich-Uetliberg-Bahn</ojp:Text>
+                                            </ojp:OperatorName>
+                                        </ojp:Extension>
+                                    </ojp:TimedLeg>
+                                </ojp:TripLeg>
+                            </ojp:Trip>
+                        </ojp:TripResult>
+                        <ojp:TripResult>
+                            <ojp:ResultId>ID-E1D1093A-C394-41CA-8660-59FA7BE4C779</ojp:ResultId>
+                            <ojp:Trip>
+                                <ojp:TripId>ID-E1D1093A-C394-41CA-8660-59FA7BE4C779</ojp:TripId>
+                                <ojp:Duration>PT10M</ojp:Duration>
+                                <ojp:StartTime>2023-12-08T12:31:00Z</ojp:StartTime>
+                                <ojp:EndTime>2023-12-08T12:41:00Z</ojp:EndTime>
+                                <ojp:Transfers>0</ojp:Transfers>
+                                <ojp:Distance>6334</ojp:Distance>
+                                <ojp:TripLeg>
+                                    <ojp:LegId>1</ojp:LegId>
+                                    <ojp:TransferLeg>
+                                        <ojp:TransferMode>walk</ojp:TransferMode>
+                                        <ojp:LegStart>
+                                            <siri:StopPointRef>8503000</siri:StopPointRef>
+                                            <ojp:LocationName>
+                                                <ojp:Text xml:lang="de">Zürich HB</ojp:Text>
+                                            </ojp:LocationName>
+                                        </ojp:LegStart>
+                                        <ojp:LegEnd>
+                                            <siri:StopPointRef>ch:1:sloid:3088:0:99992</siri:StopPointRef>
+                                            <ojp:LocationName>
+                                                <ojp:Text xml:lang="de">Zürich HB SZU</ojp:Text>
+                                            </ojp:LocationName>
+                                        </ojp:LegEnd>
+                                        <ojp:TimeWindowStart>2023-12-08T12:31:00Z</ojp:TimeWindowStart>
+                                        <ojp:TimeWindowEnd>2023-12-08T12:38:00Z</ojp:TimeWindowEnd>
+                                        <ojp:Duration>PT7M</ojp:Duration>
+                                        <ojp:WalkDuration>PT7M</ojp:WalkDuration>
+                                        <ojp:BufferTime>PT0M</ojp:BufferTime>
+                                        <ojp:PathGuidance>
+                                            <ojp:PathGuidanceSection>
+                                                <ojp:TrackSection>
+                                                    <ojp:TrackStart>
+                                                        <siri:StopPointRef>8503000</siri:StopPointRef>
+                                                        <ojp:LocationName>
+                                                            <ojp:Text xml:lang="de">Zürich HB</ojp:Text>
+                                                        </ojp:LocationName>
+                                                    </ojp:TrackStart>
+                                                    <ojp:TrackEnd>
+                                                        <siri:StopPointRef>8503088</siri:StopPointRef>
+                                                        <ojp:LocationName>
+                                                            <ojp:Text xml:lang="de">Zürich HB SZU</ojp:Text>
+                                                        </ojp:LocationName>
+                                                    </ojp:TrackEnd>
+                                                    <ojp:Extension>
+                                                        <ojp:GeoReferenceFrom>1007657040:140:MRCV:100</ojp:GeoReferenceFrom>
+                                                        <ojp:GeoReferenceTo>1012162164:653:MRCV:100</ojp:GeoReferenceTo>
+                                                        <ojp:LevelFrom>0</ojp:LevelFrom>
+                                                        <ojp:LevelTo>0</ojp:LevelTo>
+                                                    </ojp:Extension>
+                                                </ojp:TrackSection>
+                                                <ojp:PathLink>
+                                                    <ojp:Transition>level</ojp:Transition>
+                                                    <ojp:AccessFeatureType>footpath</ojp:AccessFeatureType>
+                                                </ojp:PathLink>
+                                            </ojp:PathGuidanceSection>
+                                        </ojp:PathGuidance>
+                                    </ojp:TransferLeg>
+                                </ojp:TripLeg>
+                                <ojp:TripLeg>
+                                    <ojp:LegId>2</ojp:LegId>
+                                    <ojp:TimedLeg>
+                                        <ojp:LegBoard>
+                                            <siri:StopPointRef>ch:1:sloid:3088:0:99992</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Zürich HB SZU</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:PlannedQuay>
+                                                <ojp:Text xml:lang="de">21</ojp:Text>
+                                            </ojp:PlannedQuay>
+                                            <ojp:ServiceDeparture>
+                                                <ojp:TimetabledTime>2023-12-08T12:38:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceDeparture>
+                                            <ojp:Order>1</ojp:Order>
+                                        </ojp:LegBoard>
+                                        <ojp:LegAlight>
+                                            <siri:StopPointRef>ch:1:sloid:3091:0:185066</siri:StopPointRef>
+                                            <ojp:StopPointName>
+                                                <ojp:Text xml:lang="de">Zürich Giesshübel</ojp:Text>
+                                            </ojp:StopPointName>
+                                            <ojp:NameSuffix>
+                                                <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                            </ojp:NameSuffix>
+                                            <ojp:PlannedQuay>
+                                                <ojp:Text xml:lang="de">1</ojp:Text>
+                                            </ojp:PlannedQuay>
+                                            <ojp:ServiceArrival>
+                                                <ojp:TimetabledTime>2023-12-08T12:41:00Z</ojp:TimetabledTime>
+                                            </ojp:ServiceArrival>
+                                            <ojp:Order>3</ojp:Order>
+                                        </ojp:LegAlight>
+                                        <ojp:Service>
+                                            <ojp:OperatingDayRef>2023-12-08</ojp:OperatingDayRef>
+                                            <ojp:JourneyRef>ch:1:sjyid:100058:12539-001</ojp:JourneyRef>
+                                            <siri:LineRef>ojp:91004:A</siri:LineRef>
+                                            <siri:DirectionRef>R</siri:DirectionRef>
+                                            <ojp:Mode>
+                                                <ojp:PtMode>rail</ojp:PtMode>
+                                                <siri:RailSubmode>regionalRail</siri:RailSubmode>
+                                                <ojp:Name>
+                                                    <ojp:Text xml:lang="de">Zug</ojp:Text>
+                                                </ojp:Name>
+                                                <ojp:ShortName>
+                                                    <ojp:Text xml:lang="de">S</ojp:Text>
+                                                </ojp:ShortName>
+                                            </ojp:Mode>
+                                            <ojp:PublishedLineName>
+                                                <ojp:Text xml:lang="de">S4</ojp:Text>
+                                            </ojp:PublishedLineName>
+                                            <ojp:OperatorRef>ojp:78</ojp:OperatorRef>
+                                            <ojp:DestinationStopPointRef>8503097</ojp:DestinationStopPointRef>
+                                            <ojp:DestinationText>
+                                                <ojp:Text xml:lang="de">Langnau-Gattikon</ojp:Text>
+                                            </ojp:DestinationText>
+                                        </ojp:Service>
+                                        <ojp:Extension>
+                                            <ojp:TransportTypeName>
+                                                <ojp:Text xml:lang="de">S-Bahn</ojp:Text>
+                                            </ojp:TransportTypeName>
+                                            <ojp:PublishedJourneyNumber>
+                                                <ojp:Text xml:lang="de">12539</ojp:Text>
+                                            </ojp:PublishedJourneyNumber>
+                                            <ojp:OperatorName>
+                                                <ojp:Text xml:lang="de">Sihltal-Zürich-Uetliberg-Bahn</ojp:Text>
+                                            </ojp:OperatorName>
+                                        </ojp:Extension>
+                                    </ojp:TimedLeg>
+                                </ojp:TripLeg>
+                            </ojp:Trip>
+                        </ojp:TripResult>
+                    </ojp:OJPTripDelivery>
+                </siri:ServiceDelivery>
+            </siri:OJPResponse>
+        </siri:OJP>
+      '''
+    }
+  }
 }

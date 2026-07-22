@@ -1,7 +1,7 @@
 meta {
   name: Shr-3a3 LIR Leihrad Kreuzlingen
   type: http
-  seq: 3
+  seq: 5
 }
 
 post {
@@ -59,9 +59,147 @@ script:post-response {
   test("Body matches string bicycle_rental", function () {
       expect(res.getBody()?.toString()).to.include("<ojp:Value>bicycle_rental</ojp:Value>");
   });
+  // //pm.test("Body matches string num_docks and vehicles available", function () {
+  // //    pm.expect(pm.response.text()).to.include("ojp:num_vehicles_available")
+  // //    pm.expect(pm.response.text()).to.include("ojp:num_docks_available");;
+  //});
+  //
 }
 
 settings {
   encodeUrl: true
-  timeout: 0
+}
+
+example {
+  name: Shr-3a3 LIR Leihrad Kreuzlingen
+  
+  request: {
+    url: {{server}}
+    method: POST
+    mode: xml
+    headers: {
+      Content-Type: text/xml
+    }
+  
+    body:xml: {
+      <OJP xmlns="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd" version="1.0">
+          <OJPRequest>
+              <ServiceRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <RequestorRef>SKIPlusRegTest</RequestorRef>
+                  <ojp:OJPLocationInformationRequest>
+                      <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                      <MessageIdentifier>Shr-3a</MessageIdentifier>
+                      <ojp:InitialInput>
+                          <ojp:GeoRestriction>
+                              <ojp:Circle> <!--Anfrag mittels Circle oder Rectangle-->
+                                  <ojp:Center> <!--Koordinate, zu welcher Objekte geliefert werden sollen-->
+                                      <Longitude>9.19009</Longitude> <!--WGS84 Lon-->
+                                      <Latitude>47.64509</Latitude> <!--WGS84 Lat-->
+                                  </ojp:Center>
+                                  <ojp:Radius>20</ojp:Radius>  <!--Radius in Meter um Koordinate-->
+                              </ojp:Circle>
+                          </ojp:GeoRestriction>
+                      </ojp:InitialInput>
+                      <ojp:Restrictions>
+                          <ojp:Type>poi</ojp:Type>
+                          <ojp:PointOfInterestFilter>
+                              <ojp:PointOfInterestCategory>
+                                  <ojp:OsmTag>
+                                      <ojp:Tag>amenity</ojp:Tag>
+                                      <ojp:Value>bicycle_rental</ojp:Value>
+                                  </ojp:OsmTag>
+                              </ojp:PointOfInterestCategory>
+                          </ojp:PointOfInterestFilter>
+                      </ojp:Restrictions>
+                  </ojp:OJPLocationInformationRequest>
+              </ServiceRequest>
+          </OJPRequest>
+      </OJP>
+    }
+  }
+  
+  response: {
+    headers: {
+      Date: Mon, 22 Sep 2025 11:17:25 GMT
+      Content-Type: text/xml
+      Content-Length: 1921
+      Connection: keep-alive
+      Accept-Ranges: none
+      Access-Control-Allow-Origin: *
+      Last-Modified: Mon, 22 Sep 2025 11:17:25 GMT
+      Vary: Origin
+      X-Ratelimit-Limit: -1
+      X-Ratelimit-Remaining: 0
+      X-Ratelimit-Reset: 0
+      Strict-Transport-Security: max-age=31536000; includeSubDomains
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: xml
+      content: '''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <siri:OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns:ojp="http://www.vdv.de/ojp" version="1.0">
+            <siri:OJPResponse>
+                <siri:ServiceDelivery>
+                    <siri:ResponseTimestamp>2025-09-22T11:17:25Z</siri:ResponseTimestamp>
+                    <siri:ProducerRef>optmentzEFAControllerEFAController11.0.6.101-build-379-865f040aead5</siri:ProducerRef>
+                    <siri:ResponseMessageIdentifier>59b4ed4b6d81d635</siri:ResponseMessageIdentifier>
+                    <siri:Status>true</siri:Status>
+                    <ojp:OJPLocationInformationDelivery>
+                        <siri:ResponseTimestamp>2025-09-22T11:17:24Z</siri:ResponseTimestamp>
+                        <siri:RequestMessageRef>Shr-3a</siri:RequestMessageRef>
+                        <siri:Status>true</siri:Status>
+                        <ojp:CalcTime>9</ojp:CalcTime>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>coord:1023036:5951987:MRCV:Regivelo.ch Sonnenwiesenstrasse</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Sonnenwiesenstrasse</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>amenity</ojp:Tag>
+                                            <ojp:Value>bicycle_rental</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Regivelo.ch</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>9.19009</siri:Longitude>
+                                    <siri:Latitude>47.64509</siri:Latitude>
+                                </ojp:GeoPosition>
+                                <ojp:Attribute>
+                                    <ojp:Text>
+                                        <ojp:Text xml:lang="de">Sonnenwiesenstrasse</ojp:Text>
+                                    </ojp:Text>
+                                    <ojp:Code>donkey_kreuzlingen:22527</ojp:Code>
+                                    <siri:HireFacility>cycleHire</siri:HireFacility>
+                                    <ojp:InfoURL/>
+                                </ojp:Attribute>
+                                <ojp:Extension>
+                                    <ojp:LocationExtensionStructure>
+                                        <ojp:num_vehicles_available>2</ojp:num_vehicles_available>
+                                        <ojp:num_docks_available>3</ojp:num_docks_available>
+                                    </ojp:LocationExtensionStructure>
+                                </ojp:Extension>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>1</ojp:Probability>
+                        </ojp:Location>
+                    </ojp:OJPLocationInformationDelivery>
+                </siri:ServiceDelivery>
+            </siri:OJPResponse>
+        </siri:OJP>
+      '''
+    }
+  }
 }

@@ -26,18 +26,18 @@ body:xml {
                   <MessageIdentifier>ATV-1a2</MessageIdentifier>
                   <ojp:Origin>
                       <ojp:PlaceRef>
-                          <StopPointRef>8519606</StopPointRef>
+                          <StopPointRef>ch:1:sloid:19606</StopPointRef>
                           <ojp:LocationName>
-                              <ojp:Text>Brig Autoverlad</ojp:Text>
+                              <ojp:Text>Brig</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
-                      <ojp:DepArrTime>2026-10-10T12:00:00Z</ojp:DepArrTime>
+                      <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
                   </ojp:Origin>
                   <ojp:Destination>
                       <ojp:PlaceRef>
-                          <StopPointRef>8511184</StopPointRef>
+                          <StopPointRef>ch:1:sloid:11184</StopPointRef>
                           <ojp:LocationName>
-                              <ojp:Text>Iselle, Iselle Autoverlad</ojp:Text>
+                              <ojp:Text>Iselle di Trasquera</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
                   </ojp:Destination>
@@ -63,5 +63,4 @@ script:post-response {
 
 settings {
   encodeUrl: true
-  timeout: 0
 }

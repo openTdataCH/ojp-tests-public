@@ -53,7 +53,6 @@ script:post-response {
   let responseBody = res.getBody()?.toString();
   // Define the required text strings
   let requiredStrings = [
-      '<ojp:StopPlaceRef>8503424</ojp:StopPlaceRef>',
       '<ojp:Text xml:lang="de">Schaffhausen</ojp:Text>',
       '<ojp:TopographicPlaceRef>23017939:4</ojp:TopographicPlaceRef>',
       '<ojp:Text xml:lang="de">Schaffhausen (Schaffhausen)</ojp:Text>',
@@ -69,9 +68,21 @@ script:post-response {
           expect(responseBody).to.include(str);
       });
   });
+  
+  
+  test("Response contains specific StopPlaceRefs (DIDOK or SLOID)", function () {
+      const responseText = res.getBody()?.toString();
+      const stops = [
+          { didok: "8503424", sloid: "ch:1:sloid:3424" }
+      ];
+      stops.forEach(({ didok, sloid }) => {
+          const found = responseText.includes(didok) || responseText.includes(sloid);
+          if (!found) console.log(`MISSING: ${didok} / ${sloid}`);
+          expect(found, `StopPlaceRef fehlt: ${didok} oder ${sloid}`).to.be.true;
+      });
+  });
 }
 
 settings {
   encodeUrl: true
-  timeout: 0
 }

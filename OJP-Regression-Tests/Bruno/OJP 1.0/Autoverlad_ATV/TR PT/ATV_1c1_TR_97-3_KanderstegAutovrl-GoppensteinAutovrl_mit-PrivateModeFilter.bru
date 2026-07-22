@@ -26,16 +26,16 @@ body:xml {
                   <MessageIdentifier>ATV-1c1</MessageIdentifier>
                   <ojp:Origin>
                       <ojp:PlaceRef>
-                          <StopPointRef>8511171</StopPointRef>
+                          <StopPointRef>ch:1:sloid:11171</StopPointRef>
                           <ojp:LocationName>
                               <ojp:Text>Kandersteg Autoverlad</ojp:Text>
                           </ojp:LocationName>
                       </ojp:PlaceRef>
-                      <ojp:DepArrTime>{{letzter-ATV-Tag18Uhr30}}</ojp:DepArrTime>
+                      <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>
                   </ojp:Origin>
                   <ojp:Destination>
                       <ojp:PlaceRef>
-                          <StopPointRef>8519655</StopPointRef>
+                          <StopPointRef>ch:1:sloid:19655</StopPointRef>
                           <ojp:LocationName>
                               <ojp:Text>Goppenstein Autoverlad</ojp:Text>
                           </ojp:LocationName>
@@ -67,5 +67,4 @@ script:post-response {
 
 settings {
   encodeUrl: true
-  timeout: 0
 }

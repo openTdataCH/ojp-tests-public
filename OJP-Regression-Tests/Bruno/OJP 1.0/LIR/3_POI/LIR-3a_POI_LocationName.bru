@@ -58,5 +58,973 @@ script:post-response {
 
 settings {
   encodeUrl: true
-  timeout: 0
+}
+
+example {
+  name: LIR-3a_POI_LocationName
+  
+  request: {
+    url: {{server}}
+    method: POST
+    mode: xml
+    body:xml: {
+      <?xml version="1.0" encoding="UTF-8"?>
+      <OJP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.siri.org.uk/siri" version="1.0" xmlns:ojp="http://www.vdv.de/ojp" xsi:schemaLocation="http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd">
+          <OJPRequest>
+              <ServiceRequest>
+                  <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                  <RequestorRef>SKIPlusRegTest</RequestorRef>
+                  <ojp:OJPLocationInformationRequest>
+                      <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>
+                      <MessageIdentifier>LIR-3a</MessageIdentifier>
+                      <ojp:InitialInput>
+                          <ojp:LocationName>Hai</ojp:LocationName>
+                      </ojp:InitialInput>
+                      <ojp:Restrictions>
+                          <ojp:Type>poi</ojp:Type>
+                          <ojp:NumberOfResults>10</ojp:NumberOfResults>
+                      </ojp:Restrictions>
+                  </ojp:OJPLocationInformationRequest>
+              </ServiceRequest>
+          </OJPRequest>
+      </OJP>
+    }
+  }
+  
+  response: {
+    headers: {
+      Server: EFAController/10.6.14.5/OJP-EFA01-I
+      Date: Fri, 01 Dec 2023 16:48:21 GMT
+      Content-Type: text/xml
+      Accept-Ranges: none
+      Content-Length: 3012
+      Last-Modified: Fri, 01 Dec 2023 16:48:21 GMT
+      Connection: Keep-Alive
+      Content-Encoding: gzip
+      Access-Control-Allow-Origin: *
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: xml
+      content: '''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <siri:OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns:ojp="http://www.vdv.de/ojp" version="1.0">
+            <siri:OJPResponse>
+                <siri:ServiceDelivery>
+                    <siri:ResponseTimestamp>2023-12-01T16:48:21Z</siri:ResponseTimestamp>
+                    <siri:ProducerRef>EFAController10.6.14.5-OJP-EFA01-I</siri:ProducerRef>
+                    <siri:Status>true</siri:Status>
+                    <ojp:OJPLocationInformationDelivery>
+                        <siri:ResponseTimestamp>2023-12-01T16:48:20Z</siri:ResponseTimestamp>
+                        <siri:RequestMessageRef>LIR-3a</siri:RequestMessageRef>
+                        <siri:Status>true</siri:Status>
+                        <ojp:CalcTime>337</ojp:CalcTime>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:74674:23006627:-1:Hair:Worb:Hair:ANY:POI:841768:6069596:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Hair</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23006627:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Hair (Worb)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>7.56173</siri:Longitude>
+                                    <siri:Latitude>46.92846</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.986000001</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:71631:23006351:-1:Hair:Bern:Hair:ANY:POI:827287:6067211:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Hair</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23006351:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Hair (Bern)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>7.43165</siri:Longitude>
+                                    <siri:Latitude>46.94308</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.986000001</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:74978:23026261:-1:Hairs:Zürich:Hairs:ANY:POI:949821:6002527:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Hairs</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23026261:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Hairs (Zürich)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.53239</siri:Longitude>
+                                    <siri:Latitude>47.33832</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.975000024</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:27165:23023648:-1:Haiku:St-Sulpice VD:Haiku:ANY:POI:728930:6136990:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Haiku</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>catering</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>restaurant</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23023648:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Haiku (St-Sulpice VD)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>6.54809</siri:Longitude>
+                                    <siri:Latitude>46.51342</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.975000024</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:74588:23026230:-1:Hairbox:Winterthur:Hairbox:ANY:POI:975216:5978646:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Hairbox</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23026230:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Hairbox (Winterthur)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.76051</siri:Longitude>
+                                    <siri:Latitude>47.48350</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.959999979</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:73026:23012061:-1:hairart:Luzern:hairart:ANY:POI:924441:6050313:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">hairart</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23012061:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">hairart (Luzern)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.30439</siri:Longitude>
+                                    <siri:Latitude>47.04662</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.959999979</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:72862:23023586:-1:Hairday:Lausanne:Hairday:ANY:POI:736782:6134233:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Hairday</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23023586:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Hairday (Lausanne)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>6.61863</siri:Longitude>
+                                    <siri:Latitude>46.53046</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.959999979</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:72597:23019523:-1:HairArt:Horriwil:HairArt:ANY:POI:848172:6027573:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">HairArt</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23019523:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">HairArt (Horriwil)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>7.61926</siri:Longitude>
+                                    <siri:Latitude>47.18563</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.959999979</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:72150:23012054:-1:Hairpin:Ebikon:Hairpin:ANY:POI:928419:6044500:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Hairpin</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23012054:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Hairpin (Ebikon)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.34013</siri:Longitude>
+                                    <siri:Latitude>47.08219</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.959999979</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:74729:23001289:-1:HAIRPLAY:Zofingen:HAIRPLAY:ANY:POI:884178:6010385:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">HAIRPLAY</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23001289:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">HAIRPLAY (Zofingen)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>7.94271</siri:Longitude>
+                                    <siri:Latitude>47.29047</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.954999983</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:74366:23026199:-1:Hair-1:Volketswil:Hair-1:ANY:POI:964968:5995337:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Hair-1</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23026199:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Hair-1 (Volketswil)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.66846</siri:Longitude>
+                                    <siri:Latitude>47.38208</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.954999983</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:74199:23006942:-1:Hairlich:Thun:Hairlich:ANY:POI:849012:6098238:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Hairlich</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23006942:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Hairlich (Thun)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>7.62680</siri:Longitude>
+                                    <siri:Latitude>46.75246</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.954999983</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:74047:23017964:-1:Hairbase:Stein am Rhein:Hairbase:ANY:POI:986195:5949516:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Hairbase</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23017964:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Hairbase (Stein am Rhein)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.85914</siri:Longitude>
+                                    <siri:Latitude>47.66005</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.954999983</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:73788:23017939:-1:Hairmony:Schaffhausen:Hairmony:ANY:POI:960929:5943547:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Hairmony</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23017939:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Hairmony (Schaffhausen)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.63217</siri:Longitude>
+                                    <siri:Latitude>47.69615</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.954999983</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:73411:23024198:-1:Hairtime:Niedergesteln:Hairtime:ANY:POI:865995:6169463:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Hairtime</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23024198:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Hairtime (Niedergesteln)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>7.77937</siri:Longitude>
+                                    <siri:Latitude>46.31230</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.954999983</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:73065:23012061:-1:Hairking:Luzern:Hairking:ANY:POI:924935:6050325:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Hairking</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23012061:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Hairking (Luzern)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.30883</siri:Longitude>
+                                    <siri:Latitude>47.04655</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.954999983</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:72999:23001104:-1:Hair-1:Lupfig:Hair-1:ANY:POI:914506:5984281:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Hair-1</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23001104:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Hair-1 (Lupfig)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.21515</siri:Longitude>
+                                    <siri:Latitude>47.44928</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.954999983</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:72916:23001201:-1:Hair-1:Lenzburg:Hair-1:ANY:POI:909583:5994066:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Hair-1</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23001201:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Hair-1 (Lenzburg)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.17092</siri:Longitude>
+                                    <siri:Latitude>47.38981</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.954999983</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:72675:23006355:-1:hairdora:Köniz:hairdora:ANY:POI:825636:6069684:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">hairdora</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23006355:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">hairdora (Köniz)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>7.41681</siri:Longitude>
+                                    <siri:Latitude>46.92792</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.954999983</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:72473:23026066:-1:Hair-1:Opfikon:Hair-1:ANY:POI:952798:5989082:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Hair-1</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23026066:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Hair-1 (Opfikon)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.55913</siri:Longitude>
+                                    <siri:Latitude>47.42011</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.954999983</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:72323:23021566:-1:Hairrock:Frauenfeld (CH):Hairrock:ANY:POI:990183:5966872:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Hairrock</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23021566:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Hairrock (Frauenfeld (CH))</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.89497</siri:Longitude>
+                                    <siri:Latitude>47.55493</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.954999983</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:72243:23019503:-1:Hairmony:Erlinsbach SO:Hairmony:ANY:POI:891508:5993234:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Hairmony</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23019503:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Hairmony (Erlinsbach SO)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.00855</siri:Longitude>
+                                    <siri:Latitude>47.39487</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.954999983</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:72079:23026243:-1:Hair-1:Dietikon:Hair-1:ANY:POI:935278:5991559:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Hair-1</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23026243:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Hair-1 (Dietikon)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.40175</siri:Longitude>
+                                    <siri:Latitude>47.40505</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.954999983</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:64092:23026261:-1:Hairlezz:Zürich:Hairlezz:ANY:POI:945239:5991896:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Hairlezz</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>beauty</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23026261:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Hairlezz (Zürich)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.49123</siri:Longitude>
+                                    <siri:Latitude>47.40300</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.954999983</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:71732:23006371:-1:N'Hair:Biel/Bienne:N'Hair:ANY:POI:806618:6034834:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">N'Hair</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23006371:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">N'Hair (Biel/Bienne)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>7.24597</siri:Longitude>
+                                    <siri:Latitude>47.14129</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.954999983</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:71614:23006351:-1:Hairness:Bern:Hairness:ANY:POI:827233:6067477:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">Hairness</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23006351:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">Hairness (Bern)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>7.43116</siri:Longitude>
+                                    <siri:Latitude>46.94145</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.954999983</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:71474:23001062:-1:haircare:Berikon:haircare:ANY:POI:931465:5998819:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">haircare</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23001062:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">haircare (Berikon)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>8.36749</siri:Longitude>
+                                    <siri:Latitude>47.36089</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.954999983</ojp:Probability>
+                        </ojp:Location>
+                        <ojp:Location>
+                            <ojp:Location>
+                                <ojp:PointOfInterest>
+                                    <ojp:PointOfInterestCode>poiID:71389:23005701:-1:haircare:Basel:haircare:ANY:POI:845870:5966994:MRCV:sbb</ojp:PointOfInterestCode>
+                                    <ojp:PointOfInterestName>
+                                        <ojp:Text xml:lang="de">haircare</ojp:Text>
+                                    </ojp:PointOfInterestName>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_0</ojp:Tag>
+                                            <ojp:Value>service</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:PointOfInterestCategory>
+                                        <ojp:OsmTag>
+                                            <ojp:Tag>POI_1</ojp:Tag>
+                                            <ojp:Value>hairdresser</ojp:Value>
+                                        </ojp:OsmTag>
+                                    </ojp:PointOfInterestCategory>
+                                    <ojp:TopographicPlaceRef>23005701:-1</ojp:TopographicPlaceRef>
+                                </ojp:PointOfInterest>
+                                <ojp:LocationName>
+                                    <ojp:Text xml:lang="de">haircare (Basel)</ojp:Text>
+                                </ojp:LocationName>
+                                <ojp:GeoPosition>
+                                    <siri:Longitude>7.59858</siri:Longitude>
+                                    <siri:Latitude>47.55419</siri:Latitude>
+                                </ojp:GeoPosition>
+                            </ojp:Location>
+                            <ojp:Complete>true</ojp:Complete>
+                            <ojp:Probability>0.954999983</ojp:Probability>
+                        </ojp:Location>
+                    </ojp:OJPLocationInformationDelivery>
+                </siri:ServiceDelivery>
+            </siri:OJPResponse>
+        </siri:OJP>
+      '''
+    }
+  }
 }
