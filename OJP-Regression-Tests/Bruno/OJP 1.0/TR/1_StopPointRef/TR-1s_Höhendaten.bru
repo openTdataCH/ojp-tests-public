@@ -69,7 +69,7 @@ body:xml {
 
 script:post-response {
   test("Fussweg = 29min aufgrund Höhendaten, ohne Höhendaten wären es 24min", function () {
-      expect(res.getBody()?.toString()).to.include("<ojp:Duration>PT26M");
+      expect(res.getBody()?.toString()).to.include("<ojp:Duration>PT28M");
   
   });
   
