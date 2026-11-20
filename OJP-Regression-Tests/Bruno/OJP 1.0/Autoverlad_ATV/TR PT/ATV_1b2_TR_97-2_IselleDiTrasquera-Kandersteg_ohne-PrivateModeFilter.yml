@@ -1,0 +1,102 @@
+info:
+  name: ATV_1b2_TR_97-2_IselleDiTrasquera-Kandersteg_ohne-PrivateModeFilter
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{server}}"
+  body:
+    type: xml
+    data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+      <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+      \    <OJPRequest>\r
+
+      \        <ServiceRequest>\r
+
+      \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+      \            <ojp:OJPTripRequest>\r
+
+      \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \                <MessageIdentifier>ATV-1b2</MessageIdentifier>\r
+
+      \                <ojp:Origin>\r
+
+      \                    <ojp:PlaceRef>\r
+
+      \                        <StopPointRef>8511184</StopPointRef>\r
+
+      \                        <ojp:LocationName>\r
+
+      \                            <ojp:Text>Iselle di Trasquera</ojp:Text>\r
+
+      \                        </ojp:LocationName>\r
+
+      \                    </ojp:PlaceRef>\r
+
+      \                    <ojp:DepArrTime>{{letzter-ATV-Tag18Uhr30}}</ojp:DepArrTime>\r
+
+      \                </ojp:Origin>\r
+
+      \                <ojp:Destination>\r
+
+      \                    <ojp:PlaceRef>\r
+
+      \                        <StopPointRef>8511171</StopPointRef>\r
+
+      \                        <ojp:LocationName>\r
+
+      \                            <ojp:Text>Kandersteg Autoverlad</ojp:Text>\r
+
+      \                        </ojp:LocationName>\r
+
+      \                    </ojp:PlaceRef>\r
+
+      \                </ojp:Destination>\r
+
+      \                <ojp:Params>\r
+
+      \                    <ojp:NumberOfResults>1</ojp:NumberOfResults>\r
+
+      \                    <ojp:IncludeTrackSections>false</ojp:IncludeTrackSections>\r
+
+      \                    <ojp:IncludeLegProjection>false</ojp:IncludeLegProjection>\r
+
+      \                    <ojp:IncludeTurnDescription>false</ojp:IncludeTurnDescription>\r
+
+      \                    <ojp:IncludeIntermediateStops>true</ojp:IncludeIntermediateStops>\r
+
+      \                </ojp:Params>\r
+
+      \            </ojp:OJPTripRequest>\r
+
+      \        </ServiceRequest>\r
+
+      \    </OJPRequest>\r
+
+      </OJP>"
+  auth:
+    type: bearer
+    token: "{{BearerToken}}"
+
+runtime:
+  scripts:
+    - type: after-response
+      code: "test(\"Contains not specific LineRef>atv:97002:<\", function() {\r
+
+        \    expect(res.getBody()?.toString()).to.not.include(\"LineRef>atv:97002:<\");\r
+
+        });"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

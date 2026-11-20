@@ -1,0 +1,97 @@
+info:
+  name: BehiG-TR-1d PLATFORM_NOT_WHEELCHAIR_ACCESSIBLE = Fzg NF + Hast keinZugang
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{server}}"
+  headers:
+    - name: Content-Type
+      value: text/xml
+  body:
+    type: xml
+    data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+      <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+      \    <OJPRequest>\r
+
+      \        <ServiceRequest>\r
+
+      \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+      \            <ojp:OJPTripRequest>\r
+
+      \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \                <MessageIdentifier>BehiG-TR-1d</MessageIdentifier>\r
+
+      \                <ojp:Origin>\r
+
+      \                    <ojp:PlaceRef>\r
+
+      \                        <StopPointRef>ch:1:sloid:2512</StopPointRef>\r
+
+      \                        <ojp:LocationName>\r
+
+      \                            <ojp:Text>Erst-Kreidolfstr (kein Zugang)</ojp:Text>\r
+
+      \                        </ojp:LocationName>\r
+
+      \                    </ojp:PlaceRef>\r
+
+      \                    <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>\r
+
+      \                </ojp:Origin>\r
+
+      \                <ojp:Destination>\r
+
+      \                    <ojp:PlaceRef>\r
+
+      \                        <StopPointRef>ch:1:sloid:73379</StopPointRef>\r
+
+      \                        <ojp:LocationName>\r
+
+      \                            <ojp:Text>Tägerwilen, Hertler(keine Info)</ojp:Text>\r
+
+      \                        </ojp:LocationName>\r
+
+      \                    </ojp:PlaceRef>\r
+
+      \                </ojp:Destination>\r
+
+      \                <ojp:Params>\r
+
+      \                    <ojp:NumberOfResults>1</ojp:NumberOfResults>\r
+
+      \                </ojp:Params>\r
+
+      \            </ojp:OJPTripRequest>\r
+
+      \        </ServiceRequest>\r
+
+      \    </OJPRequest>\r
+
+      </OJP>\r\n"
+  auth:
+    type: bearer
+    token: "{{BearerToken}}"
+
+runtime:
+  scripts:
+    - type: after-response
+      code: "test(\"Body to include >PLATFORM_NOT_WHEELCHAIR_ACCESSIBLE<\", function () {\r
+
+        \    expect(res.getBody()?.toString()).to.include(\">PLATFORM_NOT_WHEELCHAIR_ACCESSIBLE<\");\r
+
+        });"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

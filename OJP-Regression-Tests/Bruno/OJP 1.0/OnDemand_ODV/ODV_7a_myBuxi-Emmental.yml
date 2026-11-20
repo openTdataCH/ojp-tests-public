@@ -1,0 +1,111 @@
+info:
+  name: ODV_7a_myBuxi-Emmental
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{server}}"
+  headers:
+    - name: Content-Type
+      value: text/xml
+  body:
+    type: xml
+    data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+      <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+      \    <OJPRequest>\r
+
+      \        <ServiceRequest>\r
+
+      \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+      \            <ojp:OJPTripRequest>\r
+
+      \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \                <MessageIdentifier>ODV_7a</MessageIdentifier>\r
+
+      \                <ojp:Origin>\r
+
+      \                    <ojp:PlaceRef>\r
+
+      \                        <StopPointRef>ch:1:sloid:7000</StopPointRef>\r
+
+      \                        <ojp:LocationName>\r
+
+      \                            <ojp:Text>Bern (Bern)</ojp:Text>\r
+
+      \                        </ojp:LocationName>\r
+
+      \                    </ojp:PlaceRef>\r
+
+      \                    <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>\r
+
+      \                </ojp:Origin>\r
+
+      \                <ojp:Destination>\r
+
+      \                    <ojp:PlaceRef>\r
+
+      \                        <ojp:GeoPosition>\r
+
+      \                            <Longitude>7.653645</Longitude>\r
+
+      \                            <Latitude>47.041317</Latitude>\r
+
+      \                        </ojp:GeoPosition>\r
+
+      \                        <ojp:LocationName>\r
+
+      \                            <ojp:Text>Burgdorf (BE)</ojp:Text>\r
+
+      \                        </ojp:LocationName>\r
+
+      \                    </ojp:PlaceRef>\r
+
+      \                </ojp:Destination>\r
+
+      \                <ojp:Params>\r
+
+      \                    <ojp:NumberOfResults>1</ojp:NumberOfResults>\r
+
+      \                    <ojp:IncludeTrackSections>false</ojp:IncludeTrackSections>\r
+
+      \                    <ojp:IncludeLegProjection>false</ojp:IncludeLegProjection>\r
+
+      \                    <ojp:IncludeTurnDescription>false</ojp:IncludeTurnDescription>\r
+
+      \                    <ojp:IncludeIntermediateStops>false</ojp:IncludeIntermediateStops>\r
+
+      \                </ojp:Params>\r
+
+      \            </ojp:OJPTripRequest>\r
+
+      \        </ServiceRequest>\r
+
+      \    </OJPRequest>\r
+
+      </OJP>\r\n"
+  auth:
+    type: bearer
+    token: "{{BearerToken}}"
+
+runtime:
+  scripts:
+    - type: after-response
+      code: "test(\"Body to include myBuxi-Emmental\", function () {\r
+
+        \    expect(res.getBody()?.toString()).to.include(\"myBuxi-Emmental\");\r
+
+        });"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

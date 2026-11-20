@@ -1,0 +1,108 @@
+info:
+  name: ATV_1h1-TR_97-9_KlostersSelfranga-SagliainsAutoverlad_mit-PrivateModeFilter
+  type: http
+  seq: 9
+
+http:
+  method: POST
+  url: "{{server}}"
+  body:
+    type: xml
+    data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+      <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+      \    <OJPRequest>\r
+
+      \        <ServiceRequest>\r
+
+      \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+      \            <ojp:OJPTripRequest>\r
+
+      \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \                <MessageIdentifier>ATV-1h1</MessageIdentifier>\r
+
+      \                <ojp:Origin>\r
+
+      \                    <ojp:PlaceRef>\r
+
+      \                        <StopPointRef>ch:1:sloid:9095</StopPointRef>\r
+
+      \                        <ojp:LocationName>\r
+
+      \                            <ojp:Text>Klosters Selfranga</ojp:Text>\r
+
+      \                        </ojp:LocationName>\r
+
+      \                    </ojp:PlaceRef>\r
+
+      \                    <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>\r
+
+      \                </ojp:Origin>\r
+
+      \                <ojp:Destination>\r
+
+      \                    <ojp:PlaceRef>\r
+
+      \                        <StopPointRef>ch:1:sloid:11261</StopPointRef>\r
+
+      \                        <ojp:LocationName>\r
+
+      \                            <ojp:Text>Sagliains Autoverlad</ojp:Text>\r
+
+      \                        </ojp:LocationName>\r
+
+      \                    </ojp:PlaceRef>\r
+
+      \                </ojp:Destination>\r
+
+      \                <ojp:Params>\r
+
+      \                    <ojp:PrivateModeFilter>\r
+
+      \                        <ojp:Exclude>false</ojp:Exclude>\r
+
+      \                    </ojp:PrivateModeFilter>\r
+
+      \                    <ojp:NumberOfResults>1</ojp:NumberOfResults>\r
+
+      \                    <ojp:IncludeTrackSections>false</ojp:IncludeTrackSections>\r
+
+      \                    <ojp:IncludeLegProjection>false</ojp:IncludeLegProjection>\r
+
+      \                    <ojp:IncludeTurnDescription>false</ojp:IncludeTurnDescription>\r
+
+      \                    <ojp:IncludeIntermediateStops>true</ojp:IncludeIntermediateStops>\r
+
+      \                </ojp:Params>\r
+
+      \            </ojp:OJPTripRequest>\r
+
+      \        </ServiceRequest>\r
+
+      \    </OJPRequest>\r
+
+      </OJP>"
+  auth:
+    type: bearer
+    token: "{{BearerToken}}"
+
+runtime:
+  scripts:
+    - type: after-response
+      code: "test(\"Contains specific LineRef>atv:97009:<\", function() {\r
+
+        \    expect(res.getBody()?.toString()).to.include(\"LineRef>atv:97009:<\");\r
+
+        });"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

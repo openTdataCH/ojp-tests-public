@@ -1,0 +1,18 @@
+info:
+  name: 1_StopPointRef
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit
+  scripts:
+    - type: after-response
+      code: "test(\"Global Test. Contains ServiceDelivery, no ErrorCondition, Statuscode 200\", function () {\r
+
+        \    expect(res.getBody()?.toString()).to.include(\"ServiceDelivery\");\r
+
+        \    expect(res.getBody()?.toString()).to.not.include(\"ErrorCondition\");\r
+
+        \    expect(res.getStatus()).to.equal(200);\r
+
+        });"

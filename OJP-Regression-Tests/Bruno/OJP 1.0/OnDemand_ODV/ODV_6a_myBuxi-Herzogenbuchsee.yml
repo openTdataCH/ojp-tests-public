@@ -1,0 +1,518 @@
+info:
+  name: ODV_6a_myBuxi-Herzogenbuchsee
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{server}}"
+  headers:
+    - name: Content-Type
+      value: text/xml
+  body:
+    type: xml
+    data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+      <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+      \    <OJPRequest>\r
+
+      \        <ServiceRequest>\r
+
+      \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+      \            <ojp:OJPTripRequest>\r
+
+      \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \                <MessageIdentifier>ODV_6a</MessageIdentifier>\r
+
+      \                <ojp:Origin>\r
+
+      \                    <ojp:PlaceRef>\r
+
+      \                        <StopPointRef>ch:1:sloid:76900</StopPointRef>\r
+
+      \                        <ojp:LocationName>\r
+
+      \                            <ojp:Text>Wangen an der Aare, Bahnhof</ojp:Text>\r
+
+      \                        </ojp:LocationName>\r
+
+      \                    </ojp:PlaceRef>\r
+
+      \                    <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>\r
+
+      \                </ojp:Origin>\r
+
+      \                <ojp:Destination>\r
+
+      \                    <ojp:PlaceRef>\r
+
+      \                        <ojp:GeoPosition>\r
+
+      \                            <Longitude>7.692249</Longitude>\r
+
+      \                            <Latitude>47.186692</Latitude>\r
+
+      \                        </ojp:GeoPosition>\r
+
+      \                        <ojp:LocationName>\r
+
+      \                            <ojp:Text>Niederönz</ojp:Text>\r
+
+      \                        </ojp:LocationName>\r
+
+      \                    </ojp:PlaceRef>\r
+
+      \                </ojp:Destination>\r
+
+      \                <ojp:Params>\r
+
+      \                    <ojp:NumberOfResults>1</ojp:NumberOfResults>\r
+
+      \                    <ojp:IncludeTrackSections>false</ojp:IncludeTrackSections>\r
+
+      \                    <ojp:IncludeLegProjection>false</ojp:IncludeLegProjection>\r
+
+      \                    <ojp:IncludeTurnDescription>false</ojp:IncludeTurnDescription>\r
+
+      \                    <ojp:IncludeIntermediateStops>false</ojp:IncludeIntermediateStops>\r
+
+      \                </ojp:Params>\r
+
+      \            </ojp:OJPTripRequest>\r
+
+      \        </ServiceRequest>\r
+
+      \    </OJPRequest>\r
+
+      </OJP>\r\n"
+  auth:
+    type: bearer
+    token: "{{BearerToken}}"
+
+runtime:
+  scripts:
+    - type: after-response
+      code: "test(\"Body to include myBuxi-Herzogenbuchsee\", function () {\r
+
+        \    expect(res.getBody()?.toString()).to.include(\"myBuxi-Herzogenbuchsee\");\r
+
+        });"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: ODV_6a_myBuxi-Herzogenbuchsee
+    request:
+      url: "{{server}}"
+      method: POST
+      headers:
+        - name: Content-Type
+          value: text/xml
+      body:
+        type: xml
+        data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+          <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+          \    <OJPRequest>\r
+
+          \        <ServiceRequest>\r
+
+          \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+          \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+          \            <ojp:OJPTripRequest>\r
+
+          \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+          \                <MessageIdentifier>ODV_6a</MessageIdentifier>\r
+
+          \                <ojp:Origin>\r
+
+          \                    <ojp:PlaceRef>\r
+
+          \                        <StopPointRef>8576900</StopPointRef>\r
+
+          \                        <ojp:LocationName>\r
+
+          \                            <ojp:Text>Wangen an der Aare, Bahnhof</ojp:Text>\r
+
+          \                        </ojp:LocationName>\r
+
+          \                    </ojp:PlaceRef>\r
+
+          \                    <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>\r
+
+          \                </ojp:Origin>\r
+
+          \                <ojp:Destination>\r
+
+          \                    <ojp:PlaceRef>\r
+
+          \                        <ojp:GeoPosition>\r
+
+          \                            <Longitude>7.692249</Longitude>\r
+
+          \                            <Latitude>47.186692</Latitude>\r
+
+          \                        </ojp:GeoPosition>\r
+
+          \                        <ojp:LocationName>\r
+
+          \                            <ojp:Text>dru</ojp:Text>\r
+
+          \                        </ojp:LocationName>\r
+
+          \                    </ojp:PlaceRef>\r
+
+          \                </ojp:Destination>\r
+
+          \                <ojp:Params>\r
+
+          \                    <ojp:NumberOfResults>1</ojp:NumberOfResults>\r
+
+          \                    <ojp:IncludeTrackSections>false</ojp:IncludeTrackSections>\r
+
+          \                    <ojp:IncludeLegProjection>false</ojp:IncludeLegProjection>\r
+
+          \                    <ojp:IncludeTurnDescription>false</ojp:IncludeTurnDescription>\r
+
+          \                    <ojp:IncludeIntermediateStops>false</ojp:IncludeIntermediateStops>\r
+
+          \                </ojp:Params>\r
+
+          \            </ojp:OJPTripRequest>\r
+
+          \        </ServiceRequest>\r
+
+          \    </OJPRequest>\r
+
+          </OJP>\r\n"
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Server
+          value: EFAController/10.6.14.5/OJP-EFA01-I
+        - name: Date
+          value: Fri, 01 Dec 2023 19:32:37 GMT
+        - name: Content-Type
+          value: text/xml
+        - name: Accept-Ranges
+          value: none
+        - name: Content-Length
+          value: "2189"
+        - name: Last-Modified
+          value: Fri, 01 Dec 2023 19:32:37 GMT
+        - name: Connection
+          value: Keep-Alive
+        - name: Content-Encoding
+          value: gzip
+        - name: Access-Control-Allow-Origin
+          value: "*"
+      body:
+        type: xml
+        data: |-
+          <?xml version="1.0" encoding="UTF-8"?>
+          <siri:OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns:ojp="http://www.vdv.de/ojp" version="1.0">
+              <siri:OJPResponse>
+                  <siri:ServiceDelivery>
+                      <siri:ResponseTimestamp>2023-12-01T19:32:37Z</siri:ResponseTimestamp>
+                      <siri:ProducerRef>EFAController10.6.14.5-OJP-EFA01-I</siri:ProducerRef>
+                      <siri:Status>true</siri:Status>
+                      <ojp:OJPTripDelivery>
+                          <siri:ResponseTimestamp>2023-12-01T19:32:33Z</siri:ResponseTimestamp>
+                          <siri:RequestMessageRef>ODV_6a</siri:RequestMessageRef>
+                          <siri:Status>true</siri:Status>
+                          <ojp:CalcTime>4255</ojp:CalcTime>
+                          <ojp:TripResponseContext>
+                              <ojp:Places>
+                                  <ojp:Location>
+                                      <ojp:StopPoint>
+                                          <siri:StopPointRef>8576900</siri:StopPointRef>
+                                          <ojp:StopPointName>
+                                              <ojp:Text xml:lang="de">Wangen an der Aare, Bahnhof</ojp:Text>
+                                          </ojp:StopPointName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>119403:0:A</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23006992:1</ojp:TopographicPlaceRef>
+                                      </ojp:StopPoint>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Wangen an der Aare, Bahnhof</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>7.65600</siri:Longitude>
+                                          <siri:Latitude>47.23212</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:TopographicPlace>
+                                          <ojp:TopographicPlaceCode>23006992:1</ojp:TopographicPlaceCode>
+                                          <ojp:TopographicPlaceName>
+                                              <ojp:Text xml:lang="de">Wangen an der Aare</ojp:Text>
+                                          </ojp:TopographicPlaceName>
+                                      </ojp:TopographicPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Wangen an der Aare</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>7.65600</siri:Longitude>
+                                          <siri:Latitude>47.23212</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8576916</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Herzogenbuchsee, Jurablick</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>119418</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23006979:1</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Herzogenbuchsee, Jurablick</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>7.70022</siri:Longitude>
+                                          <siri:Latitude>47.19513</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:TopographicPlace>
+                                          <ojp:TopographicPlaceCode>23006979:1</ojp:TopographicPlaceCode>
+                                          <ojp:TopographicPlaceName>
+                                              <ojp:Text xml:lang="de">Herzogenbuchsee</ojp:Text>
+                                          </ojp:TopographicPlaceName>
+                                      </ojp:TopographicPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Herzogenbuchsee</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>7.70022</siri:Longitude>
+                                          <siri:Latitude>47.19513</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8576927</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Langenthal, Tell/Kantonalbank</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>119428</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23006329:1</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Langenthal, Tell/Kantonalbank</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>7.78988</siri:Longitude>
+                                          <siri:Latitude>47.21204</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:TopographicPlace>
+                                          <ojp:TopographicPlaceCode>23006329:1</ojp:TopographicPlaceCode>
+                                          <ojp:TopographicPlaceName>
+                                              <ojp:Text xml:lang="de">Langenthal (CH)</ojp:Text>
+                                          </ojp:TopographicPlaceName>
+                                      </ojp:TopographicPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Langenthal (CH)</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>7.78988</siri:Longitude>
+                                          <siri:Latitude>47.21204</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                              </ojp:Places>
+                          </ojp:TripResponseContext>
+                          <ojp:TripResult>
+                              <ojp:ResultId>ID-FF6C8088-5C34-4811-8CD3-3B89663273EA</ojp:ResultId>
+                              <ojp:Trip>
+                                  <ojp:TripId>ID-FF6C8088-5C34-4811-8CD3-3B89663273EA</ojp:TripId>
+                                  <ojp:Duration>PT14M</ojp:Duration>
+                                  <ojp:StartTime>2023-12-08T11:06:00Z</ojp:StartTime>
+                                  <ojp:EndTime>2023-12-08T11:20:00Z</ojp:EndTime>
+                                  <ojp:Transfers>1</ojp:Transfers>
+                                  <ojp:Distance>1627</ojp:Distance>
+                                  <ojp:TripLeg>
+                                      <ojp:LegId>1</ojp:LegId>
+                                      <ojp:TimedLeg>
+                                          <ojp:LegBoard>
+                                              <siri:StopPointRef>8576900</siri:StopPointRef>
+                                              <ojp:StopPointName>
+                                                  <ojp:Text xml:lang="de">Wangen an der Aare, Bahnhof</ojp:Text>
+                                              </ojp:StopPointName>
+                                              <ojp:NameSuffix>
+                                                  <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                              </ojp:NameSuffix>
+                                              <ojp:PlannedQuay>
+                                                  <ojp:Text xml:lang="de">A</ojp:Text>
+                                              </ojp:PlannedQuay>
+                                              <ojp:ServiceDeparture>
+                                                  <ojp:TimetabledTime>2023-12-08T11:06:00Z</ojp:TimetabledTime>
+                                              </ojp:ServiceDeparture>
+                                              <ojp:Order>1</ojp:Order>
+                                          </ojp:LegBoard>
+                                          <ojp:LegAlight>
+                                              <siri:StopPointRef>8576916</siri:StopPointRef>
+                                              <ojp:StopPointName>
+                                                  <ojp:Text xml:lang="de">Herzogenbuchsee, Jurablick</ojp:Text>
+                                              </ojp:StopPointName>
+                                              <ojp:NameSuffix>
+                                                  <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                              </ojp:NameSuffix>
+                                              <ojp:ServiceArrival>
+                                                  <ojp:TimetabledTime>2023-12-08T11:15:00Z</ojp:TimetabledTime>
+                                              </ojp:ServiceArrival>
+                                              <ojp:Order>2</ojp:Order>
+                                          </ojp:LegAlight>
+                                          <ojp:Service>
+                                              <ojp:OperatingDayRef>2023-12-08</ojp:OperatingDayRef>
+                                              <ojp:JourneyRef>ojp:92051::H:j23:141:51122</ojp:JourneyRef>
+                                              <siri:LineRef>ojp:92051:</siri:LineRef>
+                                              <siri:DirectionRef>H</siri:DirectionRef>
+                                              <ojp:Mode>
+                                                  <ojp:PtMode>bus</ojp:PtMode>
+                                                  <siri:BusSubmode>localBusService</siri:BusSubmode>
+                                                  <ojp:Name>
+                                                      <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                                  </ojp:Name>
+                                                  <ojp:ShortName>
+                                                      <ojp:Text xml:lang="de">B</ojp:Text>
+                                                  </ojp:ShortName>
+                                              </ojp:Mode>
+                                              <ojp:PublishedLineName>
+                                                  <ojp:Text xml:lang="de">51</ojp:Text>
+                                              </ojp:PublishedLineName>
+                                              <ojp:OperatorRef>ojp:870</ojp:OperatorRef>
+                                              <ojp:Attribute>
+                                                  <ojp:Text>
+                                                      <ojp:Text xml:lang="de">Niederflureinstieg</ojp:Text>
+                                                  </ojp:Text>
+                                                  <ojp:Code>A__NF</ojp:Code>
+                                                  <siri:AccessFacility>palletAccess_lowFloor</siri:AccessFacility>
+                                              </ojp:Attribute>
+                                              <ojp:Attribute>
+                                                  <ojp:Text>
+                                                      <ojp:Text xml:lang="de">VELOS: Platzzahl eingeschränkt</ojp:Text>
+                                                  </ojp:Text>
+                                                  <ojp:Code>A__VB</ojp:Code>
+                                              </ojp:Attribute>
+                                              <ojp:DestinationStopPointRef>8576927</ojp:DestinationStopPointRef>
+                                              <ojp:DestinationText>
+                                                  <ojp:Text xml:lang="de">Langenthal, Tell/Kantonalbank</ojp:Text>
+                                              </ojp:DestinationText>
+                                          </ojp:Service>
+                                          <ojp:Extension>
+                                              <ojp:TransportTypeName>
+                                                  <ojp:Text xml:lang="de">Bus</ojp:Text>
+                                              </ojp:TransportTypeName>
+                                              <ojp:PublishedJourneyNumber>
+                                                  <ojp:Text xml:lang="de">51122</ojp:Text>
+                                              </ojp:PublishedJourneyNumber>
+                                              <ojp:OperatorName>
+                                                  <ojp:Text xml:lang="de">Automobildienste Aare Seeland mobil</ojp:Text>
+                                              </ojp:OperatorName>
+                                          </ojp:Extension>
+                                      </ojp:TimedLeg>
+                                  </ojp:TripLeg>
+                                  <ojp:TripLeg>
+                                      <ojp:LegId>2</ojp:LegId>
+                                      <ojp:TimedLeg>
+                                          <ojp:LegBoard>
+                                              <siri:StopPointRef>8576916</siri:StopPointRef>
+                                              <ojp:StopPointName>
+                                                  <ojp:Text xml:lang="de">Herzogenbuchsee, Jurablick</ojp:Text>
+                                              </ojp:StopPointName>
+                                              <ojp:NameSuffix>
+                                                  <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                              </ojp:NameSuffix>
+                                              <ojp:ServiceDeparture>
+                                                  <ojp:TimetabledTime>2023-12-08T11:15:00Z</ojp:TimetabledTime>
+                                              </ojp:ServiceDeparture>
+                                              <ojp:Order>1</ojp:Order>
+                                          </ojp:LegBoard>
+                                          <ojp:LegAlight>
+                                              <siri:StopPointRef>99999998</siri:StopPointRef>
+                                              <ojp:StopPointName>
+                                                  <ojp:Text xml:lang="de">Niederönz dru</ojp:Text>
+                                              </ojp:StopPointName>
+                                              <ojp:NameSuffix>
+                                                  <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                              </ojp:NameSuffix>
+                                              <ojp:ServiceArrival>
+                                                  <ojp:TimetabledTime>2023-12-08T11:20:00Z</ojp:TimetabledTime>
+                                              </ojp:ServiceArrival>
+                                              <ojp:Order>2</ojp:Order>
+                                          </ojp:LegAlight>
+                                          <ojp:Service>
+                                              <ojp:OperatingDayRef>2023-12-08</ojp:OperatingDayRef>
+                                              <ojp:JourneyRef>odv:99915:_:R:j23:0</ojp:JourneyRef>
+                                              <siri:LineRef>odv:99915:_</siri:LineRef>
+                                              <siri:DirectionRef>R</siri:DirectionRef>
+                                              <ojp:Mode>
+                                                  <ojp:PtMode>bus</ojp:PtMode>
+                                                  <siri:BusSubmode>demandAndResponseBus</siri:BusSubmode>
+                                                  <ojp:Name>
+                                                      <ojp:Text xml:lang="de">myBuxi Herzogenbuchsee</ojp:Text>
+                                                  </ojp:Name>
+                                              </ojp:Mode>
+                                              <ojp:PublishedLineName>
+                                                  <ojp:Text xml:lang="de">myBuxi-Herzogenbuchsee</ojp:Text>
+                                              </ojp:PublishedLineName>
+                                              <ojp:OperatorRef>odv:mybuxi</ojp:OperatorRef>
+                                              <ojp:Attribute>
+                                                  <ojp:Text>
+                                                      <ojp:Text xml:lang="de">Platzreservierung obligatorisch</ojp:Text>
+                                                  </ojp:Text>
+                                                  <ojp:Code>RR</ojp:Code>
+                                              </ojp:Attribute>
+                                              <ojp:Attribute>
+                                                  <ojp:Text>
+                                                      <ojp:Text xml:lang="de">Hunde können nicht mitgeführt werden</ojp:Text>
+                                                  </ojp:Text>
+                                                  <ojp:Code>HN</ojp:Code>
+                                              </ojp:Attribute>
+                                              <ojp:Attribute>
+                                                  <ojp:Text>
+                                                      <ojp:Text xml:lang="de">VELOS: Keine Beförderung möglich</ojp:Text>
+                                                  </ojp:Text>
+                                                  <ojp:Code>VN</ojp:Code>
+                                              </ojp:Attribute>
+                                              <ojp:DestinationText>
+                                                  <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                              </ojp:DestinationText>
+                                          </ojp:Service>
+                                          <ojp:Extension>
+                                              <ojp:OperatorName>
+                                                  <ojp:Text xml:lang="de">mybuxi AG</ojp:Text>
+                                              </ojp:OperatorName>
+                                          </ojp:Extension>
+                                      </ojp:TimedLeg>
+                                  </ojp:TripLeg>
+                              </ojp:Trip>
+                          </ojp:TripResult>
+                      </ojp:OJPTripDelivery>
+                  </siri:ServiceDelivery>
+              </siri:OJPResponse>
+          </siri:OJP>

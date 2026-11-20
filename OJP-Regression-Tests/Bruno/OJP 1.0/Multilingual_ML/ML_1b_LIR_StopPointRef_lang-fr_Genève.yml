@@ -1,0 +1,79 @@
+info:
+  name: ML_1b_LIR_StopPointRef_lang-fr_Genève
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{server}}"
+  headers:
+    - name: Content-Type
+      value: text/xml
+  body:
+    type: xml
+    data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+      <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+      \    <OJPRequest>\r
+
+      \        <ServiceRequest>\r
+
+      \            <ServiceRequestContext>\r
+
+      \                <Language>fr</Language>\r
+
+      \            </ServiceRequestContext>\r
+
+      \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+      \            <ojp:OJPLocationInformationRequest>\r
+
+      \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \                <MessageIdentifier>ML_1b</MessageIdentifier>\r
+
+      \                <ojp:InitialInput>\r
+
+      \                    <ojp:LocationName>Genève</ojp:LocationName>\r
+
+      \                </ojp:InitialInput>\r
+
+      \                <ojp:Restrictions>\r
+
+      \                    <ojp:Type>stop</ojp:Type>\r
+
+      \                    <ojp:NumberOfResults>1</ojp:NumberOfResults>\r
+
+      \                    <ojp:IncludePtModes>true</ojp:IncludePtModes>\r
+
+      \                </ojp:Restrictions>\r
+
+      \            </ojp:OJPLocationInformationRequest>\r
+
+      \        </ServiceRequest>\r
+
+      \    </OJPRequest>\r
+
+      </OJP>\r\n"
+  auth:
+    type: bearer
+    token: "{{BearerToken}}"
+
+runtime:
+  scripts:
+    - type: after-response
+      code: "test(\"Contains 'fr'>Genève (Genève)\", function() {\r
+
+        \    expect(res.getBody()?.toString()).to.include('<ojp:Text xml:lang=\"fr\">Genève (Genève)</ojp:Text>');\r
+
+        });"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

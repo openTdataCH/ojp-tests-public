@@ -1,0 +1,617 @@
+info:
+  name: Shr-2b TR eScooter monomodal
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{server}}"
+  headers:
+    - name: Content-Type
+      value: text/xml
+  body:
+    type: xml
+    data: "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r
+
+      <OJP xmlns=\"http://www.siri.org.uk/siri\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\" version=\"1.0\">\r
+
+      \    <OJPRequest>\r
+
+      \        <ServiceRequest>\r
+
+      \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+      \            <ojp:OJPTripRequest>\r
+
+      \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \                <MessageIdentifier>Shr-2b</MessageIdentifier>\r
+
+      \                <Origin>\r
+
+      \                    <PlaceRef>\r
+
+      \                        <StopPlaceRef>ch:1:sloid:91327</StopPlaceRef>\r
+
+      \                        <LocationName>\r
+
+      \                            <Text>Zürich</Text>\r
+
+      \                        </LocationName>\r
+
+      \                    </PlaceRef>\r
+
+      \                </Origin>\r
+
+      \                <Destination>\r
+
+      \                    <PlaceRef>\r
+
+      \                        <StopPlaceRef>ch:1:sloid:3091</StopPlaceRef>\r
+
+      \                        <LocationName>\r
+
+      \                            <Text>Zürich Giesshübel (Zürich)</Text>\r
+
+      \                        </LocationName>\r
+
+      \                    </PlaceRef>\r
+
+      \                </Destination>\r
+
+      \                <ojp:Params>\r
+
+      \                    <ojp:IncludeTrackSections>false</ojp:IncludeTrackSections>\r
+
+      \                    <!--Immer true: Ausgabe geografische Route (TrackSection)-->\r
+
+      \                    <ojp:IncludeLegProjection>false</ojp:IncludeLegProjection>\r
+
+      \                    <!--Optional: Ausgabe Koordinaten der Fahrstrecke (LinkProjection)-->\r
+
+      \                    <ojp:IncludeTurnDescription>false</ojp:IncludeTurnDescription>\r
+
+      \                    <!--Optional: Ausgabe Abbiegeanweisungen (PathGuidance)-->\r
+
+      \                    <ojp:IncludeIntermediateStops>false</ojp:IncludeIntermediateStops>\r
+
+      \                    <!--Optional: Ausgabe Zwischenhaltestellen der ÖV Route-->\r
+
+      \                    <ojp:Extension>\r
+
+      \                        <ojp:ItModesToCover>escooter_rental</ojp:ItModesToCover>\r
+
+      \                        <!--monomodal eScooter-->\r
+
+      \                    </ojp:Extension>\r
+
+      \                </ojp:Params>\r
+
+      \            </ojp:OJPTripRequest>\r
+
+      \        </ServiceRequest>\r
+
+      \    </OJPRequest>\r
+
+      </OJP>"
+  auth:
+    type: bearer
+    token: "{{BearerToken}}"
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Body matches string Scooter", function () {
+            expect(res.getBody()?.toString()).to.include("SCOOTER");
+        });
+        test("Body matches string cycle", function () {
+            expect(res.getBody()?.toString()).to.include("<ojp:IndividualMode>cycle</ojp:IndividualMode>");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: Shr-2b TR eScooter monomodal
+    request:
+      url: "{{server}}"
+      method: POST
+      headers:
+        - name: Content-Type
+          value: text/xml
+      body:
+        type: xml
+        data: "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r
+
+          <OJP xmlns=\"http://www.siri.org.uk/siri\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\" version=\"1.0\">\r
+
+          \    <OJPRequest>\r
+
+          \        <ServiceRequest>\r
+
+          \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+          \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+          \            <ojp:OJPTripRequest>\r
+
+          \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+          \                <MessageIdentifier>Shr-2b</MessageIdentifier>\r
+
+          \                <Origin>\r
+
+          \                    <PlaceRef>\r
+
+          \                        <StopPlaceRef>8591327</StopPlaceRef>\r
+
+          \                        <LocationName>\r
+
+          \                            <Text>Zürich</Text>\r
+
+          \                        </LocationName>\r
+
+          \                    </PlaceRef>\r
+
+          \                </Origin>\r
+
+          \                <Destination>\r
+
+          \                    <PlaceRef>\r
+
+          \                        <StopPlaceRef>8503091</StopPlaceRef>\r
+
+          \                        <LocationName>\r
+
+          \                            <Text>Zürich Giesshübel (Zürich)</Text>\r
+
+          \                        </LocationName>\r
+
+          \                    </PlaceRef>\r
+
+          \                </Destination>\r
+
+          \                <ojp:Params>\r
+
+          \                    <ojp:IncludeTrackSections>false</ojp:IncludeTrackSections>\r
+
+          \                    <!--Immer true: Ausgabe geografische Route (TrackSection)-->\r
+
+          \                    <ojp:IncludeLegProjection>false</ojp:IncludeLegProjection>\r
+
+          \                    <!--Optional: Ausgabe Koordinaten der Fahrstrecke (LinkProjection)-->\r
+
+          \                    <ojp:IncludeTurnDescription>false</ojp:IncludeTurnDescription>\r
+
+          \                    <!--Optional: Ausgabe Abbiegeanweisungen (PathGuidance)-->\r
+
+          \                    <ojp:IncludeIntermediateStops>false</ojp:IncludeIntermediateStops>\r
+
+          \                    <!--Optional: Ausgabe Zwischenhaltestellen der ÖV Route-->\r
+
+          \                    <ojp:Extension>\r
+
+          \                        <ojp:ItModesToCover>escooter_rental</ojp:ItModesToCover>\r
+
+          \                        <!--monomodal eScooter-->\r
+
+          \                    </ojp:Extension>\r
+
+          \                </ojp:Params>\r
+
+          \            </ojp:OJPTripRequest>\r
+
+          \        </ServiceRequest>\r
+
+          \    </OJPRequest>\r
+
+          </OJP>"
+    response:
+      body:
+        type: text
+        data: ""
+  - name: Shr-2b TR eScooter monomodal GBFS2.3
+    request:
+      url: "{{server}}"
+      method: POST
+      headers:
+        - name: Content-Type
+          value: text/xml
+      body:
+        type: xml
+        data: "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r
+
+          <OJP xmlns=\"http://www.siri.org.uk/siri\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\" version=\"1.0\">\r
+
+          \    <OJPRequest>\r
+
+          \        <ServiceRequest>\r
+
+          \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+          \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+          \            <ojp:OJPTripRequest>\r
+
+          \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+          \                <MessageIdentifier>Shr-2b</MessageIdentifier>\r
+
+          \                <Origin>\r
+
+          \                    <PlaceRef>\r
+
+          \                        <StopPlaceRef>8591327</StopPlaceRef>\r
+
+          \                        <LocationName>\r
+
+          \                            <Text>Zürich</Text>\r
+
+          \                        </LocationName>\r
+
+          \                    </PlaceRef>\r
+
+          \                </Origin>\r
+
+          \                <Destination>\r
+
+          \                    <PlaceRef>\r
+
+          \                        <StopPlaceRef>8503091</StopPlaceRef>\r
+
+          \                        <LocationName>\r
+
+          \                            <Text>Zürich Giesshübel (Zürich)</Text>\r
+
+          \                        </LocationName>\r
+
+          \                    </PlaceRef>\r
+
+          \                </Destination>\r
+
+          \                <ojp:Params>\r
+
+          \                    <ojp:IncludeTrackSections>false</ojp:IncludeTrackSections>\r
+
+          \                    <!--Immer true: Ausgabe geografische Route (TrackSection)-->\r
+
+          \                    <ojp:IncludeLegProjection>false</ojp:IncludeLegProjection>\r
+
+          \                    <!--Optional: Ausgabe Koordinaten der Fahrstrecke (LinkProjection)-->\r
+
+          \                    <ojp:IncludeTurnDescription>false</ojp:IncludeTurnDescription>\r
+
+          \                    <!--Optional: Ausgabe Abbiegeanweisungen (PathGuidance)-->\r
+
+          \                    <ojp:IncludeIntermediateStops>false</ojp:IncludeIntermediateStops>\r
+
+          \                    <!--Optional: Ausgabe Zwischenhaltestellen der ÖV Route-->\r
+
+          \                    <ojp:Extension>\r
+
+          \                        <ojp:ItModesToCover>escooter_rental</ojp:ItModesToCover>\r
+
+          \                        <!--monomodal eScooter-->\r
+
+          \                    </ojp:Extension>\r
+
+          \                </ojp:Params>\r
+
+          \            </ojp:OJPTripRequest>\r
+
+          \        </ServiceRequest>\r
+
+          \    </OJPRequest>\r
+
+          </OJP>"
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: :status
+          value: "200"
+        - name: date
+          value: Tue, 14 Apr 2026 04:52:44 GMT
+        - name: content-type
+          value: text/xml
+        - name: content-length
+          value: "1530"
+        - name: accept-ranges
+          value: none
+        - name: access-control-allow-origin
+          value: "*"
+        - name: content-encoding
+          value: gzip
+        - name: last-modified
+          value: Tue, 14 Apr 2026 04:52:44 GMT
+        - name: vary
+          value: Origin
+        - name: x-ratelimit-limit
+          value: "-1"
+        - name: x-ratelimit-remaining
+          value: "0"
+        - name: x-ratelimit-reset
+          value: "0"
+        - name: strict-transport-security
+          value: max-age=31536000; includeSubDomains
+      body:
+        type: xml
+        data: |-
+          <?xml version="1.0" encoding="UTF-8"?>
+          <siri:OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns:ojp="http://www.vdv.de/ojp" version="1.0">
+              <siri:OJPResponse>
+                  <siri:ServiceDelivery>
+                      <siri:ResponseTimestamp>2026-04-14T04:52:44Z</siri:ResponseTimestamp>
+                      <siri:ProducerRef>optmentzEFAControllerEFAController11.0.10.22-build-452-09e6035dde3f</siri:ProducerRef>
+                      <siri:ResponseMessageIdentifier>181bc23d4e979e080001e093</siri:ResponseMessageIdentifier>
+                      <siri:Status>true</siri:Status>
+                      <ojp:OJPTripDelivery>
+                          <siri:ResponseTimestamp>2026-04-14T04:52:44Z</siri:ResponseTimestamp>
+                          <siri:RequestMessageRef>Shr-2b</siri:RequestMessageRef>
+                          <siri:Status>true</siri:Status>
+                          <ojp:CalcTime>101</ojp:CalcTime>
+                          <ojp:TripResponseContext>
+                              <ojp:Places>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8591327</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich, Rudolf-Brun-Brücke</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>128446</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich, Rudolf-Brun-Brücke</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.54300</siri:Longitude>
+                                          <siri:Latitude>47.37415</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:TopographicPlace>
+                                          <ojp:TopographicPlaceCode>23026261:27</ojp:TopographicPlaceCode>
+                                          <ojp:TopographicPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                          </ojp:TopographicPlaceName>
+                                      </ojp:TopographicPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.54300</siri:Longitude>
+                                          <siri:Latitude>47.37415</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8503091</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich Giesshübel</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>108329</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich Giesshübel</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.52201</siri:Longitude>
+                                          <siri:Latitude>47.36261</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                              </ojp:Places>
+                          </ojp:TripResponseContext>
+                          <ojp:TripResult>
+                              <ojp:ResultId>ID-39AB7843-8C13-4469-9CAE-1D052BE1D19E</ojp:ResultId>
+                              <ojp:Trip>
+                                  <ojp:TripId>ID-39AB7843-8C13-4469-9CAE-1D052BE1D19E</ojp:TripId>
+                                  <ojp:Duration>PT16M</ojp:Duration>
+                                  <ojp:StartTime>2026-04-14T04:52:00Z</ojp:StartTime>
+                                  <ojp:EndTime>2026-04-14T05:07:16Z</ojp:EndTime>
+                                  <ojp:Transfers>0</ojp:Transfers>
+                                  <ojp:Distance>2691</ojp:Distance>
+                                  <ojp:TripLeg>
+                                      <ojp:LegId>1</ojp:LegId>
+                                      <ojp:ContinuousLeg>
+                                          <ojp:LegStart>
+                                              <siri:StopPointRef>8591327</siri:StopPointRef>
+                                              <ojp:LocationName>
+                                                  <ojp:Text xml:lang="de">Zürich, Rudolf-Brun-Brücke</ojp:Text>
+                                              </ojp:LocationName>
+                                          </ojp:LegStart>
+                                          <ojp:LegEnd>
+                                              <ojp:GeoPosition>
+                                                  <siri:Longitude>8.54309</siri:Longitude>
+                                                  <siri:Latitude>47.37422</siri:Latitude>
+                                              </ojp:GeoPosition>
+                                              <ojp:LocationName>
+                                                  <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                              </ojp:LocationName>
+                                          </ojp:LegEnd>
+                                          <ojp:Service>
+                                              <ojp:IndividualMode>walk</ojp:IndividualMode>
+                                          </ojp:Service>
+                                          <ojp:TimeWindowStart>2026-04-14T04:52:00Z</ojp:TimeWindowStart>
+                                          <ojp:TimeWindowEnd>2026-04-14T04:52:42Z</ojp:TimeWindowEnd>
+                                          <ojp:Duration>PT1M</ojp:Duration>
+                                          <ojp:Length>25</ojp:Length>
+                                      </ojp:ContinuousLeg>
+                                  </ojp:TripLeg>
+                                  <ojp:TripLeg>
+                                      <ojp:LegId>2</ojp:LegId>
+                                      <ojp:ContinuousLeg>
+                                          <ojp:LegStart>
+                                              <ojp:GeoPosition>
+                                                  <siri:Longitude>8.54309</siri:Longitude>
+                                                  <siri:Latitude>47.37422</siri:Latitude>
+                                              </ojp:GeoPosition>
+                                              <ojp:LocationName>
+                                                  <ojp:Text xml:lang="de">Lime City partners from Partners::RegionFeedMediator</ojp:Text>
+                                              </ojp:LocationName>
+                                          </ojp:LegStart>
+                                          <ojp:LegEnd>
+                                              <siri:StopPointRef>8503091</siri:StopPointRef>
+                                              <ojp:LocationName>
+                                                  <ojp:Text xml:lang="de">Zürich Giesshübel</ojp:Text>
+                                              </ojp:LocationName>
+                                          </ojp:LegEnd>
+                                          <ojp:Service>
+                                              <ojp:IndividualMode>cycle</ojp:IndividualMode>
+                                          </ojp:Service>
+                                          <ojp:TimeWindowStart>2026-04-14T04:52:42Z</ojp:TimeWindowStart>
+                                          <ojp:TimeWindowEnd>2026-04-14T05:07:16Z</ojp:TimeWindowEnd>
+                                          <ojp:Duration>PT15M</ojp:Duration>
+                                          <ojp:Length>2666</ojp:Length>
+                                      </ojp:ContinuousLeg>
+                                  </ojp:TripLeg>
+                              </ojp:Trip>
+                          </ojp:TripResult>
+                          <ojp:TripResult>
+                              <ojp:ResultId>ID-3E94B486-8EE1-46A6-8221-191862F19DB1</ojp:ResultId>
+                              <ojp:Trip>
+                                  <ojp:TripId>ID-3E94B486-8EE1-46A6-8221-191862F19DB1</ojp:TripId>
+                                  <ojp:Duration>PT17M</ojp:Duration>
+                                  <ojp:StartTime>2026-04-14T04:52:00Z</ojp:StartTime>
+                                  <ojp:EndTime>2026-04-14T05:08:23Z</ojp:EndTime>
+                                  <ojp:Transfers>0</ojp:Transfers>
+                                  <ojp:Distance>2832</ojp:Distance>
+                                  <ojp:TripLeg>
+                                      <ojp:LegId>1</ojp:LegId>
+                                      <ojp:ContinuousLeg>
+                                          <ojp:LegStart>
+                                              <siri:StopPointRef>8591327</siri:StopPointRef>
+                                              <ojp:LocationName>
+                                                  <ojp:Text xml:lang="de">Zürich, Rudolf-Brun-Brücke</ojp:Text>
+                                              </ojp:LocationName>
+                                          </ojp:LegStart>
+                                          <ojp:LegEnd>
+                                              <ojp:GeoPosition>
+                                                  <siri:Longitude>8.54363</siri:Longitude>
+                                                  <siri:Latitude>47.37416</siri:Latitude>
+                                              </ojp:GeoPosition>
+                                              <ojp:LocationName>
+                                                  <ojp:Text xml:lang="de">Bolt Technology OÜ, SCOOTER</ojp:Text>
+                                              </ojp:LocationName>
+                                          </ojp:LegEnd>
+                                          <ojp:Service>
+                                              <ojp:IndividualMode>walk</ojp:IndividualMode>
+                                          </ojp:Service>
+                                          <ojp:TimeWindowStart>2026-04-14T04:52:00Z</ojp:TimeWindowStart>
+                                          <ojp:TimeWindowEnd>2026-04-14T04:53:19Z</ojp:TimeWindowEnd>
+                                          <ojp:Duration>PT2M</ojp:Duration>
+                                          <ojp:Length>87</ojp:Length>
+                                      </ojp:ContinuousLeg>
+                                  </ojp:TripLeg>
+                                  <ojp:TripLeg>
+                                      <ojp:LegId>2</ojp:LegId>
+                                      <ojp:ContinuousLeg>
+                                          <ojp:LegStart>
+                                              <ojp:GeoPosition>
+                                                  <siri:Longitude>8.54363</siri:Longitude>
+                                                  <siri:Latitude>47.37416</siri:Latitude>
+                                              </ojp:GeoPosition>
+                                              <ojp:LocationName>
+                                                  <ojp:Text xml:lang="de">Bolt Technology OÜ, SCOOTER</ojp:Text>
+                                              </ojp:LocationName>
+                                          </ojp:LegStart>
+                                          <ojp:LegEnd>
+                                              <siri:StopPointRef>8503091</siri:StopPointRef>
+                                              <ojp:LocationName>
+                                                  <ojp:Text xml:lang="de">Zürich Giesshübel</ojp:Text>
+                                              </ojp:LocationName>
+                                          </ojp:LegEnd>
+                                          <ojp:Service>
+                                              <ojp:IndividualMode>cycle</ojp:IndividualMode>
+                                          </ojp:Service>
+                                          <ojp:TimeWindowStart>2026-04-14T04:53:19Z</ojp:TimeWindowStart>
+                                          <ojp:TimeWindowEnd>2026-04-14T05:08:23Z</ojp:TimeWindowEnd>
+                                          <ojp:Duration>PT16M</ojp:Duration>
+                                          <ojp:Length>2745</ojp:Length>
+                                      </ojp:ContinuousLeg>
+                                  </ojp:TripLeg>
+                              </ojp:Trip>
+                          </ojp:TripResult>
+                          <ojp:TripResult>
+                              <ojp:ResultId>ID-D61A56BB-36BE-4172-87A5-5D56F57EF4DD</ojp:ResultId>
+                              <ojp:Trip>
+                                  <ojp:TripId>ID-D61A56BB-36BE-4172-87A5-5D56F57EF4DD</ojp:TripId>
+                                  <ojp:Duration>PT18M</ojp:Duration>
+                                  <ojp:StartTime>2026-04-14T04:52:00Z</ojp:StartTime>
+                                  <ojp:EndTime>2026-04-14T05:09:32Z</ojp:EndTime>
+                                  <ojp:Transfers>0</ojp:Transfers>
+                                  <ojp:Distance>2932</ojp:Distance>
+                                  <ojp:TripLeg>
+                                      <ojp:LegId>1</ojp:LegId>
+                                      <ojp:ContinuousLeg>
+                                          <ojp:LegStart>
+                                              <siri:StopPointRef>8591327</siri:StopPointRef>
+                                              <ojp:LocationName>
+                                                  <ojp:Text xml:lang="de">Zürich, Rudolf-Brun-Brücke</ojp:Text>
+                                              </ojp:LocationName>
+                                          </ojp:LegStart>
+                                          <ojp:LegEnd>
+                                              <ojp:GeoPosition>
+                                                  <siri:Longitude>8.54469</siri:Longitude>
+                                                  <siri:Latitude>47.37414</siri:Latitude>
+                                              </ojp:GeoPosition>
+                                              <ojp:LocationName>
+                                                  <ojp:Text xml:lang="de">Voi Technology AB, scooter</ojp:Text>
+                                              </ojp:LocationName>
+                                          </ojp:LegEnd>
+                                          <ojp:Service>
+                                              <ojp:IndividualMode>walk</ojp:IndividualMode>
+                                          </ojp:Service>
+                                          <ojp:TimeWindowStart>2026-04-14T04:52:00Z</ojp:TimeWindowStart>
+                                          <ojp:TimeWindowEnd>2026-04-14T04:54:31Z</ojp:TimeWindowEnd>
+                                          <ojp:Duration>PT3M</ojp:Duration>
+                                          <ojp:Length>146</ojp:Length>
+                                      </ojp:ContinuousLeg>
+                                  </ojp:TripLeg>
+                                  <ojp:TripLeg>
+                                      <ojp:LegId>2</ojp:LegId>
+                                      <ojp:ContinuousLeg>
+                                          <ojp:LegStart>
+                                              <ojp:GeoPosition>
+                                                  <siri:Longitude>8.54469</siri:Longitude>
+                                                  <siri:Latitude>47.37414</siri:Latitude>
+                                              </ojp:GeoPosition>
+                                              <ojp:LocationName>
+                                                  <ojp:Text xml:lang="de">Voi Technology AB, scooter</ojp:Text>
+                                              </ojp:LocationName>
+                                          </ojp:LegStart>
+                                          <ojp:LegEnd>
+                                              <siri:StopPointRef>8503091</siri:StopPointRef>
+                                              <ojp:LocationName>
+                                                  <ojp:Text xml:lang="de">Zürich Giesshübel</ojp:Text>
+                                              </ojp:LocationName>
+                                          </ojp:LegEnd>
+                                          <ojp:Service>
+                                              <ojp:IndividualMode>cycle</ojp:IndividualMode>
+                                          </ojp:Service>
+                                          <ojp:TimeWindowStart>2026-04-14T04:54:31Z</ojp:TimeWindowStart>
+                                          <ojp:TimeWindowEnd>2026-04-14T05:09:32Z</ojp:TimeWindowEnd>
+                                          <ojp:Duration>PT16M</ojp:Duration>
+                                          <ojp:Length>2786</ojp:Length>
+                                      </ojp:ContinuousLeg>
+                                  </ojp:TripLeg>
+                              </ojp:Trip>
+                          </ojp:TripResult>
+                      </ojp:OJPTripDelivery>
+                  </siri:ServiceDelivery>
+              </siri:OJPResponse>
+          </siri:OJP>

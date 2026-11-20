@@ -1,0 +1,336 @@
+info:
+  name: TR-1m5_NumberOfResults SBB
+  type: http
+  seq: 21
+
+http:
+  method: POST
+  url: "{{server}}"
+  headers:
+    - name: Content-Type
+      value: text/xml
+  body:
+    type: xml
+    data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+      <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+      \    <OJPRequest>\r
+
+      \        <ServiceRequest>\r
+
+      \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+      \            <ojp:OJPTripRequest>\r
+
+      \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \                <MessageIdentifier>TR-1s</MessageIdentifier>\r
+
+      \                <ojp:Origin>\r
+
+      \                    <ojp:PlaceRef>\r
+
+      \                        <ojp:StopPlaceRef>ch:1:sloid:8399</ojp:StopPlaceRef>\r
+
+      \                        <ojp:LocationName>\r
+
+      \                            <ojp:Text>Engelberg</ojp:Text>\r
+
+      \                        </ojp:LocationName>\r
+
+      \                    </ojp:PlaceRef>\r
+
+      \                </ojp:Origin>\r
+
+      \                <ojp:Destination>\r
+
+      \                    <ojp:PlaceRef>\r
+
+      \                        <ojp:StopPlaceRef>ch:1:sloid:3424</ojp:StopPlaceRef>\r
+
+      \                        <ojp:LocationName>\r
+
+      \                            <ojp:Text>Schaffhausen</ojp:Text>\r
+
+      \                        </ojp:LocationName>\r
+
+      \                    </ojp:PlaceRef>\r
+
+      \                    <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>\r
+
+      \                </ojp:Destination>\r
+
+      \                <ojp:Params>\r
+
+      \                    <ojp:NumberOfResultsAfter>1</ojp:NumberOfResultsAfter>\r
+
+      \                    <ojp:NumberOfResultsBefore>5</ojp:NumberOfResultsBefore>\r
+
+      \                    <ojp:IncludeTrackSections>false</ojp:IncludeTrackSections>\r
+
+      \                    <ojp:IncludeLegProjection>false</ojp:IncludeLegProjection>\r
+
+      \                    <ojp:IncludeTurnDescription>false</ojp:IncludeTurnDescription>\r
+
+      \                    <ojp:IncludeIntermediateStops>false</ojp:IncludeIntermediateStops>\r
+
+      \                </ojp:Params>\r
+
+      \            </ojp:OJPTripRequest>\r
+
+      \        </ServiceRequest>\r
+
+      \    </OJPRequest>\r
+
+      </OJP>"
+  auth:
+    type: bearer
+    token: "{{BearerToken}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: TR-1s_Höhendaten
+    request:
+      url: "{{server}}"
+      method: POST
+      headers:
+        - name: Content-Type
+          value: application/x-www-form-urlencoded
+      body:
+        type: text
+        data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+          <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+          \    <OJPRequest>\r
+
+          \        <ServiceRequest>\r
+
+          \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+          \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+          \            <ojp:OJPTripRequest>\r
+
+          \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+          \                <MessageIdentifier>TR-1s</MessageIdentifier>\r
+
+          \                <ojp:Origin>\r
+
+          \                    <ojp:PlaceRef>\r
+
+          \                        <StopPointRef>8591441</StopPointRef>\r
+
+          \                        <ojp:LocationName>\r
+
+          \                            <ojp:Text>Zielweg, Zürich</ojp:Text>\r
+
+          \                        </ojp:LocationName>\r
+
+          \                    </ojp:PlaceRef>\r
+
+          \                    <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>\r
+
+          \                    <ojp:IndividualTransportOptions>\r
+
+          \                        <ojp:Mode>walk</ojp:Mode>\r
+
+          \                        <ojp:MaxDuration>PT100M</ojp:MaxDuration>\r
+
+          \                    </ojp:IndividualTransportOptions>\r
+
+          \                </ojp:Origin>\r
+
+          \                <ojp:Destination>\r
+
+          \                    <ojp:PlaceRef>\r
+
+          \                        <StopPointRef>8503057</StopPointRef>\r
+
+          \                        <ojp:LocationName>\r
+
+          \                            <ojp:Text>Uetliberg</ojp:Text>\r
+
+          \                        </ojp:LocationName>\r
+
+          \                    </ojp:PlaceRef>\r
+
+          \                </ojp:Destination>\r
+
+          \                <ojp:Params>\r
+
+          \                    <ojp:NumberOfResultsAfter>1</ojp:NumberOfResultsAfter>\r
+
+          \                    <ojp:IncludeTrackSections>false</ojp:IncludeTrackSections>\r
+
+          \                    <ojp:IncludeLegProjection>false</ojp:IncludeLegProjection>\r
+
+          \                    <ojp:IncludeTurnDescription>false</ojp:IncludeTurnDescription>\r
+
+          \                    <ojp:IncludeIntermediateStops>false</ojp:IncludeIntermediateStops>\r
+
+          \                    <ojp:ItModesToCover>walk</ojp:ItModesToCover>\r
+
+          \                    <ojp:PtModeFilter>\r
+
+          \                        <ojp:Exclude>false</ojp:Exclude>\r
+
+          \                        <ojp:PtMode>telecabin</ojp:PtMode>\r
+
+          \                    </ojp:PtModeFilter>\r
+
+          \                </ojp:Params>\r
+
+          \            </ojp:OJPTripRequest>\r
+
+          \        </ServiceRequest>\r
+
+          \    </OJPRequest>\r
+
+          </OJP>"
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Server
+          value: EFAController/10.6.15.3/OJP-EFA01-I
+        - name: Date
+          value: Tue, 23 Jan 2024 12:53:02 GMT
+        - name: Content-Type
+          value: text/xml
+        - name: Accept-Ranges
+          value: none
+        - name: Content-Length
+          value: "1137"
+        - name: Last-Modified
+          value: Tue, 23 Jan 2024 12:53:02 GMT
+        - name: Connection
+          value: Keep-Alive
+        - name: Content-Encoding
+          value: gzip
+        - name: Access-Control-Allow-Origin
+          value: "*"
+      body:
+        type: xml
+        data: |-
+          <?xml version="1.0" encoding="UTF-8"?>
+          <siri:OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns:ojp="http://www.vdv.de/ojp" version="1.0">
+              <siri:OJPResponse>
+                  <siri:ServiceDelivery>
+                      <siri:ResponseTimestamp>2024-01-23T12:53:02Z</siri:ResponseTimestamp>
+                      <siri:ProducerRef>EFAController10.6.15.3-OJP-EFA01-I</siri:ProducerRef>
+                      <siri:ResponseMessageIdentifier>000c6441fb12faaf</siri:ResponseMessageIdentifier>
+                      <siri:Status>true</siri:Status>
+                      <ojp:OJPTripDelivery>
+                          <siri:ResponseTimestamp>2024-01-23T12:53:01Z</siri:ResponseTimestamp>
+                          <siri:RequestMessageRef>TR-1s</siri:RequestMessageRef>
+                          <siri:Status>true</siri:Status>
+                          <ojp:CalcTime>1212</ojp:CalcTime>
+                          <ojp:TripResponseContext>
+                              <ojp:Places>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8591441</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich, Zielweg</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>128552</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich, Zielweg</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.49759</siri:Longitude>
+                                          <siri:Latitude>47.35882</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:TopographicPlace>
+                                          <ojp:TopographicPlaceCode>23026261:27</ojp:TopographicPlaceCode>
+                                          <ojp:TopographicPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                          </ojp:TopographicPlaceName>
+                                      </ojp:TopographicPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.49759</siri:Longitude>
+                                          <siri:Latitude>47.35882</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8503057</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Uetliberg</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>108300</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026013:8</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Uetliberg</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.48755</siri:Longitude>
+                                          <siri:Latitude>47.35207</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                              </ojp:Places>
+                          </ojp:TripResponseContext>
+                          <ojp:TripResult>
+                              <ojp:ResultId>ID-A72EB840-6CED-41D6-9AE3-E32949917179</ojp:ResultId>
+                              <ojp:Trip>
+                                  <ojp:TripId>ID-A72EB840-6CED-41D6-9AE3-E32949917179</ojp:TripId>
+                                  <ojp:Duration>PT44M</ojp:Duration>
+                                  <ojp:StartTime>2024-01-23T12:11:00Z</ojp:StartTime>
+                                  <ojp:EndTime>2024-01-23T12:54:34Z</ojp:EndTime>
+                                  <ojp:Transfers>0</ojp:Transfers>
+                                  <ojp:Distance>2088</ojp:Distance>
+                                  <ojp:TripLeg>
+                                      <ojp:LegId>1</ojp:LegId>
+                                      <ojp:ContinuousLeg>
+                                          <ojp:LegStart>
+                                              <siri:StopPointRef>8591441</siri:StopPointRef>
+                                              <ojp:LocationName>
+                                                  <ojp:Text xml:lang="de">Zürich, Zielweg</ojp:Text>
+                                              </ojp:LocationName>
+                                          </ojp:LegStart>
+                                          <ojp:LegEnd>
+                                              <siri:StopPointRef>8503057</siri:StopPointRef>
+                                              <ojp:LocationName>
+                                                  <ojp:Text xml:lang="de">Uetliberg</ojp:Text>
+                                              </ojp:LocationName>
+                                          </ojp:LegEnd>
+                                          <ojp:Service>
+                                              <ojp:IndividualMode>walk</ojp:IndividualMode>
+                                          </ojp:Service>
+                                          <ojp:TimeWindowStart>2024-01-23T12:11:00Z</ojp:TimeWindowStart>
+                                          <ojp:TimeWindowEnd>2024-01-23T12:54:34Z</ojp:TimeWindowEnd>
+                                          <ojp:Duration>PT44M</ojp:Duration>
+                                          <ojp:Length>2088</ojp:Length>
+                                      </ojp:ContinuousLeg>
+                                  </ojp:TripLeg>
+                              </ojp:Trip>
+                          </ojp:TripResult>
+                      </ojp:OJPTripDelivery>
+                  </siri:ServiceDelivery>
+              </siri:OJPResponse>
+          </siri:OJP>

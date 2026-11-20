@@ -1,0 +1,189 @@
+info:
+  name: LIR-2b_Address_GeoPosition
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{server}}"
+  body:
+    type: xml
+    data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+      <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+      \    <OJPRequest>\r
+
+      \        <ServiceRequest>\r
+
+      \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+      \            <ojp:OJPLocationInformationRequest>\r
+
+      \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \                <MessageIdentifier>LIR-2b</MessageIdentifier>\r
+
+      \                <ojp:InitialInput>\r
+
+      \                    <ojp:GeoPosition>\r
+
+      \                        <Longitude>8.52062</Longitude>\r
+
+      \                        <Latitude>47.36085</Latitude>\r
+
+      \                    </ojp:GeoPosition>\r
+
+      \                </ojp:InitialInput>\r
+
+      \                <ojp:Restrictions>\r
+
+      \                    <ojp:Type>address</ojp:Type>\r
+
+      \                    <ojp:NumberOfResults>10</ojp:NumberOfResults>\r
+
+      \                </ojp:Restrictions>\r
+
+      \            </ojp:OJPLocationInformationRequest>\r
+
+      \        </ServiceRequest>\r
+
+      \    </OJPRequest>\r
+
+      </OJP>"
+  auth:
+    type: bearer
+    token: "{{BearerToken}}"
+
+runtime:
+  scripts:
+    - type: after-response
+      code: "test(\"Response contains Text Staffelstrasse 12 (Zürich)\", function() {\r
+
+        \    expect(res.getBody()?.toString()).to.include(\"Staffelstrasse 12 (Zürich)\");\r
+
+        });\r
+
+        \r
+
+        test(\"Response contains correct GeoPosition\", function() {\r
+
+        \    expect(res.getBody()?.toString()).to.include(\"8.52063\");\r
+
+        \    expect(res.getBody()?.toString()).to.include(\"47.36084\");\r
+
+        });"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: LIR-2b_Address_GeoPosition
+    request:
+      url: "{{server}}"
+      method: POST
+      body:
+        type: xml
+        data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+          <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+          \    <OJPRequest>\r
+
+          \        <ServiceRequest>\r
+
+          \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+          \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+          \            <ojp:OJPLocationInformationRequest>\r
+
+          \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+          \                <MessageIdentifier>LIR-2b</MessageIdentifier>\r
+
+          \                <ojp:InitialInput>\r
+
+          \                    <ojp:GeoPosition>\r
+
+          \                        <Longitude>8.52062</Longitude>\r
+
+          \                        <Latitude>47.36085</Latitude>\r
+
+          \                    </ojp:GeoPosition>\r
+
+          \                </ojp:InitialInput>\r
+
+          \                <ojp:Restrictions>\r
+
+          \                    <ojp:Type>address</ojp:Type>\r
+
+          \                    <ojp:NumberOfResults>10</ojp:NumberOfResults>\r
+
+          \                </ojp:Restrictions>\r
+
+          \            </ojp:OJPLocationInformationRequest>\r
+
+          \        </ServiceRequest>\r
+
+          \    </OJPRequest>\r
+
+          </OJP>"
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Server
+          value: EFAController/10.6.14.5/OJP-EFA01-I
+        - name: Date
+          value: Fri, 01 Dec 2023 16:48:10 GMT
+        - name: Content-Type
+          value: text/xml
+        - name: Accept-Ranges
+          value: none
+        - name: Content-Length
+          value: "1139"
+        - name: Last-Modified
+          value: Fri, 01 Dec 2023 16:48:10 GMT
+        - name: Connection
+          value: Keep-Alive
+        - name: Access-Control-Allow-Origin
+          value: "*"
+      body:
+        type: xml
+        data: |-
+          <?xml version="1.0" encoding="UTF-8"?>
+          <siri:OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns:ojp="http://www.vdv.de/ojp" version="1.0">
+              <siri:OJPResponse>
+                  <siri:ServiceDelivery>
+                      <siri:ResponseTimestamp>2023-12-01T16:48:10Z</siri:ResponseTimestamp>
+                      <siri:ProducerRef>EFAController10.6.14.5-OJP-EFA01-I</siri:ProducerRef>
+                      <siri:Status>true</siri:Status>
+                      <ojp:OJPLocationInformationDelivery>
+                          <siri:ResponseTimestamp>2023-12-01T16:48:10Z</siri:ResponseTimestamp>
+                          <siri:RequestMessageRef>LIR-2b</siri:RequestMessageRef>
+                          <siri:Status>true</siri:Status>
+                          <ojp:CalcTime>371</ojp:CalcTime>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Staffelstrasse 13 (Zürich)</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>8.52063</siri:Longitude>
+                                      <siri:Latitude>47.36084</siri:Latitude>
+                                  </ojp:GeoPosition>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                      </ojp:OJPLocationInformationDelivery>
+                  </siri:ServiceDelivery>
+              </siri:OJPResponse>
+          </siri:OJP>

@@ -1,0 +1,56 @@
+info:
+  name: BehiG-TIR-1 Fahrt mit NF
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: "{{server}}"
+  body:
+    type: xml
+    data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+      <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+      \    <OJPRequest>\r
+
+      \        <ServiceRequest>\r
+
+      \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+      \            <ojp:OJPTripInfoRequest>\r
+
+      \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \                <MessageIdentifier>BehiG-TIR-1</MessageIdentifier>\r
+
+      \                <ojp:JourneyRef>ch:1:sjyid:100648:plan:a7449fc3-4443-4397-9c65-b038844b832b</ojp:JourneyRef>\r
+
+      \                <ojp:OperatingDayRef>{{friday_timetable_change}}</ojp:OperatingDayRef>\r
+
+      \            </ojp:OJPTripInfoRequest>\r
+
+      \        </ServiceRequest>\r
+
+      \    </OJPRequest>\r
+
+      </OJP>"
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: "test(\"Body matches string\", function () {\r
+
+        \    expect(res.getBody()?.toString()).to.include(\">PLATFORM_ACCESS_WITHOUT_ASSISTANCE<\");\r
+
+        });"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

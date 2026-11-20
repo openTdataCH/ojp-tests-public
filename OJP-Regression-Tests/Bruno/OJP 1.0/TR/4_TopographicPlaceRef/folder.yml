@@ -1,0 +1,7 @@
+info:
+  name: 4_TopographicPlaceRef
+  type: folder
+  seq: 4
+
+request:
+  auth: inherit

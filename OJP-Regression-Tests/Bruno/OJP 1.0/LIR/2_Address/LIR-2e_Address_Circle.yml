@@ -1,0 +1,374 @@
+info:
+  name: LIR-2e_Address_Circle
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{server}}"
+  body:
+    type: xml
+    data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+      <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+      \    <OJPRequest>\r
+
+      \        <ServiceRequest>\r
+
+      \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+      \            <ojp:OJPLocationInformationRequest>\r
+
+      \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \                <MessageIdentifier>LIR-2c</MessageIdentifier>\r
+
+      \                <ojp:InitialInput>\r
+
+      \                    <ojp:GeoRestriction>\r
+
+      \                        <ojp:Circle>\r
+
+      \                            <ojp:Center>\r
+
+      \                                <siri:Longitude>7.416356</siri:Longitude>\r
+
+      \                                <siri:Latitude>46.926923</siri:Latitude>\r
+
+      \                            </ojp:Center>\r
+
+      \                            <ojp:Radius>200</Radius>\r
+
+      \                        </ojp:Circle>\r
+
+      \                    </ojp:GeoRestriction>\r
+
+      \                </ojp:InitialInput>\r
+
+      \                <ojp:Restrictions>\r
+
+      \                    <ojp:Type>address</ojp:Type>\r
+
+      \                    <ojp:NumberOfResults>1000</ojp:NumberOfResults>\r
+
+      \                </ojp:Restrictions>\r
+
+      \            </ojp:OJPLocationInformationRequest>\r
+
+      \        </ServiceRequest>\r
+
+      \    </OJPRequest>\r
+
+      </OJP>"
+  auth:
+    type: bearer
+    token: "{{BearerToken}}"
+
+runtime:
+  scripts:
+    - type: after-response
+      code: "test(\"Response contains Könizstrasse\", function() {\r
+
+        \    expect(res.getBody()?.toString()).to.include(\"Könizstrasse\");\r
+
+        });\r
+
+        \r
+
+        test(\"Response contains Flurweg\", function() {\r
+
+        \    expect(res.getBody()?.toString()).to.not.include(\"Flurweg\");\r
+
+        });"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: LIR-2c_Address_GeoRestriction
+    request:
+      url: "{{server}}"
+      method: POST
+      body:
+        type: xml
+        data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+          <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+          \    <OJPRequest>\r
+
+          \        <ServiceRequest>\r
+
+          \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+          \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+          \            <ojp:OJPLocationInformationRequest>\r
+
+          \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+          \                <MessageIdentifier>LIR-2c</MessageIdentifier>\r
+
+          \                <ojp:InitialInput>\r
+
+          \                    <ojp:GeoRestriction>\r
+
+          \                    <ojp:Rectangle>\r
+
+          \                        <ojp:UpperLeft>\r
+
+          \                            <Longitude>8.51889</Longitude>\r
+
+          \                            <Latitude>47.36261</Latitude>\r
+
+          \                        </ojp:UpperLeft>\r
+
+          \                        <ojp:LowerRight>\r
+
+          \                            <Longitude>8.52887</Longitude>\r
+
+          \                            <Latitude>47.35774</Latitude>\r
+
+          \                        </ojp:LowerRight>\r
+
+          \                    </ojp:Rectangle>\r
+
+          \                    </ojp:GeoRestriction>\r
+
+          \                </ojp:InitialInput>\r
+
+          \                <ojp:Restrictions>\r
+
+          \                    <ojp:Type>address</ojp:Type>\r
+
+          \                    <ojp:NumberOfResults>10</ojp:NumberOfResults>\r
+
+          \                </ojp:Restrictions>\r
+
+          \            </ojp:OJPLocationInformationRequest>\r
+
+          \        </ServiceRequest>\r
+
+          \    </OJPRequest>\r
+
+          </OJP>"
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Server
+          value: EFAController/10.6.14.5/OJP-EFA01-I
+        - name: Date
+          value: Fri, 01 Dec 2023 16:48:15 GMT
+        - name: Content-Type
+          value: text/xml
+        - name: Accept-Ranges
+          value: none
+        - name: Content-Length
+          value: "815"
+        - name: Last-Modified
+          value: Fri, 01 Dec 2023 16:48:15 GMT
+        - name: Connection
+          value: Keep-Alive
+        - name: Content-Encoding
+          value: gzip
+        - name: Access-Control-Allow-Origin
+          value: "*"
+      body:
+        type: xml
+        data: |-
+          <?xml version="1.0" encoding="UTF-8"?>
+          <siri:OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns:ojp="http://www.vdv.de/ojp" version="1.0">
+              <siri:OJPResponse>
+                  <siri:ServiceDelivery>
+                      <siri:ResponseTimestamp>2023-12-01T16:48:15Z</siri:ResponseTimestamp>
+                      <siri:ProducerRef>EFAController10.6.14.5-OJP-EFA01-I</siri:ProducerRef>
+                      <siri:Status>true</siri:Status>
+                      <ojp:OJPLocationInformationDelivery>
+                          <siri:ResponseTimestamp>2023-12-01T16:48:15Z</siri:ResponseTimestamp>
+                          <siri:RequestMessageRef>LIR-2c</siri:RequestMessageRef>
+                          <siri:Status>true</siri:Status>
+                          <ojp:CalcTime>23</ojp:CalcTime>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:Address>
+                                      <ojp:AddressCode>streetID:1022420895::-1</ojp:AddressCode>
+                                      <ojp:AddressName>
+                                          <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                      </ojp:AddressName>
+                                  </ojp:Address>
+                                  <ojp:LocationName/>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>8.52373</siri:Longitude>
+                                      <siri:Latitude>47.36017</siri:Latitude>
+                                  </ojp:GeoPosition>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>0.74545455</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:Address>
+                                      <ojp:AddressCode>streetID:549312623::-1</ojp:AddressCode>
+                                      <ojp:AddressName>
+                                          <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                      </ojp:AddressName>
+                                  </ojp:Address>
+                                  <ojp:LocationName/>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>8.52381</siri:Longitude>
+                                      <siri:Latitude>47.36027</siri:Latitude>
+                                  </ojp:GeoPosition>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>0.74545455</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:Address>
+                                      <ojp:AddressCode>streetID:1022420896::-1</ojp:AddressCode>
+                                      <ojp:AddressName>
+                                          <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                      </ojp:AddressName>
+                                  </ojp:Address>
+                                  <ojp:LocationName/>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>8.52385</siri:Longitude>
+                                      <siri:Latitude>47.36022</siri:Latitude>
+                                  </ojp:GeoPosition>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>0.74545455</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:Address>
+                                      <ojp:AddressCode>streetID:1020728711::-1</ojp:AddressCode>
+                                      <ojp:AddressName>
+                                          <ojp:Text xml:lang="de">Lessingstrasse</ojp:Text>
+                                      </ojp:AddressName>
+                                      <ojp:Street>Lessingstrasse</ojp:Street>
+                                  </ojp:Address>
+                                  <ojp:LocationName/>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>8.52392</siri:Longitude>
+                                      <siri:Latitude>47.35946</siri:Latitude>
+                                  </ojp:GeoPosition>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>0.586363614</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:Address>
+                                      <ojp:AddressCode>streetID:1022420894::-1</ojp:AddressCode>
+                                      <ojp:AddressName>
+                                          <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                      </ojp:AddressName>
+                                  </ojp:Address>
+                                  <ojp:LocationName/>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>8.52364</siri:Longitude>
+                                      <siri:Latitude>47.36014</siri:Latitude>
+                                  </ojp:GeoPosition>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>0.563636363</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:Address>
+                                      <ojp:AddressCode>streetID:1020462826::-1</ojp:AddressCode>
+                                      <ojp:AddressName>
+                                          <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                      </ojp:AddressName>
+                                  </ojp:Address>
+                                  <ojp:LocationName/>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>8.52379</siri:Longitude>
+                                      <siri:Latitude>47.36029</siri:Latitude>
+                                  </ojp:GeoPosition>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>0.563636363</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:Address>
+                                      <ojp:AddressCode>streetID:1020728712::-1</ojp:AddressCode>
+                                      <ojp:AddressName>
+                                          <ojp:Text xml:lang="de">Lessingstrasse</ojp:Text>
+                                      </ojp:AddressName>
+                                      <ojp:Street>Lessingstrasse</ojp:Street>
+                                  </ojp:Address>
+                                  <ojp:LocationName/>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>8.52373</siri:Longitude>
+                                      <siri:Latitude>47.36017</siri:Latitude>
+                                  </ojp:GeoPosition>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>0.563636363</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:Address>
+                                      <ojp:AddressCode>streetID:1020462825::-1</ojp:AddressCode>
+                                      <ojp:AddressName>
+                                          <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                      </ojp:AddressName>
+                                  </ojp:Address>
+                                  <ojp:LocationName/>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>8.52377</siri:Longitude>
+                                      <siri:Latitude>47.36030</siri:Latitude>
+                                  </ojp:GeoPosition>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>0.449999988</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:Address>
+                                      <ojp:AddressCode>streetID:1013084158::-1</ojp:AddressCode>
+                                      <ojp:AddressName>
+                                          <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                      </ojp:AddressName>
+                                  </ojp:Address>
+                                  <ojp:LocationName/>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>8.52361</siri:Longitude>
+                                      <siri:Latitude>47.36022</siri:Latitude>
+                                  </ojp:GeoPosition>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>0.449999988</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:Address>
+                                      <ojp:AddressCode>streetID:1013084159::-1</ojp:AddressCode>
+                                      <ojp:AddressName>
+                                          <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                      </ojp:AddressName>
+                                  </ojp:Address>
+                                  <ojp:LocationName/>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>8.52379</siri:Longitude>
+                                      <siri:Latitude>47.36029</siri:Latitude>
+                                  </ojp:GeoPosition>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>0.449999988</ojp:Probability>
+                          </ojp:Location>
+                      </ojp:OJPLocationInformationDelivery>
+                  </siri:ServiceDelivery>
+              </siri:OJPResponse>
+          </siri:OJP>

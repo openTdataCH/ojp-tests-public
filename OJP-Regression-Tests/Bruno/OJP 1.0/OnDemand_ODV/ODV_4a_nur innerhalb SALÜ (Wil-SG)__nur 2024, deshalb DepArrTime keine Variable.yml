@@ -1,0 +1,396 @@
+info:
+  name: ODV_4a_nur innerhalb SALÜ (Wil-SG)__nur 2024, deshalb DepArrTime keine Variable
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{server}}"
+  headers:
+    - name: Content-Type
+      value: text/xml
+  body:
+    type: xml
+    data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+      <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+      \    <OJPRequest>\r
+
+      \        <ServiceRequest>\r
+
+      \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+      \            <ojp:OJPTripRequest>\r
+
+      \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \                <MessageIdentifier>ODV_4a</MessageIdentifier>\r
+
+      \                <ojp:Origin>\r
+
+      \                    <ojp:PlaceRef>\r
+
+      \                        <ojp:GeoPosition>\r
+
+      \                            <Longitude>9.034391</Longitude>\r
+
+      \                            <Latitude>47.458653</Latitude>\r
+
+      \                        </ojp:GeoPosition>\r
+
+      \                        <ojp:LocationName>\r
+
+      \                            <ojp:Text>Bergholzstrasse</ojp:Text>\r
+
+      \                        </ojp:LocationName>\r
+
+      \                    </ojp:PlaceRef>\r
+
+      \                    <ojp:DepArrTime>{{saturday_timetable_change}}T00:00:00Z</ojp:DepArrTime>\r
+
+      \                </ojp:Origin>\r
+
+      \                <ojp:Destination>\r
+
+      \                    <ojp:PlaceRef>\r
+
+      \                        <ojp:GeoPosition>\r
+
+      \                            <Longitude>9.055388</Longitude>\r
+
+      \                            <Latitude>47.474841</Latitude>\r
+
+      \                        </ojp:GeoPosition>\r
+
+      \                        <ojp:LocationName>\r
+
+      \                            <ojp:Text>Neugrubenstrasse</ojp:Text>\r
+
+      \                        </ojp:LocationName>\r
+
+      \                    </ojp:PlaceRef>\r
+
+      \                </ojp:Destination>\r
+
+      \                <ojp:Params>\r
+
+      \                    <ojp:NumberOfResults>2</ojp:NumberOfResults>\r
+
+      \                    <ojp:IncludeTrackSections>false</ojp:IncludeTrackSections>\r
+
+      \                    <ojp:IncludeLegProjection>true</ojp:IncludeLegProjection>\r
+
+      \                    <ojp:IncludeTurnDescription>false</ojp:IncludeTurnDescription>\r
+
+      \                    <ojp:IncludeIntermediateStops>false</ojp:IncludeIntermediateStops>\r
+
+      \                </ojp:Params>\r
+
+      \            </ojp:OJPTripRequest>\r
+
+      \        </ServiceRequest>\r
+
+      \    </OJPRequest>\r
+
+      </OJP>\r\n"
+  auth:
+    type: bearer
+    token: "{{BearerToken}}"
+
+runtime:
+  scripts:
+    - type: after-response
+      code: "test(\"Body to include Innerhalb SALÜ\", function () {\r
+
+        \    expect(res.getBody()?.toString()).to.include(\"SALÜ\");\r
+
+        });\r
+
+        \r
+
+        test(\"Body to include <siri:LineRef>odv:\", function () {\r
+
+        \    expect(res.getBody()?.toString()).to.include(\"<siri:LineRef>odv:\");\r
+
+        });"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: ODV_4a_nur innerhalb SALÜ (Wil-SG)__nur 2024, deshalb DepArrTime keine Variable
+    request:
+      url: "{{server}}"
+      method: POST
+      headers:
+        - name: Content-Type
+          value: text/xml
+      body:
+        type: xml
+        data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+          <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+          \    <OJPRequest>\r
+
+          \        <ServiceRequest>\r
+
+          \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+          \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+          \            <ojp:OJPTripRequest>\r
+
+          \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+          \                <MessageIdentifier>ODV_4a</MessageIdentifier>\r
+
+          \                <ojp:Origin>\r
+
+          \                    <ojp:PlaceRef>\r
+
+          \                        <ojp:GeoPosition>\r
+
+          \                            <Longitude>9.034391</Longitude>\r
+
+          \                            <Latitude>47.458653</Latitude>\r
+
+          \                        </ojp:GeoPosition>\r
+
+          \                        <ojp:LocationName>\r
+
+          \                            <ojp:Text>Bergholzstrasse</ojp:Text>\r
+
+          \                        </ojp:LocationName>\r
+
+          \                    </ojp:PlaceRef>\r
+
+          \                    <ojp:DepArrTime>2024-10-31T21:30:00.000Z</ojp:DepArrTime>\r
+
+          \                </ojp:Origin>\r
+
+          \                <ojp:Destination>\r
+
+          \                    <ojp:PlaceRef>\r
+
+          \                        <ojp:GeoPosition>\r
+
+          \                            <Longitude>9.055388</Longitude>\r
+
+          \                            <Latitude>47.474841</Latitude>\r
+
+          \                        </ojp:GeoPosition>\r
+
+          \                        <ojp:LocationName>\r
+
+          \                            <ojp:Text>Neugrubenstrasse</ojp:Text>\r
+
+          \                        </ojp:LocationName>\r
+
+          \                    </ojp:PlaceRef>\r
+
+          \                </ojp:Destination>\r
+
+          \                <ojp:Params>\r
+
+          \                    <ojp:NumberOfResults>1</ojp:NumberOfResults>\r
+
+          \                    <ojp:IncludeTrackSections>false</ojp:IncludeTrackSections>\r
+
+          \                    <ojp:IncludeLegProjection>false</ojp:IncludeLegProjection>\r
+
+          \                    <ojp:IncludeTurnDescription>false</ojp:IncludeTurnDescription>\r
+
+          \                    <ojp:IncludeIntermediateStops>false</ojp:IncludeIntermediateStops>\r
+
+          \                </ojp:Params>\r
+
+          \            </ojp:OJPTripRequest>\r
+
+          \        </ServiceRequest>\r
+
+          \    </OJPRequest>\r
+
+          </OJP>\r\n"
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Server
+          value: EFAController/10.6.14.5/OJP-EFA01-I
+        - name: Date
+          value: Fri, 01 Dec 2023 19:32:37 GMT
+        - name: Content-Type
+          value: text/xml
+        - name: Accept-Ranges
+          value: none
+        - name: Content-Length
+          value: "1550"
+        - name: Last-Modified
+          value: Fri, 01 Dec 2023 19:32:37 GMT
+        - name: Connection
+          value: Keep-Alive
+        - name: Content-Encoding
+          value: gzip
+        - name: Access-Control-Allow-Origin
+          value: "*"
+      body:
+        type: xml
+        data: |-
+          <?xml version="1.0" encoding="UTF-8"?>
+          <siri:OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns:ojp="http://www.vdv.de/ojp" version="1.0">
+              <siri:OJPResponse>
+                  <siri:ServiceDelivery>
+                      <siri:ResponseTimestamp>2023-12-01T19:32:37Z</siri:ResponseTimestamp>
+                      <siri:ProducerRef>EFAController10.6.14.5-OJP-EFA01-I</siri:ProducerRef>
+                      <siri:Status>true</siri:Status>
+                      <ojp:OJPTripDelivery>
+                          <siri:ResponseTimestamp>2023-12-01T19:32:28Z</siri:ResponseTimestamp>
+                          <siri:RequestMessageRef>ODV_4a</siri:RequestMessageRef>
+                          <siri:Status>true</siri:Status>
+                          <ojp:CalcTime>9882</ojp:CalcTime>
+                          <ojp:TripResponseContext></ojp:TripResponseContext>
+                          <ojp:TripResult>
+                              <ojp:ResultId>ID-BBEEECC4-9363-4ED5-9EDA-78764FB2AAB5</ojp:ResultId>
+                              <ojp:Trip>
+                                  <ojp:TripId>ID-BBEEECC4-9363-4ED5-9EDA-78764FB2AAB5</ojp:TripId>
+                                  <ojp:Duration>PT14M</ojp:Duration>
+                                  <ojp:StartTime>2024-10-31T21:34:00Z</ojp:StartTime>
+                                  <ojp:EndTime>2024-10-31T21:48:00Z</ojp:EndTime>
+                                  <ojp:Transfers>0</ojp:Transfers>
+                                  <ojp:Distance>3337</ojp:Distance>
+                                  <ojp:TripLeg>
+                                      <ojp:LegId>1</ojp:LegId>
+                                      <ojp:ContinuousLeg>
+                                          <ojp:LegStart>
+                                              <ojp:GeoPosition>
+                                                  <siri:Longitude>9.03438</siri:Longitude>
+                                                  <siri:Latitude>47.45865</siri:Latitude>
+                                              </ojp:GeoPosition>
+                                              <ojp:LocationName>
+                                                  <ojp:Text xml:lang="de">Wil SG, Bergholzstrasse</ojp:Text>
+                                              </ojp:LocationName>
+                                          </ojp:LegStart>
+                                          <ojp:LegEnd>
+                                              <siri:StopPointRef>de:00000:3549</siri:StopPointRef>
+                                              <ojp:LocationName>
+                                                  <ojp:Text xml:lang="de">Bergholz</ojp:Text>
+                                              </ojp:LocationName>
+                                          </ojp:LegEnd>
+                                          <ojp:Service>
+                                              <ojp:IndividualMode>walk</ojp:IndividualMode>
+                                          </ojp:Service>
+                                          <ojp:TimeWindowStart>2024-10-31T21:34:00Z</ojp:TimeWindowStart>
+                                          <ojp:TimeWindowEnd>2024-10-31T21:40:00Z</ojp:TimeWindowEnd>
+                                          <ojp:Duration>PT6M</ojp:Duration>
+                                          <ojp:Length>365</ojp:Length>
+                                      </ojp:ContinuousLeg>
+                                  </ojp:TripLeg>
+                                  <ojp:TripLeg>
+                                      <ojp:LegId>2</ojp:LegId>
+                                      <ojp:TimedLeg>
+                                          <ojp:LegBoard>
+                                              <siri:StopPointRef>de:00000:3549</siri:StopPointRef>
+                                              <ojp:StopPointName>
+                                                  <ojp:Text xml:lang="de">Bergholz</ojp:Text>
+                                              </ojp:StopPointName>
+                                              <ojp:NameSuffix>
+                                                  <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                              </ojp:NameSuffix>
+                                              <ojp:ServiceDeparture>
+                                                  <ojp:TimetabledTime>2024-10-31T21:40:00Z</ojp:TimetabledTime>
+                                              </ojp:ServiceDeparture>
+                                              <ojp:Order>1</ojp:Order>
+                                          </ojp:LegBoard>
+                                          <ojp:LegAlight>
+                                              <siri:StopPointRef>de:00000:3505</siri:StopPointRef>
+                                              <ojp:StopPointName>
+                                                  <ojp:Text xml:lang="de">Grundstrasse</ojp:Text>
+                                              </ojp:StopPointName>
+                                              <ojp:NameSuffix>
+                                                  <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                              </ojp:NameSuffix>
+                                              <ojp:ServiceArrival>
+                                                  <ojp:TimetabledTime>2024-10-31T21:46:00Z</ojp:TimetabledTime>
+                                              </ojp:ServiceArrival>
+                                              <ojp:Order>2</ojp:Order>
+                                          </ojp:LegAlight>
+                                          <ojp:Service>
+                                              <ojp:OperatingDayRef>2024-10-31</ojp:OperatingDayRef>
+                                              <ojp:JourneyRef>odv:99925:_:R:j23:0</ojp:JourneyRef>
+                                              <siri:LineRef>odv:99925:_</siri:LineRef>
+                                              <siri:DirectionRef>R</siri:DirectionRef>
+                                              <ojp:Mode>
+                                                  <ojp:PtMode>bus</ojp:PtMode>
+                                                  <siri:BusSubmode>demandAndResponseBus</siri:BusSubmode>
+                                                  <ojp:Name>
+                                                      <ojp:Text xml:lang="de">Innerhalb SALÜ</ojp:Text>
+                                                  </ojp:Name>
+                                              </ojp:Mode>
+                                              <ojp:PublishedLineName>
+                                                  <ojp:Text xml:lang="de">SALÜ</ojp:Text>
+                                              </ojp:PublishedLineName>
+                                              <ojp:OperatorRef>odv:BOSrtb</ojp:OperatorRef>
+                                              <ojp:Attribute>
+                                                  <ojp:Text>
+                                                      <ojp:Text xml:lang="de">Platzreservierung obligatorisch</ojp:Text>
+                                                  </ojp:Text>
+                                                  <ojp:Code>RR</ojp:Code>
+                                              </ojp:Attribute>
+                                              <ojp:Attribute>
+                                                  <ojp:Text>
+                                                      <ojp:Text xml:lang="de">Zuschlagspflichtig</ojp:Text>
+                                                  </ojp:Text>
+                                                  <ojp:Code>Z</ojp:Code>
+                                              </ojp:Attribute>
+                                              <ojp:DestinationText>
+                                                  <ojp:Text xml:lang="de">UNBEKANNT</ojp:Text>
+                                              </ojp:DestinationText>
+                                          </ojp:Service>
+                                          <ojp:Extension>
+                                              <ojp:OperatorName>
+                                                  <ojp:Text xml:lang="de">Bus Ostschweiz (Rheintal)</ojp:Text>
+                                              </ojp:OperatorName>
+                                          </ojp:Extension>
+                                      </ojp:TimedLeg>
+                                  </ojp:TripLeg>
+                                  <ojp:TripLeg>
+                                      <ojp:LegId>3</ojp:LegId>
+                                      <ojp:ContinuousLeg>
+                                          <ojp:LegStart>
+                                              <siri:StopPointRef>de:00000:3505</siri:StopPointRef>
+                                              <ojp:LocationName>
+                                                  <ojp:Text xml:lang="de">Grundstrasse</ojp:Text>
+                                              </ojp:LocationName>
+                                          </ojp:LegStart>
+                                          <ojp:LegEnd>
+                                              <ojp:GeoPosition>
+                                                  <siri:Longitude>9.05539</siri:Longitude>
+                                                  <siri:Latitude>47.47484</siri:Latitude>
+                                              </ojp:GeoPosition>
+                                              <ojp:LocationName>
+                                                  <ojp:Text xml:lang="de">Wil SG, Neugrubenstrasse</ojp:Text>
+                                              </ojp:LocationName>
+                                          </ojp:LegEnd>
+                                          <ojp:Service>
+                                              <ojp:IndividualMode>walk</ojp:IndividualMode>
+                                          </ojp:Service>
+                                          <ojp:TimeWindowStart>2024-10-31T21:46:00Z</ojp:TimeWindowStart>
+                                          <ojp:TimeWindowEnd>2024-10-31T21:48:00Z</ojp:TimeWindowEnd>
+                                          <ojp:Duration>PT2M</ojp:Duration>
+                                          <ojp:Length>78</ojp:Length>
+                                      </ojp:ContinuousLeg>
+                                  </ojp:TripLeg>
+                              </ojp:Trip>
+                          </ojp:TripResult>
+                      </ojp:OJPTripDelivery>
+                  </siri:ServiceDelivery>
+              </siri:OJPResponse>
+          </siri:OJP>

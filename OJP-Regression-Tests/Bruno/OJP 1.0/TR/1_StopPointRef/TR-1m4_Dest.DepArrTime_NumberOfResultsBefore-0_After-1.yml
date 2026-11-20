@@ -1,0 +1,489 @@
+info:
+  name: TR-1m4_Dest.DepArrTime_NumberOfResultsBefore-0_After-1
+  type: http
+  seq: 20
+
+http:
+  method: POST
+  url: "{{server}}"
+  headers:
+    - name: Content-Type
+      value: text/xml
+  body:
+    type: xml
+    data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+      <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+      \    <OJPRequest>\r
+
+      \        <ServiceRequest>\r
+
+      \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+      \            <ojp:OJPTripRequest>\r
+
+      \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \                <MessageIdentifier>TR-1m4</MessageIdentifier>\r
+
+      \                <ojp:Origin>\r
+
+      \                    <ojp:PlaceRef>\r
+
+      \                        <StopPointRef>ch:1:sloid:3424</StopPointRef>\r
+
+      \                        <ojp:LocationName>\r
+
+      \                            <ojp:Text>Schaffhausen</ojp:Text>\r
+
+      \                        </ojp:LocationName>\r
+
+      \                    </ojp:PlaceRef>\r
+
+      \                </ojp:Origin>\r
+
+      \                <ojp:Destination>\r
+
+      \                    <ojp:PlaceRef>\r
+
+      \                        <StopPointRef>ch:1:sloid:6000</StopPointRef>\r
+
+      \                        <ojp:LocationName>\r
+
+      \                            <ojp:Text>Winterthur</ojp:Text>\r
+
+      \                        </ojp:LocationName>\r
+
+      \                    </ojp:PlaceRef>\r
+
+      \                    <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>\r
+
+      \                </ojp:Destination>\r
+
+      \                <ojp:Params>\r
+
+      \                    <ojp:NumberOfResultsBefore>0</ojp:NumberOfResultsBefore>\r
+
+      \                    <ojp:NumberOfResultsAfter>1</ojp:NumberOfResultsAfter>\r
+
+      \                    <ojp:IncludeTrackSections>false</ojp:IncludeTrackSections>\r
+
+      \                    <ojp:IncludeLegProjection>false</ojp:IncludeLegProjection>\r
+
+      \                    <ojp:IncludeTurnDescription>false</ojp:IncludeTurnDescription>\r
+
+      \                    <ojp:IncludeIntermediateStops>false</ojp:IncludeIntermediateStops>\r
+
+      \                </ojp:Params>\r
+
+      \            </ojp:OJPTripRequest>\r
+
+      \        </ServiceRequest>\r
+
+      \    </OJPRequest>\r
+
+      </OJP>\r\n"
+  auth:
+    type: bearer
+    token: "{{BearerToken}}"
+
+runtime:
+  scripts:
+    - type: after-response
+      code: "test(\"Body matches string\", function () {\r
+
+        \    expect(res.getBody()?.toString()).to.include(\"<ojp:EndTime>\" + bru.getCollectionVar('friday_timetable_change') + \"T11:19:00Z</ojp:EndTime>\");\r
+
+        });"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: TR-1m4_Dest.DepArrTime_NumberOfResultsBefore-0_After-1
+    request:
+      url: "{{server}}"
+      method: POST
+      headers:
+        - name: Content-Type
+          value: text/xml
+      body:
+        type: xml
+        data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+          <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+          \    <OJPRequest>\r
+
+          \        <ServiceRequest>\r
+
+          \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+          \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+          \            <ojp:OJPTripRequest>\r
+
+          \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+          \                <MessageIdentifier>TR-1m4</MessageIdentifier>\r
+
+          \                <ojp:Origin>\r
+
+          \                    <ojp:PlaceRef>\r
+
+          \                        <StopPointRef>8503424</StopPointRef>\r
+
+          \                        <ojp:LocationName>\r
+
+          \                            <ojp:Text>Schaffhausen</ojp:Text>\r
+
+          \                        </ojp:LocationName>\r
+
+          \                    </ojp:PlaceRef>\r
+
+          \                </ojp:Origin>\r
+
+          \                <ojp:Destination>\r
+
+          \                    <ojp:PlaceRef>\r
+
+          \                        <StopPointRef>8506000</StopPointRef>\r
+
+          \                        <ojp:LocationName>\r
+
+          \                            <ojp:Text>Winterthur</ojp:Text>\r
+
+          \                        </ojp:LocationName>\r
+
+          \                    </ojp:PlaceRef>\r
+
+          \                    <ojp:DepArrTime>{{friday_timetable_change}}T11:00:00Z</ojp:DepArrTime>\r
+
+          \                </ojp:Destination>\r
+
+          \                <ojp:Params>\r
+
+          \                    <ojp:NumberOfResultsBefore>0</ojp:NumberOfResultsBefore>\r
+
+          \                    <ojp:NumberOfResultsAfter>1</ojp:NumberOfResultsAfter>\r
+
+          \                    <ojp:IncludeTrackSections>false</ojp:IncludeTrackSections>\r
+
+          \                    <ojp:IncludeLegProjection>false</ojp:IncludeLegProjection>\r
+
+          \                    <ojp:IncludeTurnDescription>false</ojp:IncludeTurnDescription>\r
+
+          \                    <ojp:IncludeIntermediateStops>false</ojp:IncludeIntermediateStops>\r
+
+          \                </ojp:Params>\r
+
+          \            </ojp:OJPTripRequest>\r
+
+          \        </ServiceRequest>\r
+
+          \    </OJPRequest>\r
+
+          </OJP>\r\n"
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Server
+          value: EFAController/10.6.14.5/OJP-EFA01-I
+        - name: Date
+          value: Fri, 01 Dec 2023 17:01:46 GMT
+        - name: Content-Type
+          value: text/xml
+        - name: Accept-Ranges
+          value: none
+        - name: Content-Length
+          value: "1961"
+        - name: Last-Modified
+          value: Fri, 01 Dec 2023 17:01:46 GMT
+        - name: Connection
+          value: Keep-Alive
+        - name: Content-Encoding
+          value: gzip
+        - name: Access-Control-Allow-Origin
+          value: "*"
+      body:
+        type: xml
+        data: |-
+          <?xml version="1.0" encoding="UTF-8"?>
+          <siri:OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns:ojp="http://www.vdv.de/ojp" version="1.0">
+              <siri:OJPResponse>
+                  <siri:ServiceDelivery>
+                      <siri:ResponseTimestamp>2023-12-01T17:01:46Z</siri:ResponseTimestamp>
+                      <siri:ProducerRef>EFAController10.6.14.5-OJP-EFA01-I</siri:ProducerRef>
+                      <siri:Status>true</siri:Status>
+                      <ojp:OJPTripDelivery>
+                          <siri:ResponseTimestamp>2023-12-01T17:01:46Z</siri:ResponseTimestamp>
+                          <siri:RequestMessageRef>TR-1m4</siri:RequestMessageRef>
+                          <siri:Status>true</siri:Status>
+                          <ojp:CalcTime>726</ojp:CalcTime>
+                          <ojp:TripResponseContext>
+                              <ojp:Places>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8503424</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Schaffhausen</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>108594</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23017939:4</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Schaffhausen</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.63276</siri:Longitude>
+                                          <siri:Latitude>47.69828</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPoint>
+                                          <siri:StopPointRef>ch:1:sloid:3424:1:1</siri:StopPointRef>
+                                          <ojp:StopPointName>
+                                              <ojp:Text xml:lang="de">Schaffhausen</ojp:Text>
+                                          </ojp:StopPointName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>108594:0:1</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:ParentRef>8503424</ojp:ParentRef>
+                                          <ojp:TopographicPlaceRef>23017939:4</ojp:TopographicPlaceRef>
+                                      </ojp:StopPoint>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Schaffhausen</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.63276</siri:Longitude>
+                                          <siri:Latitude>47.69828</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:TopographicPlace>
+                                          <ojp:TopographicPlaceCode>23017939:4</ojp:TopographicPlaceCode>
+                                          <ojp:TopographicPlaceName>
+                                              <ojp:Text xml:lang="de">Schaffhausen</ojp:Text>
+                                          </ojp:TopographicPlaceName>
+                                      </ojp:TopographicPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Schaffhausen</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.63276</siri:Longitude>
+                                          <siri:Latitude>47.69828</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8506000</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Winterthur</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>110388</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026230:17</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Winterthur</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.72382</siri:Longitude>
+                                          <siri:Latitude>47.50033</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPoint>
+                                          <siri:StopPointRef>ch:1:sloid:6000:5:8</siri:StopPointRef>
+                                          <ojp:StopPointName>
+                                              <ojp:Text xml:lang="de">Winterthur</ojp:Text>
+                                          </ojp:StopPointName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>110388:0:8</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:ParentRef>8506000</ojp:ParentRef>
+                                          <ojp:TopographicPlaceRef>23026230:17</ojp:TopographicPlaceRef>
+                                      </ojp:StopPoint>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Winterthur</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.72382</siri:Longitude>
+                                          <siri:Latitude>47.50033</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:TopographicPlace>
+                                          <ojp:TopographicPlaceCode>23026230:17</ojp:TopographicPlaceCode>
+                                          <ojp:TopographicPlaceName>
+                                              <ojp:Text xml:lang="de">Winterthur</ojp:Text>
+                                          </ojp:TopographicPlaceName>
+                                      </ojp:TopographicPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Winterthur</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.72382</siri:Longitude>
+                                          <siri:Latitude>47.50033</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPoint>
+                                          <siri:StopPointRef>ch:1:sloid:6000:4:7</siri:StopPointRef>
+                                          <ojp:StopPointName>
+                                              <ojp:Text xml:lang="de">Winterthur</ojp:Text>
+                                          </ojp:StopPointName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>110388:0:7</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:ParentRef>8506000</ojp:ParentRef>
+                                          <ojp:TopographicPlaceRef>23026230:17</ojp:TopographicPlaceRef>
+                                      </ojp:StopPoint>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Winterthur</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.72382</siri:Longitude>
+                                          <siri:Latitude>47.50033</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8500309</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Brugg AG</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>106699</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23001095:1</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Brugg AG</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.20884</siri:Longitude>
+                                          <siri:Latitude>47.48086</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:TopographicPlace>
+                                          <ojp:TopographicPlaceCode>23001095:1</ojp:TopographicPlaceCode>
+                                          <ojp:TopographicPlaceName>
+                                              <ojp:Text xml:lang="de">Brugg AG</ojp:Text>
+                                          </ojp:TopographicPlaceName>
+                                      </ojp:TopographicPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Brugg AG</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.20884</siri:Longitude>
+                                          <siri:Latitude>47.48086</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                              </ojp:Places>
+                          </ojp:TripResponseContext>
+                          <ojp:TripResult>
+                              <ojp:ResultId>ID-DF326416-FA4E-4261-890A-D68E93FF97C1</ojp:ResultId>
+                              <ojp:Trip>
+                                  <ojp:TripId>ID-DF326416-FA4E-4261-890A-D68E93FF97C1</ojp:TripId>
+                                  <ojp:Duration>PT33M</ojp:Duration>
+                                  <ojp:StartTime>2023-12-08T10:46:00Z</ojp:StartTime>
+                                  <ojp:EndTime>2023-12-08T11:19:00Z</ojp:EndTime>
+                                  <ojp:Transfers>0</ojp:Transfers>
+                                  <ojp:Distance>0</ojp:Distance>
+                                  <ojp:TripLeg>
+                                      <ojp:LegId>1</ojp:LegId>
+                                      <ojp:TimedLeg>
+                                          <ojp:LegBoard>
+                                              <siri:StopPointRef>ch:1:sloid:3424:1:1</siri:StopPointRef>
+                                              <ojp:StopPointName>
+                                                  <ojp:Text xml:lang="de">Schaffhausen</ojp:Text>
+                                              </ojp:StopPointName>
+                                              <ojp:NameSuffix>
+                                                  <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                              </ojp:NameSuffix>
+                                              <ojp:PlannedQuay>
+                                                  <ojp:Text xml:lang="de">1A-C</ojp:Text>
+                                              </ojp:PlannedQuay>
+                                              <ojp:ServiceDeparture>
+                                                  <ojp:TimetabledTime>2023-12-08T10:46:00Z</ojp:TimetabledTime>
+                                              </ojp:ServiceDeparture>
+                                              <ojp:Order>1</ojp:Order>
+                                          </ojp:LegBoard>
+                                          <ojp:LegAlight>
+                                              <siri:StopPointRef>ch:1:sloid:6000:4:7</siri:StopPointRef>
+                                              <ojp:StopPointName>
+                                                  <ojp:Text xml:lang="de">Winterthur</ojp:Text>
+                                              </ojp:StopPointName>
+                                              <ojp:NameSuffix>
+                                                  <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                              </ojp:NameSuffix>
+                                              <ojp:PlannedQuay>
+                                                  <ojp:Text xml:lang="de">7</ojp:Text>
+                                              </ojp:PlannedQuay>
+                                              <ojp:ServiceArrival>
+                                                  <ojp:TimetabledTime>2023-12-08T11:19:00Z</ojp:TimetabledTime>
+                                              </ojp:ServiceArrival>
+                                              <ojp:Order>2</ojp:Order>
+                                          </ojp:LegAlight>
+                                          <ojp:Service>
+                                              <ojp:OperatingDayRef>2023-12-08</ojp:OperatingDayRef>
+                                              <ojp:JourneyRef>ch:1:sjyid:100001:19246-001</ojp:JourneyRef>
+                                              <siri:LineRef>ojp:91012:</siri:LineRef>
+                                              <siri:DirectionRef>H</siri:DirectionRef>
+                                              <ojp:Mode>
+                                                  <ojp:PtMode>rail</ojp:PtMode>
+                                                  <siri:RailSubmode>regionalRail</siri:RailSubmode>
+                                                  <ojp:Name>
+                                                      <ojp:Text xml:lang="de">Zug</ojp:Text>
+                                                  </ojp:Name>
+                                                  <ojp:ShortName>
+                                                      <ojp:Text xml:lang="de">S</ojp:Text>
+                                                  </ojp:ShortName>
+                                              </ojp:Mode>
+                                              <ojp:PublishedLineName>
+                                                  <ojp:Text xml:lang="de">S12</ojp:Text>
+                                              </ojp:PublishedLineName>
+                                              <ojp:OperatorRef>ojp:11</ojp:OperatorRef>
+                                              <ojp:DestinationStopPointRef>8500309</ojp:DestinationStopPointRef>
+                                              <ojp:DestinationText>
+                                                  <ojp:Text xml:lang="de">Brugg AG</ojp:Text>
+                                              </ojp:DestinationText>
+                                          </ojp:Service>
+                                          <ojp:Extension>
+                                              <ojp:TransportTypeName>
+                                                  <ojp:Text xml:lang="de">S-Bahn</ojp:Text>
+                                              </ojp:TransportTypeName>
+                                              <ojp:PublishedJourneyNumber>
+                                                  <ojp:Text xml:lang="de">19246</ojp:Text>
+                                              </ojp:PublishedJourneyNumber>
+                                              <ojp:OperatorName>
+                                                  <ojp:Text xml:lang="de">Schweizerische Bundesbahnen SBB</ojp:Text>
+                                              </ojp:OperatorName>
+                                          </ojp:Extension>
+                                      </ojp:TimedLeg>
+                                  </ojp:TripLeg>
+                              </ojp:Trip>
+                          </ojp:TripResult>
+                      </ojp:OJPTripDelivery>
+                  </siri:ServiceDelivery>
+              </siri:OJPResponse>
+          </siri:OJP>

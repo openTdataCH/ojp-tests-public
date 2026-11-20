@@ -1,0 +1,1303 @@
+info:
+  name: TIR-1a_no-Params_Default-include-Calls-Service
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{server}}"
+  headers:
+    - name: Content-Type
+      value: text/xml
+  body:
+    type: xml
+    data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+      <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+      \    <OJPRequest>\r
+
+      \        <ServiceRequest>\r
+
+      \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+      \            <ojp:OJPTripInfoRequest>\r
+
+      \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \                <MessageIdentifier>TIR-1a</MessageIdentifier>\r
+
+      \                <ojp:JourneyRef>{{ActiveJourneyRef}}</ojp:JourneyRef>\r
+
+      \                <ojp:OperatingDayRef>{{ActiveOperatingDayRef}}</ojp:OperatingDayRef>\r
+
+      \            </ojp:OJPTripInfoRequest>\r
+
+      \        </ServiceRequest>\r
+
+      \    </OJPRequest>\r
+
+      </OJP>"
+  auth:
+    type: bearer
+    token: "{{BearerToken}}"
+
+runtime:
+  scripts:
+    - type: before-request
+      code: "// Define the XML request body\r
+
+        const xmlRequest = `<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+        <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+        \    <OJPRequest>\r
+
+        \        <ServiceRequest>\r
+
+        \            <RequestTimestamp>2023-11-02T10:12:55.403Z</RequestTimestamp>\r
+
+        \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+        \            <ojp:OJPStopEventRequest>\r
+
+        \                <RequestTimestamp>2023-11-02T10:12:55.403Z</RequestTimestamp>\r
+
+        \                <MessageIdentifier>ojp1_0</MessageIdentifier>\r
+
+        \                <ojp:Location>\r
+
+        \                    <ojp:PlaceRef>\r
+
+        \                        <StopPointRef>ch:1:sloid:3124</StopPointRef>\r
+
+        \                        <ojp:LocationName>\r
+
+        \                            <ojp:Text>Aathal</ojp:Text>\r
+
+        \                        </ojp:LocationName>\r
+
+        \                    </ojp:PlaceRef>\r
+
+        \                </ojp:Location>\r
+
+        \                <ojp:Params>\r
+
+        \                    <ojp:NumberOfResults>1</ojp:NumberOfResults>\r
+
+        \                    <ojp:StopEventType>departure</ojp:StopEventType>\r
+
+        \                    <ojp:IncludeRealtimeData>true</ojp:IncludeRealtimeData>\r
+
+        \                </ojp:Params>\r
+
+        \            </ojp:OJPStopEventRequest>\r
+
+        \        </ServiceRequest>\r
+
+        \    </OJPRequest>\r
+
+        </OJP>`;\r
+
+        \r
+
+        \r
+
+        \r
+
+        \r
+
+        \r
+
+        // Send the POST request\r
+
+        await bru.sendRequest({\r
+
+        \    url: bru.getGlobalEnvVar('server'),\r
+
+        \    method: 'POST',\r
+
+        \    headers: {\r
+
+        \        'Authorization': `Bearer ${bru.getGlobalEnvVar('BearerToken')}`,\r
+
+        \        'Content-Type': 'text/xml',\r
+
+        \    },\r
+
+        \    data: xmlRequest,\r
+
+        }, async function(error, response) {\r
+
+        \    if (error) {\r
+
+        \        console.error('Request error:', error);\r
+
+        \    } else {\r
+
+        \        // Parse the XML response\r
+
+        \        const xmlResponse = response.data;\r
+
+        \r
+
+        \        // Use an XML parsing library like xml2js to parse the response\r
+
+        \        const xml2js = require('xml2js');\r
+
+        \        const parser = new xml2js.Parser({ explicitArray: false });\r
+
+        \r
+
+        \        parser.parseString(xmlResponse, function (err, result) {\r
+
+        \            if (err) {\r
+
+        \                console.error('XML parsing error:', err);\r
+
+        \            } else {\r
+
+        \                // Extract the ActiveJourneyRef value\r
+
+        \                const activeJourneyRef = findPropertyValue(result, 'JourneyRef');\r
+
+        \                \r
+
+        \                // Extract the ActiveOperatingDayRef value\r
+
+        \                const activeOperatingDayRef = findPropertyValue(result, 'OperatingDayRef');\r
+
+        \r
+
+        \                // Set the ActiveJourneyRef variable\r
+
+        \                bru.setGlobalEnvVar('ActiveJourneyRef', activeJourneyRef);\r
+
+        \                \r
+
+        \                // Set the ActiveOperatingDayRef variable\r
+
+        \                bru.setGlobalEnvVar('ActiveOperatingDayRef', activeOperatingDayRef);\r
+
+        \r
+
+        \                // Print to the console\r
+
+        \                console.log('ActiveJourneyRef:', activeJourneyRef);\r
+
+        \                console.log('ActiveOperatingDayRef:', activeOperatingDayRef);\r
+
+        \            }\r
+
+        \        });\r
+
+        \    }\r
+
+        });\r
+
+        \r
+
+        // Helper function to find property value in the response\r
+
+        function findPropertyValue(obj, propertyName) {\r
+
+        \    for (const key in obj) {\r
+
+        \        if (key.includes(propertyName)) {\r
+
+        \            return obj[key];\r
+
+        \        } else if (typeof obj[key] === 'object') {\r
+
+        \            const result = findPropertyValue(obj[key], propertyName);\r
+
+        \            if (result) {\r
+
+        \                return result;\r
+
+        \            }\r
+
+        \        }\r
+
+        \    }\r
+
+        \    return null;\r
+
+        }"
+    - type: after-response
+      code: "test(\"Body matches string EstimatedTime\", function () {\r
+
+        \    expect(res.getBody()?.toString()).to.include(\"EstimatedTime\");\r
+
+        });\r
+
+        \r
+
+        test(\"Body matches string <ojp:OnwardCall>\", function () {\r
+
+        \    expect(res.getBody()?.toString()).to.include(\"<ojp:OnwardCall>\");\r
+
+        });\r
+
+        \r
+
+        test(\"Body matches string <ojp:Service>\", function () {\r
+
+        \    expect(res.getBody()?.toString()).to.include(\"<ojp:Service>\");\r
+
+        });\r
+
+        \r
+
+        test(\"Body matches string not TrackSection\", function () {\r
+
+        \    expect(res.getBody()?.toString()).to.not.include(\"TrackSection\");\r
+
+        });"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: TIR-1a_no-Params_Default-include-Calls-Service
+    request:
+      url: "{{server}}"
+      method: POST
+      headers:
+        - name: Content-Type
+          value: text/xml
+      body:
+        type: xml
+        data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+          <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+          \    <OJPRequest>\r
+
+          \        <ServiceRequest>\r
+
+          \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+          \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+          \            <ojp:OJPTripInfoRequest>\r
+
+          \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+          \                <MessageIdentifier>TIR-1a</MessageIdentifier>\r
+
+          \                <ojp:JourneyRef>ojp-91-8-H-j24-1-337-TA</ojp:JourneyRef>\r
+
+          \                <ojp:OperatingDayRef>{{ActiveOperatingDayRef}}</ojp:OperatingDayRef>\r
+
+          \            </ojp:OJPTripInfoRequest>\r
+
+          \        </ServiceRequest>\r
+
+          \    </OJPRequest>\r
+
+          </OJP>"
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Accept-Ranges
+          value: none
+        - name: Access-Control-Allow-Origin
+          value: "*"
+        - name: Content-Encoding
+          value: gzip
+        - name: Content-Length
+          value: "3176"
+        - name: Content-Type
+          value: text/xml
+        - name: Date
+          value: Tue, 16 Jan 2024 12:48:43 GMT
+        - name: Last-Modified
+          value: Tue, 16 Jan 2024 12:48:43 GMT
+        - name: Server
+          value: EFAController/10.6.14.20/OJP-EFA01-I
+        - name: Vary
+          value: Origin
+        - name: X-Ratelimit-Limit
+          value: "-1"
+        - name: X-Ratelimit-Remaining
+          value: "0"
+        - name: X-Ratelimit-Reset
+          value: "0"
+        - name: Strict-Transport-Security
+          value: max-age=21600000
+      body:
+        type: xml
+        data: |-
+          <?xml version="1.0" encoding="UTF-8"?>
+          <siri:OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns:ojp="http://www.vdv.de/ojp" version="1.0">
+              <siri:OJPResponse>
+                  <siri:ServiceDelivery>
+                      <siri:ResponseTimestamp>2024-01-16T12:48:43Z</siri:ResponseTimestamp>
+                      <siri:ProducerRef>EFAController10.6.14.20-OJP-EFA01-I</siri:ProducerRef>
+                      <siri:Status>true</siri:Status>
+                      <ojp:OJPTripInfoDelivery>
+                          <siri:ResponseTimestamp>2024-01-16T12:48:43Z</siri:ResponseTimestamp>
+                          <siri:RequestMessageRef>TIR-1a</siri:RequestMessageRef>
+                          <siri:Status>true</siri:Status>
+                          <ojp:CalcTime>23</ojp:CalcTime>
+                          <ojp:TripInfoResponseContext>
+                              <ojp:Places>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8591178</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich, Hardturm</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>128305</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich, Hardturm</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.50450</siri:Longitude>
+                                          <siri:Latitude>47.39417</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8591074</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich, Bernoulli-Häuser</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>128211</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich, Bernoulli-Häuser</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.50871</siri:Longitude>
+                                          <siri:Latitude>47.39376</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8591131</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich, Fischerweg</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>128261</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich, Fischerweg</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.51212</siri:Longitude>
+                                          <siri:Latitude>47.39357</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8591135</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich, Förrlibuckstrasse</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>128265</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich, Förrlibuckstrasse</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.51715</siri:Longitude>
+                                          <siri:Latitude>47.39221</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8580522</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich, Escher-Wyss-Platz</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>122232</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich, Escher-Wyss-Platz</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.52240</siri:Longitude>
+                                          <siri:Latitude>47.39080</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8594239</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich, Schiffbau</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>130953</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich, Schiffbau</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.51986</siri:Longitude>
+                                          <siri:Latitude>47.38803</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8591060</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich Hardbrücke, Bahnhof</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>128198</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich Hardbrücke, Bahnhof</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.51711</siri:Longitude>
+                                          <siri:Latitude>47.38520</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8591177</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich, Hardplatz</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>128304</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich, Hardplatz</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.51453</siri:Longitude>
+                                          <siri:Latitude>47.38234</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8591169</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich, Güterbahnhof</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>128296</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich, Güterbahnhof</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.51997</siri:Longitude>
+                                          <siri:Latitude>47.38031</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8591052</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich, Bäckeranlage</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>128191</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich, Bäckeranlage</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.52311</siri:Longitude>
+                                          <siri:Latitude>47.37867</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8591184</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich, Helvetiaplatz</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>128310</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich, Helvetiaplatz</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.52536</siri:Longitude>
+                                          <siri:Latitude>47.37636</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8591381</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich, Stauffacher</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>128496</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich, Stauffacher</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.52925</siri:Longitude>
+                                          <siri:Latitude>47.37343</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8591064</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich Selnau, Bahnhof</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>128202</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich Selnau, Bahnhof</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.53201</siri:Longitude>
+                                          <siri:Latitude>47.37067</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8591384</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich, Stockerstrasse</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>128499</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich, Stockerstrasse</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.53542</siri:Longitude>
+                                          <siri:Latitude>47.36787</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8591299</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich, Paradeplatz</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>128421</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich, Paradeplatz</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.53892</siri:Longitude>
+                                          <siri:Latitude>47.36973</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8591093</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich, Kantonalbank</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>128229</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich, Kantonalbank</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.53974</siri:Longitude>
+                                          <siri:Latitude>47.36817</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8591105</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich, Bürkliplatz</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>128238</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich, Bürkliplatz</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.54079</siri:Longitude>
+                                          <siri:Latitude>47.36654</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8576193</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich, Bellevue</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>118783</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich, Bellevue</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.54512</siri:Longitude>
+                                          <siri:Latitude>47.36709</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8503059</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich Stadelhofen, Bahnhof</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>108301</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich Stadelhofen, Bahnhof</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.54813</siri:Longitude>
+                                          <siri:Latitude>47.36635</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8530813</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich, Kreuzplatz</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>113258</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich, Kreuzplatz</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.55408</siri:Longitude>
+                                          <siri:Latitude>47.36488</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8591119</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich, Englischviertelstrasse</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>128251</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich, Englischviertelstrasse</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.55817</siri:Longitude>
+                                          <siri:Latitude>47.36673</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8503083</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich, Römerhof</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>108321</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich, Römerhof</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.56028</siri:Longitude>
+                                          <siri:Latitude>47.36809</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8591199</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich, Hölderlinstrasse</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>128325</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich, Hölderlinstrasse</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.56240</siri:Longitude>
+                                          <siri:Latitude>47.36611</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8591233</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich, Klusplatz</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>128357</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich, Klusplatz</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.56650</siri:Longitude>
+                                          <siri:Latitude>47.36404</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                              </ojp:Places>
+                          </ojp:TripInfoResponseContext>
+                          <ojp:TripInfoResult>
+                              <ojp:PreviousCall>
+                                  <siri:StopPointRef>8591178</siri:StopPointRef>
+                                  <ojp:StopPointName>
+                                      <ojp:Text xml:lang="de">Zürich, Hardturm</ojp:Text>
+                                  </ojp:StopPointName>
+                                  <ojp:NameSuffix>
+                                      <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                  </ojp:NameSuffix>
+                                  <ojp:ServiceDeparture>
+                                      <ojp:TimetabledTime>2024-01-16T12:26:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:26:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceDeparture>
+                                  <ojp:Order>1</ojp:Order>
+                              </ojp:PreviousCall>
+                              <ojp:PreviousCall>
+                                  <siri:StopPointRef>8591074</siri:StopPointRef>
+                                  <ojp:StopPointName>
+                                      <ojp:Text xml:lang="de">Zürich, Bernoulli-Häuser</ojp:Text>
+                                  </ojp:StopPointName>
+                                  <ojp:NameSuffix>
+                                      <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                  </ojp:NameSuffix>
+                                  <ojp:ServiceArrival>
+                                      <ojp:TimetabledTime>2024-01-16T12:27:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:27:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceArrival>
+                                  <ojp:ServiceDeparture>
+                                      <ojp:TimetabledTime>2024-01-16T12:27:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:27:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceDeparture>
+                                  <ojp:Order>2</ojp:Order>
+                              </ojp:PreviousCall>
+                              <ojp:PreviousCall>
+                                  <siri:StopPointRef>8591131</siri:StopPointRef>
+                                  <ojp:StopPointName>
+                                      <ojp:Text xml:lang="de">Zürich, Fischerweg</ojp:Text>
+                                  </ojp:StopPointName>
+                                  <ojp:NameSuffix>
+                                      <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                  </ojp:NameSuffix>
+                                  <ojp:ServiceArrival>
+                                      <ojp:TimetabledTime>2024-01-16T12:27:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:27:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceArrival>
+                                  <ojp:ServiceDeparture>
+                                      <ojp:TimetabledTime>2024-01-16T12:28:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:28:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceDeparture>
+                                  <ojp:Order>3</ojp:Order>
+                              </ojp:PreviousCall>
+                              <ojp:PreviousCall>
+                                  <siri:StopPointRef>8591135</siri:StopPointRef>
+                                  <ojp:StopPointName>
+                                      <ojp:Text xml:lang="de">Zürich, Förrlibuckstrasse</ojp:Text>
+                                  </ojp:StopPointName>
+                                  <ojp:NameSuffix>
+                                      <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                  </ojp:NameSuffix>
+                                  <ojp:ServiceArrival>
+                                      <ojp:TimetabledTime>2024-01-16T12:29:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:29:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceArrival>
+                                  <ojp:ServiceDeparture>
+                                      <ojp:TimetabledTime>2024-01-16T12:29:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:29:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceDeparture>
+                                  <ojp:Order>4</ojp:Order>
+                              </ojp:PreviousCall>
+                              <ojp:PreviousCall>
+                                  <siri:StopPointRef>8580522</siri:StopPointRef>
+                                  <ojp:StopPointName>
+                                      <ojp:Text xml:lang="de">Zürich, Escher-Wyss-Platz</ojp:Text>
+                                  </ojp:StopPointName>
+                                  <ojp:NameSuffix>
+                                      <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                  </ojp:NameSuffix>
+                                  <ojp:ServiceArrival>
+                                      <ojp:TimetabledTime>2024-01-16T12:30:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:30:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceArrival>
+                                  <ojp:ServiceDeparture>
+                                      <ojp:TimetabledTime>2024-01-16T12:31:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:31:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceDeparture>
+                                  <ojp:Order>5</ojp:Order>
+                              </ojp:PreviousCall>
+                              <ojp:PreviousCall>
+                                  <siri:StopPointRef>8594239</siri:StopPointRef>
+                                  <ojp:StopPointName>
+                                      <ojp:Text xml:lang="de">Zürich, Schiffbau</ojp:Text>
+                                  </ojp:StopPointName>
+                                  <ojp:NameSuffix>
+                                      <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                  </ojp:NameSuffix>
+                                  <ojp:ServiceArrival>
+                                      <ojp:TimetabledTime>2024-01-16T12:32:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:32:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceArrival>
+                                  <ojp:ServiceDeparture>
+                                      <ojp:TimetabledTime>2024-01-16T12:32:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:32:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceDeparture>
+                                  <ojp:Order>6</ojp:Order>
+                              </ojp:PreviousCall>
+                              <ojp:PreviousCall>
+                                  <siri:StopPointRef>8591060</siri:StopPointRef>
+                                  <ojp:StopPointName>
+                                      <ojp:Text xml:lang="de">Zürich Hardbrücke, Bahnhof</ojp:Text>
+                                  </ojp:StopPointName>
+                                  <ojp:NameSuffix>
+                                      <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                  </ojp:NameSuffix>
+                                  <ojp:ServiceArrival>
+                                      <ojp:TimetabledTime>2024-01-16T12:33:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:33:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceArrival>
+                                  <ojp:ServiceDeparture>
+                                      <ojp:TimetabledTime>2024-01-16T12:33:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:33:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceDeparture>
+                                  <ojp:Order>7</ojp:Order>
+                              </ojp:PreviousCall>
+                              <ojp:PreviousCall>
+                                  <siri:StopPointRef>8591177</siri:StopPointRef>
+                                  <ojp:StopPointName>
+                                      <ojp:Text xml:lang="de">Zürich, Hardplatz</ojp:Text>
+                                  </ojp:StopPointName>
+                                  <ojp:NameSuffix>
+                                      <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                  </ojp:NameSuffix>
+                                  <ojp:ServiceArrival>
+                                      <ojp:TimetabledTime>2024-01-16T12:35:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:35:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceArrival>
+                                  <ojp:ServiceDeparture>
+                                      <ojp:TimetabledTime>2024-01-16T12:35:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:35:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceDeparture>
+                                  <ojp:Order>8</ojp:Order>
+                              </ojp:PreviousCall>
+                              <ojp:PreviousCall>
+                                  <siri:StopPointRef>8591169</siri:StopPointRef>
+                                  <ojp:StopPointName>
+                                      <ojp:Text xml:lang="de">Zürich, Güterbahnhof</ojp:Text>
+                                  </ojp:StopPointName>
+                                  <ojp:NameSuffix>
+                                      <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                  </ojp:NameSuffix>
+                                  <ojp:ServiceArrival>
+                                      <ojp:TimetabledTime>2024-01-16T12:36:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:36:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceArrival>
+                                  <ojp:ServiceDeparture>
+                                      <ojp:TimetabledTime>2024-01-16T12:36:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:36:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceDeparture>
+                                  <ojp:Order>9</ojp:Order>
+                              </ojp:PreviousCall>
+                              <ojp:PreviousCall>
+                                  <siri:StopPointRef>8591052</siri:StopPointRef>
+                                  <ojp:StopPointName>
+                                      <ojp:Text xml:lang="de">Zürich, Bäckeranlage</ojp:Text>
+                                  </ojp:StopPointName>
+                                  <ojp:NameSuffix>
+                                      <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                  </ojp:NameSuffix>
+                                  <ojp:ServiceArrival>
+                                      <ojp:TimetabledTime>2024-01-16T12:37:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:37:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceArrival>
+                                  <ojp:ServiceDeparture>
+                                      <ojp:TimetabledTime>2024-01-16T12:38:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:38:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceDeparture>
+                                  <ojp:Order>10</ojp:Order>
+                              </ojp:PreviousCall>
+                              <ojp:PreviousCall>
+                                  <siri:StopPointRef>8591184</siri:StopPointRef>
+                                  <ojp:StopPointName>
+                                      <ojp:Text xml:lang="de">Zürich, Helvetiaplatz</ojp:Text>
+                                  </ojp:StopPointName>
+                                  <ojp:NameSuffix>
+                                      <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                  </ojp:NameSuffix>
+                                  <ojp:ServiceArrival>
+                                      <ojp:TimetabledTime>2024-01-16T12:39:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:39:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceArrival>
+                                  <ojp:ServiceDeparture>
+                                      <ojp:TimetabledTime>2024-01-16T12:39:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:40:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceDeparture>
+                                  <ojp:Order>11</ojp:Order>
+                              </ojp:PreviousCall>
+                              <ojp:PreviousCall>
+                                  <siri:StopPointRef>8591381</siri:StopPointRef>
+                                  <ojp:StopPointName>
+                                      <ojp:Text xml:lang="de">Zürich, Stauffacher</ojp:Text>
+                                  </ojp:StopPointName>
+                                  <ojp:NameSuffix>
+                                      <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                  </ojp:NameSuffix>
+                                  <ojp:ServiceArrival>
+                                      <ojp:TimetabledTime>2024-01-16T12:40:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:41:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceArrival>
+                                  <ojp:ServiceDeparture>
+                                      <ojp:TimetabledTime>2024-01-16T12:41:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:41:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceDeparture>
+                                  <ojp:Order>12</ojp:Order>
+                              </ojp:PreviousCall>
+                              <ojp:PreviousCall>
+                                  <siri:StopPointRef>8591064</siri:StopPointRef>
+                                  <ojp:StopPointName>
+                                      <ojp:Text xml:lang="de">Zürich Selnau, Bahnhof</ojp:Text>
+                                  </ojp:StopPointName>
+                                  <ojp:NameSuffix>
+                                      <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                  </ojp:NameSuffix>
+                                  <ojp:ServiceArrival>
+                                      <ojp:TimetabledTime>2024-01-16T12:42:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:42:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceArrival>
+                                  <ojp:ServiceDeparture>
+                                      <ojp:TimetabledTime>2024-01-16T12:42:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:42:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceDeparture>
+                                  <ojp:Order>13</ojp:Order>
+                              </ojp:PreviousCall>
+                              <ojp:PreviousCall>
+                                  <siri:StopPointRef>8591384</siri:StopPointRef>
+                                  <ojp:StopPointName>
+                                      <ojp:Text xml:lang="de">Zürich, Stockerstrasse</ojp:Text>
+                                  </ojp:StopPointName>
+                                  <ojp:NameSuffix>
+                                      <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                  </ojp:NameSuffix>
+                                  <ojp:ServiceArrival>
+                                      <ojp:TimetabledTime>2024-01-16T12:44:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:44:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceArrival>
+                                  <ojp:ServiceDeparture>
+                                      <ojp:TimetabledTime>2024-01-16T12:44:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:44:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceDeparture>
+                                  <ojp:Order>14</ojp:Order>
+                              </ojp:PreviousCall>
+                              <ojp:PreviousCall>
+                                  <siri:StopPointRef>8591299</siri:StopPointRef>
+                                  <ojp:StopPointName>
+                                      <ojp:Text xml:lang="de">Zürich, Paradeplatz</ojp:Text>
+                                  </ojp:StopPointName>
+                                  <ojp:NameSuffix>
+                                      <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                  </ojp:NameSuffix>
+                                  <ojp:ServiceArrival>
+                                      <ojp:TimetabledTime>2024-01-16T12:45:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:45:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceArrival>
+                                  <ojp:ServiceDeparture>
+                                      <ojp:TimetabledTime>2024-01-16T12:46:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:46:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceDeparture>
+                                  <ojp:Order>15</ojp:Order>
+                              </ojp:PreviousCall>
+                              <ojp:PreviousCall>
+                                  <siri:StopPointRef>8591093</siri:StopPointRef>
+                                  <ojp:StopPointName>
+                                      <ojp:Text xml:lang="de">Zürich, Kantonalbank</ojp:Text>
+                                  </ojp:StopPointName>
+                                  <ojp:NameSuffix>
+                                      <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                  </ojp:NameSuffix>
+                                  <ojp:ServiceArrival>
+                                      <ojp:TimetabledTime>2024-01-16T12:46:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:46:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceArrival>
+                                  <ojp:ServiceDeparture>
+                                      <ojp:TimetabledTime>2024-01-16T12:47:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:47:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceDeparture>
+                                  <ojp:Order>16</ojp:Order>
+                              </ojp:PreviousCall>
+                              <ojp:PreviousCall>
+                                  <siri:StopPointRef>8591105</siri:StopPointRef>
+                                  <ojp:StopPointName>
+                                      <ojp:Text xml:lang="de">Zürich, Bürkliplatz</ojp:Text>
+                                  </ojp:StopPointName>
+                                  <ojp:NameSuffix>
+                                      <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                  </ojp:NameSuffix>
+                                  <ojp:ServiceArrival>
+                                      <ojp:TimetabledTime>2024-01-16T12:48:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:48:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceArrival>
+                                  <ojp:ServiceDeparture>
+                                      <ojp:TimetabledTime>2024-01-16T12:48:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:48:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceDeparture>
+                                  <ojp:Order>17</ojp:Order>
+                              </ojp:PreviousCall>
+                              <ojp:OnwardCall>
+                                  <siri:StopPointRef>8576193</siri:StopPointRef>
+                                  <ojp:StopPointName>
+                                      <ojp:Text xml:lang="de">Zürich, Bellevue</ojp:Text>
+                                  </ojp:StopPointName>
+                                  <ojp:NameSuffix>
+                                      <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                  </ojp:NameSuffix>
+                                  <ojp:ServiceArrival>
+                                      <ojp:TimetabledTime>2024-01-16T12:50:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:50:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceArrival>
+                                  <ojp:ServiceDeparture>
+                                      <ojp:TimetabledTime>2024-01-16T12:50:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:50:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceDeparture>
+                                  <ojp:Order>18</ojp:Order>
+                              </ojp:OnwardCall>
+                              <ojp:OnwardCall>
+                                  <siri:StopPointRef>8503059</siri:StopPointRef>
+                                  <ojp:StopPointName>
+                                      <ojp:Text xml:lang="de">Zürich Stadelhofen, Bahnhof</ojp:Text>
+                                  </ojp:StopPointName>
+                                  <ojp:NameSuffix>
+                                      <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                  </ojp:NameSuffix>
+                                  <ojp:ServiceArrival>
+                                      <ojp:TimetabledTime>2024-01-16T12:52:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:52:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceArrival>
+                                  <ojp:ServiceDeparture>
+                                      <ojp:TimetabledTime>2024-01-16T12:52:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:52:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceDeparture>
+                                  <ojp:Order>19</ojp:Order>
+                              </ojp:OnwardCall>
+                              <ojp:OnwardCall>
+                                  <siri:StopPointRef>8530813</siri:StopPointRef>
+                                  <ojp:StopPointName>
+                                      <ojp:Text xml:lang="de">Zürich, Kreuzplatz</ojp:Text>
+                                  </ojp:StopPointName>
+                                  <ojp:NameSuffix>
+                                      <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                  </ojp:NameSuffix>
+                                  <ojp:ServiceArrival>
+                                      <ojp:TimetabledTime>2024-01-16T12:54:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:54:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceArrival>
+                                  <ojp:ServiceDeparture>
+                                      <ojp:TimetabledTime>2024-01-16T12:54:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:54:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceDeparture>
+                                  <ojp:Order>20</ojp:Order>
+                              </ojp:OnwardCall>
+                              <ojp:OnwardCall>
+                                  <siri:StopPointRef>8591119</siri:StopPointRef>
+                                  <ojp:StopPointName>
+                                      <ojp:Text xml:lang="de">Zürich, Englischviertelstrasse</ojp:Text>
+                                  </ojp:StopPointName>
+                                  <ojp:NameSuffix>
+                                      <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                  </ojp:NameSuffix>
+                                  <ojp:ServiceArrival>
+                                      <ojp:TimetabledTime>2024-01-16T12:55:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:55:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceArrival>
+                                  <ojp:ServiceDeparture>
+                                      <ojp:TimetabledTime>2024-01-16T12:55:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:55:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceDeparture>
+                                  <ojp:Order>21</ojp:Order>
+                              </ojp:OnwardCall>
+                              <ojp:OnwardCall>
+                                  <siri:StopPointRef>8503083</siri:StopPointRef>
+                                  <ojp:StopPointName>
+                                      <ojp:Text xml:lang="de">Zürich, Römerhof</ojp:Text>
+                                  </ojp:StopPointName>
+                                  <ojp:NameSuffix>
+                                      <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                  </ojp:NameSuffix>
+                                  <ojp:ServiceArrival>
+                                      <ojp:TimetabledTime>2024-01-16T12:56:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:56:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceArrival>
+                                  <ojp:ServiceDeparture>
+                                      <ojp:TimetabledTime>2024-01-16T12:56:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:56:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceDeparture>
+                                  <ojp:Order>22</ojp:Order>
+                              </ojp:OnwardCall>
+                              <ojp:OnwardCall>
+                                  <siri:StopPointRef>8591199</siri:StopPointRef>
+                                  <ojp:StopPointName>
+                                      <ojp:Text xml:lang="de">Zürich, Hölderlinstrasse</ojp:Text>
+                                  </ojp:StopPointName>
+                                  <ojp:NameSuffix>
+                                      <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                  </ojp:NameSuffix>
+                                  <ojp:ServiceArrival>
+                                      <ojp:TimetabledTime>2024-01-16T12:57:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:57:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceArrival>
+                                  <ojp:ServiceDeparture>
+                                      <ojp:TimetabledTime>2024-01-16T12:57:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:57:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceDeparture>
+                                  <ojp:Order>23</ojp:Order>
+                              </ojp:OnwardCall>
+                              <ojp:OnwardCall>
+                                  <siri:StopPointRef>8591233</siri:StopPointRef>
+                                  <ojp:StopPointName>
+                                      <ojp:Text xml:lang="de">Zürich, Klusplatz</ojp:Text>
+                                  </ojp:StopPointName>
+                                  <ojp:NameSuffix>
+                                      <ojp:Text xml:lang="de">NO_DATA</ojp:Text>
+                                  </ojp:NameSuffix>
+                                  <ojp:ServiceArrival>
+                                      <ojp:TimetabledTime>2024-01-16T12:59:00Z</ojp:TimetabledTime>
+                                      <ojp:EstimatedTime>2024-01-16T12:59:00Z</ojp:EstimatedTime>
+                                  </ojp:ServiceArrival>
+                                  <ojp:Order>24</ojp:Order>
+                              </ojp:OnwardCall>
+                              <ojp:Service>
+                                  <ojp:OperatingDayRef>2024-01-16</ojp:OperatingDayRef>
+                                  <ojp:JourneyRef>ojp-91-8-H-j24-1-337-TA</ojp:JourneyRef>
+                                  <siri:LineRef>ojp:91008:H</siri:LineRef>
+                                  <siri:DirectionRef>H</siri:DirectionRef>
+                                  <ojp:Mode>
+                                      <ojp:PtMode>tram</ojp:PtMode>
+                                      <siri:TramSubmode>cityTram</siri:TramSubmode>
+                                      <ojp:Name>
+                                          <ojp:Text xml:lang="de">Tram</ojp:Text>
+                                      </ojp:Name>
+                                      <ojp:ShortName>
+                                          <ojp:Text xml:lang="de">T</ojp:Text>
+                                      </ojp:ShortName>
+                                  </ojp:Mode>
+                                  <ojp:PublishedLineName>
+                                      <ojp:Text xml:lang="de">8</ojp:Text>
+                                  </ojp:PublishedLineName>
+                                  <ojp:OperatorRef>ojp:3849</ojp:OperatorRef>
+                                  <ojp:OriginStopPointRef>8591178</ojp:OriginStopPointRef>
+                                  <ojp:OriginText>
+                                      <ojp:Text xml:lang="de">Zürich, Hardturm</ojp:Text>
+                                  </ojp:OriginText>
+                                  <ojp:DestinationStopPointRef>8591233</ojp:DestinationStopPointRef>
+                                  <ojp:DestinationText>
+                                      <ojp:Text xml:lang="de">Zürich, Klusplatz</ojp:Text>
+                                  </ojp:DestinationText>
+                              </ojp:Service>
+                              <ojp:Extension>
+                                  <ojp:TransportTypeName>
+                                      <ojp:Text xml:lang="de">Tram</ojp:Text>
+                                  </ojp:TransportTypeName>
+                                  <ojp:PublishedJourneyNumber>
+                                      <ojp:Text xml:lang="de">85</ojp:Text>
+                                  </ojp:PublishedJourneyNumber>
+                                  <ojp:OperatorName>
+                                      <ojp:Text xml:lang="de">Verkehrsbetriebe Zürich INFO+</ojp:Text>
+                                  </ojp:OperatorName>
+                              </ojp:Extension>
+                          </ojp:TripInfoResult>
+                      </ojp:OJPTripInfoDelivery>
+                  </siri:ServiceDelivery>
+              </siri:OJPResponse>
+          </siri:OJP>

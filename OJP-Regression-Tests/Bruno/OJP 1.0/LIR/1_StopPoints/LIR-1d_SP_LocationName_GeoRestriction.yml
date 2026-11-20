@@ -1,0 +1,440 @@
+info:
+  name: LIR-1d_SP_LocationName_GeoRestriction
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{server}}"
+  body:
+    type: xml
+    data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+      <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+      \    <OJPRequest>\r
+
+      \        <ServiceRequest>\r
+
+      \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+      \            <ojp:OJPLocationInformationRequest>\r
+
+      \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \                <MessageIdentifier>LIR-1d</MessageIdentifier>\r
+
+      \                <ojp:InitialInput>\r
+
+      \                    <ojp:GeoRestriction>\r
+
+      \                        <ojp:Circle>\r
+
+      \                            <ojp:Center>\r
+
+      \                                <Longitude>8.55330</Longitude>\r
+
+      \                                <Latitude>47.37609</Latitude>\r
+
+      \                            </ojp:Center>\r
+
+      \                            <ojp:Radius>1000</ojp:Radius>\r
+
+      \                        </ojp:Circle>\r
+
+      \                    </ojp:GeoRestriction>\r
+
+      \                </ojp:InitialInput>\r
+
+      \                <ojp:Restrictions>\r
+
+      \                    <ojp:Type>stop</ojp:Type>\r
+
+      \                    <ojp:NumberOfResults>10</ojp:NumberOfResults>\r
+
+      \                </ojp:Restrictions>\r
+
+      \            </ojp:OJPLocationInformationRequest>\r
+
+      \        </ServiceRequest>\r
+
+      \    </OJPRequest>\r
+
+      </OJP>"
+  auth:
+    type: bearer
+    token: "{{BearerToken}}"
+
+runtime:
+  scripts:
+    - type: after-response
+      code: "test(\"Check if XML body contains exactly 10 </ojp:StopPlaceRef> strings\", function () {\r
+
+        \    var searchString = \"</ojp:StopPlaceRef>\";\r
+
+        \    var xmlResponse = res.getBody()?.toString();\r
+
+        \    var occurrences = (xmlResponse.match(new RegExp(searchString, \"g\")) || []).length;\r
+
+        \    expect(occurrences).to.equal(10);\r
+
+        });\r
+
+        \r
+
+        \r
+
+        test(\"Response contains specific StopPlaceRefs (DIDOK or SLOID)\", function () {\r
+
+        \    const responseText = res.getBody()?.toString();\r
+
+        \    const stops = [\r
+
+        \        { didok: \"8591412\", sloid: \"ch:1:sloid:91412\" },\r
+
+        \        { didok: \"8591303\", sloid: \"ch:1:sloid:91303\" },\r
+
+        \        { didok: \"8591123\", sloid: \"ch:1:sloid:91123\" },\r
+
+        \        { didok: \"8591220\", sloid: \"ch:1:sloid:91220\" },\r
+
+        \        { didok: \"8591192\", sloid: \"ch:1:sloid:91192\" },\r
+
+        \        { didok: \"8591230\", sloid: \"ch:1:sloid:91230\" },\r
+
+        \        { didok: \"8503500\", sloid: \"ch:1:sloid:3500\" },\r
+
+        \        { didok: \"8591397\", sloid: \"ch:1:sloid:91397\" },\r
+
+        \        { didok: \"8591078\", sloid: \"ch:1:sloid:91078\" },\r
+
+        \        { didok: \"8591287\", sloid: \"ch:1:sloid:91287\" }\r
+
+        \    ];\r
+
+        \r
+
+        \    stops.forEach(({ didok, sloid }) => {\r
+
+        \        const found = responseText.includes(didok) || responseText.includes(sloid);\r
+
+        \        if (!found) console.log(`MISSING: ${didok} / ${sloid}`);\r
+
+        \        expect(found, `StopPlaceRef fehlt: ${didok} oder ${sloid}`).to.be.true;\r
+
+        \    });\r
+
+        });"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: LIR-1d_SP_LocationName_GeoRestriction
+    request:
+      url: "{{server}}"
+      method: POST
+      body:
+        type: xml
+        data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+          <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+          \    <OJPRequest>\r
+
+          \        <ServiceRequest>\r
+
+          \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+          \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+          \            <ojp:OJPLocationInformationRequest>\r
+
+          \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+          \                <MessageIdentifier>LIR-1d</MessageIdentifier>\r
+
+          \                <ojp:InitialInput>\r
+
+          \                    <ojp:GeoRestriction>\r
+
+          \                        <ojp:Circle>\r
+
+          \                            <ojp:Center>\r
+
+          \                                <Longitude>8.55330</Longitude>\r
+
+          \                                <Latitude>47.37609</Latitude>\r
+
+          \                            </ojp:Center>\r
+
+          \                            <ojp:Radius>1000</ojp:Radius>\r
+
+          \                        </ojp:Circle>\r
+
+          \                    </ojp:GeoRestriction>\r
+
+          \                </ojp:InitialInput>\r
+
+          \                <ojp:Restrictions>\r
+
+          \                    <ojp:Type>stop</ojp:Type>\r
+
+          \                    <ojp:NumberOfResults>10</ojp:NumberOfResults>\r
+
+          \                </ojp:Restrictions>\r
+
+          \            </ojp:OJPLocationInformationRequest>\r
+
+          \        </ServiceRequest>\r
+
+          \    </OJPRequest>\r
+
+          </OJP>"
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Server
+          value: EFAController/10.6.14.5/OJP-EFA01-I
+        - name: Date
+          value: Fri, 01 Dec 2023 16:47:56 GMT
+        - name: Content-Type
+          value: text/xml
+        - name: Accept-Ranges
+          value: none
+        - name: Content-Length
+          value: "1028"
+        - name: Last-Modified
+          value: Fri, 01 Dec 2023 16:47:56 GMT
+        - name: Connection
+          value: Keep-Alive
+        - name: Content-Encoding
+          value: gzip
+        - name: Access-Control-Allow-Origin
+          value: "*"
+      body:
+        type: xml
+        data: |-
+          <?xml version="1.0" encoding="UTF-8"?>
+          <siri:OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns:ojp="http://www.vdv.de/ojp" version="1.0">
+              <siri:OJPResponse>
+                  <siri:ServiceDelivery>
+                      <siri:ResponseTimestamp>2023-12-01T16:47:56Z</siri:ResponseTimestamp>
+                      <siri:ProducerRef>EFAController10.6.14.5-OJP-EFA01-I</siri:ProducerRef>
+                      <siri:Status>true</siri:Status>
+                      <ojp:OJPLocationInformationDelivery>
+                          <siri:ResponseTimestamp>2023-12-01T16:47:56Z</siri:ResponseTimestamp>
+                          <siri:RequestMessageRef>LIR-1d</siri:RequestMessageRef>
+                          <siri:Status>true</siri:Status>
+                          <ojp:CalcTime>15</ojp:CalcTime>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:StopPlace>
+                                      <ojp:StopPlaceRef>8591412</ojp:StopPlaceRef>
+                                      <ojp:StopPlaceName>
+                                          <ojp:Text xml:lang="de">Voltastrasse</ojp:Text>
+                                      </ojp:StopPlaceName>
+                                      <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                  </ojp:StopPlace>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>8.55452</siri:Longitude>
+                                      <siri:Latitude>47.37687</siri:Latitude>
+                                  </ojp:GeoPosition>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>0.840898454</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:StopPlace>
+                                      <ojp:StopPlaceRef>8591303</ojp:StopPlaceRef>
+                                      <ojp:StopPlaceName>
+                                          <ojp:Text xml:lang="de">Platte</ojp:Text>
+                                      </ojp:StopPlaceName>
+                                      <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                  </ojp:StopPlace>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>8.55264</siri:Longitude>
+                                      <siri:Latitude>47.37501</siri:Latitude>
+                                  </ojp:GeoPosition>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>0.837981343</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:StopPlace>
+                                      <ojp:StopPlaceRef>8591123</ojp:StopPlaceRef>
+                                      <ojp:StopPlaceName>
+                                          <ojp:Text xml:lang="de">ETH/Universitätsspital</ojp:Text>
+                                      </ojp:StopPlaceName>
+                                      <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                  </ojp:StopPlace>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>8.54823</siri:Longitude>
+                                      <siri:Latitude>47.37729</siri:Latitude>
+                                  </ojp:GeoPosition>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>0.601691961</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:StopPlace>
+                                      <ojp:StopPlaceRef>8591220</ojp:StopPlaceRef>
+                                      <ojp:StopPlaceName>
+                                          <ojp:Text xml:lang="de">Kantonsschule</ojp:Text>
+                                      </ojp:StopPlaceName>
+                                      <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                  </ojp:StopPlace>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>8.55052</siri:Longitude>
+                                      <siri:Latitude>47.37272</siri:Latitude>
+                                  </ojp:GeoPosition>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>0.580105007</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:StopPlace>
+                                      <ojp:StopPlaceRef>8591192</ojp:StopPlaceRef>
+                                      <ojp:StopPlaceName>
+                                          <ojp:Text xml:lang="de">Hinterbergstrasse</ojp:Text>
+                                      </ojp:StopPlaceName>
+                                      <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                  </ojp:StopPlace>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>8.55458</siri:Longitude>
+                                      <siri:Latitude>47.38010</siri:Latitude>
+                                  </ojp:GeoPosition>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>0.556184351</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:StopPlace>
+                                      <ojp:StopPlaceRef>8591230</ojp:StopPlaceRef>
+                                      <ojp:StopPlaceName>
+                                          <ojp:Text xml:lang="de">Kirche Fluntern</ojp:Text>
+                                      </ojp:StopPlaceName>
+                                      <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                  </ojp:StopPlace>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>8.55939</siri:Longitude>
+                                      <siri:Latitude>47.37640</siri:Latitude>
+                                  </ojp:GeoPosition>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>0.553267241</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:StopPlace>
+                                      <ojp:StopPlaceRef>8503500</ojp:StopPlaceRef>
+                                      <ojp:StopPlaceName>
+                                          <ojp:Text xml:lang="de">Zürich Polyterrasse</ojp:Text>
+                                      </ojp:StopPlaceName>
+                                      <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                  </ojp:StopPlace>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>8.54640</siri:Longitude>
+                                      <siri:Latitude>47.37686</siri:Latitude>
+                                  </ojp:GeoPosition>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>0.496091008</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:StopPlace>
+                                      <ojp:StopPlaceRef>8591397</ojp:StopPlaceRef>
+                                      <ojp:StopPlaceName>
+                                          <ojp:Text xml:lang="de">Toblerplatz</ojp:Text>
+                                      </ojp:StopPlaceName>
+                                      <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                  </ojp:StopPlace>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>8.55935</siri:Longitude>
+                                      <siri:Latitude>47.37909</siri:Latitude>
+                                  </ojp:GeoPosition>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>0.463418901</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:StopPlace>
+                                      <ojp:StopPlaceRef>8591078</ojp:StopPlaceRef>
+                                      <ojp:StopPlaceName>
+                                          <ojp:Text xml:lang="de">Bethanien</ojp:Text>
+                                      </ojp:StopPlaceName>
+                                      <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                  </ojp:StopPlace>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>8.55599</siri:Longitude>
+                                      <siri:Latitude>47.38091</siri:Latitude>
+                                  </ojp:GeoPosition>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>0.455250889</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:StopPlace>
+                                      <ojp:StopPlaceRef>8591287</ojp:StopPlaceRef>
+                                      <ojp:StopPlaceName>
+                                          <ojp:Text xml:lang="de">Neumarkt</ojp:Text>
+                                      </ojp:StopPlaceName>
+                                      <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                  </ojp:StopPlace>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Zürich</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>8.54735</siri:Longitude>
+                                      <siri:Latitude>47.37277</siri:Latitude>
+                                  </ojp:GeoPosition>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>0.449999988</ojp:Probability>
+                          </ojp:Location>
+                      </ojp:OJPLocationInformationDelivery>
+                  </siri:ServiceDelivery>
+              </siri:OJPResponse>
+          </siri:OJP>

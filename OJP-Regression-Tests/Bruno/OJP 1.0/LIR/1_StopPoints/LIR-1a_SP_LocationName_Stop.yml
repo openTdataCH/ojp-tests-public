@@ -1,0 +1,140 @@
+info:
+  name: LIR-1a_SP_LocationName_Stop
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{server}}"
+  body:
+    type: xml
+    data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+      <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+      \    <OJPRequest>\r
+
+      \        <ServiceRequest>\r
+
+      \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+      \            <ojp:OJPLocationInformationRequest>\r
+
+      \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \                <MessageIdentifier>LIR-1a</MessageIdentifier>\r
+
+      \                <ojp:InitialInput>\r
+
+      \                    <ojp:LocationName>Schaffh</ojp:LocationName>\r
+
+      \                </ojp:InitialInput>\r
+
+      \                <ojp:Restrictions>\r
+
+      \                    <ojp:Type>stop</ojp:Type>\r
+
+      \                    <ojp:NumberOfResults>10</ojp:NumberOfResults>\r
+
+      \                </ojp:Restrictions>\r
+
+      \            </ojp:OJPLocationInformationRequest>\r
+
+      \        </ServiceRequest>\r
+
+      \    </OJPRequest>\r
+
+      </OJP>"
+  auth:
+    type: bearer
+    token: "{{BearerToken}}"
+
+runtime:
+  scripts:
+    - type: before-request
+      code: "console.log(\"Variable new_timetable_date: \" + bru.getCollectionVar(\"new_timetable_date\"));\r
+
+        console.log(\"Variable saturday_timetable_change: \" + bru.getCollectionVar(\"saturday_timetable_change\"));\r
+
+        console.log(\"Variable friday_timetable_change: \" + bru.getCollectionVar(\"friday_timetable_change\"));"
+    - type: after-response
+      code: "test(\"Contains Schaffhausen\", function() {\r
+
+        \    expect(res.getBody()?.toString()).to.include(\"Schaffhausen\");\r
+
+        });\r
+
+        \r
+
+        // Extract the XML response body\r
+
+        let responseBody = res.getBody()?.toString();\r
+
+        // Define the required text strings\r
+
+        let requiredStrings = [\r
+
+        \    '<ojp:Text xml:lang=\"de\">Schaffhausen</ojp:Text>',\r
+
+        \    '<ojp:TopographicPlaceRef>23017939:4</ojp:TopographicPlaceRef>',\r
+
+        \    '<ojp:Text xml:lang=\"de\">Schaffhausen (Schaffhausen)</ojp:Text>',\r
+
+        \    '<siri:Longitude>8.63276</siri:Longitude>',\r
+
+        \    '<siri:Latitude>47.69828</siri:Latitude>',\r
+
+        \    '<ojp:Complete>true</ojp:Complete>',\r
+
+        \    '<ojp:Probability>0.81'\r
+
+        \    \r
+
+        ];\r
+
+        // Check if each required string is present in the response body\r
+
+        requiredStrings.forEach(function (str) {\r
+
+        \    test(`Body contains \"${str}\"`, function () {\r
+
+        \        expect(responseBody).to.include(str);\r
+
+        \    });\r
+
+        });\r
+
+        \r
+
+        \r
+
+        test(\"Response contains specific StopPlaceRefs (DIDOK or SLOID)\", function () {\r
+
+        \    const responseText = res.getBody()?.toString();\r
+
+        \    const stops = [\r
+
+        \        { didok: \"8503424\", sloid: \"ch:1:sloid:3424\" }\r
+
+        \    ];\r
+
+        \    stops.forEach(({ didok, sloid }) => {\r
+
+        \        const found = responseText.includes(didok) || responseText.includes(sloid);\r
+
+        \        if (!found) console.log(`MISSING: ${didok} / ${sloid}`);\r
+
+        \        expect(found, `StopPlaceRef fehlt: ${didok} oder ${sloid}`).to.be.true;\r
+
+        \    });\r
+
+        });"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

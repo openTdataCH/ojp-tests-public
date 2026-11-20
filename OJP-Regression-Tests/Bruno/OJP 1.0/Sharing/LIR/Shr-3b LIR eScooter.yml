@@ -1,0 +1,99 @@
+info:
+  name: Shr-3b LIR eScooter
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{server}}"
+  headers:
+    - name: Content-Type
+      value: text/xml
+  body:
+    type: xml
+    data: "<OJP xmlns=\"http://www.siri.org.uk/siri\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\" version=\"1.0\">\r
+
+      \    <OJPRequest>\r
+
+      \        <ServiceRequest>\r
+
+      \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+      \            <ojp:OJPLocationInformationRequest>\r
+
+      \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \                <MessageIdentifier>Shr-3a</MessageIdentifier>\r
+
+      \                <ojp:InitialInput>\r
+
+      \                    <ojp:GeoRestriction>\r
+
+      \                        <ojp:Circle> <!--Anfrag mittels Circle oder Rectangle-->\r
+
+      \                            <ojp:Center> <!--Koordinate, zu welcher Objekte geliefert werden sollen-->\r
+
+      \                                <Longitude>8.538788</Longitude> <!--WGS84 Lon-->\r
+
+      \                                <Latitude>47.374773</Latitude> <!--WGS84 Lat-->\r
+
+      \                            </ojp:Center>\r
+
+      \                            <ojp:Radius>5000</ojp:Radius>  <!--Radius in Meter um Koordinate-->\r
+
+      \                        </ojp:Circle>\r
+
+      \                    </ojp:GeoRestriction>\r
+
+      \                </ojp:InitialInput>\r
+
+      \                <ojp:Restrictions>\r
+
+      \                    <ojp:Type>poi</ojp:Type>\r
+
+      \                    <ojp:PointOfInterestFilter>\r
+
+      \                        <ojp:PointOfInterestCategory>\r
+
+      \                            <ojp:OsmTag>\r
+
+      \                                <ojp:Tag>amenity</ojp:Tag>\r
+
+      \                                <ojp:Value>escooter_rental</ojp:Value>\r
+
+      \                            </ojp:OsmTag>\r
+
+      \                        </ojp:PointOfInterestCategory>\r
+
+      \                    </ojp:PointOfInterestFilter>\r
+
+      \                </ojp:Restrictions>\r
+
+      \            </ojp:OJPLocationInformationRequest>\r
+
+      \        </ServiceRequest>\r
+
+      \    </OJPRequest>\r
+
+      </OJP>"
+  auth:
+    type: bearer
+    token: "{{BearerToken}}"
+
+runtime:
+  scripts:
+    - type: after-response
+      code: "test(\"Body matches string escooter_rental\", function () {\r
+
+        \    expect(res.getBody()?.toString()).to.include(\"<ojp:Value>escooter_rental</ojp:Value>\");\r
+
+        });"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

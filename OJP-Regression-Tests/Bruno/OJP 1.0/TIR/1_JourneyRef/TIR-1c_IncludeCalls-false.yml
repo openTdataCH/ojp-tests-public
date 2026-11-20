@@ -1,0 +1,1035 @@
+info:
+  name: TIR-1c_IncludeCalls-false
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{server}}"
+  headers:
+    - name: Content-Type
+      value: text/xml
+  body:
+    type: xml
+    data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+      <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+      \    <OJPRequest>\r
+
+      \        <ServiceRequest>\r
+
+      \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+      \            <ojp:OJPTripInfoRequest>\r
+
+      \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \                <MessageIdentifier>TIR-1c</MessageIdentifier>\r
+
+      \                <ojp:JourneyRef>{{ActiveJourneyRef}}</ojp:JourneyRef>\r
+
+      \                <ojp:OperatingDayRef>{{ActiveOperatingDayRef}}</ojp:OperatingDayRef>\r
+
+      \                <ojp:Params>\r
+
+      \                    <ojp:IncludeCalls>false</ojp:IncludeCalls> <!--Standardmässig aktiv. Fahrzeiten !-->\r
+
+      \                </ojp:Params>\r
+
+      \            </ojp:OJPTripInfoRequest>\r
+
+      \        </ServiceRequest>\r
+
+      \    </OJPRequest>\r
+
+      </OJP>"
+  auth:
+    type: bearer
+    token: "{{BearerToken}}"
+
+runtime:
+  scripts:
+    - type: before-request
+      code: "// Define the XML request body\r
+
+        const xmlRequest = `<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+        <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+        \    <OJPRequest>\r
+
+        \        <ServiceRequest>\r
+
+        \            <RequestTimestamp>2023-11-02T10:12:55.403Z</RequestTimestamp>\r
+
+        \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+        \            <ojp:OJPStopEventRequest>\r
+
+        \                <RequestTimestamp>2023-11-02T10:12:55.403Z</RequestTimestamp>\r
+
+        \                <MessageIdentifier>ojp1_0</MessageIdentifier>\r
+
+        \                <ojp:Location>\r
+
+        \                    <ojp:PlaceRef>\r
+
+        \                        <StopPointRef>ch:1:sloid:91381</StopPointRef>\r
+
+        \                        <ojp:LocationName>\r
+
+        \                            <ojp:Text>Zürich Stauffacher</ojp:Text>\r
+
+        \                        </ojp:LocationName>\r
+
+        \                    </ojp:PlaceRef>\r
+
+        \                </ojp:Location>\r
+
+        \                <ojp:Params>\r
+
+        \                    <ojp:NumberOfResults>1</ojp:NumberOfResults>\r
+
+        \                    <ojp:StopEventType>departure</ojp:StopEventType>\r
+
+        \                    <ojp:IncludeRealtimeData>true</ojp:IncludeRealtimeData>\r
+
+        \                </ojp:Params>\r
+
+        \            </ojp:OJPStopEventRequest>\r
+
+        \        </ServiceRequest>\r
+
+        \    </OJPRequest>\r
+
+        </OJP>`;\r
+
+        \r
+
+        \r
+
+        \r
+
+        \r
+
+        \r
+
+        // Send the POST request\r
+
+        await bru.sendRequest({\r
+
+        \    url: bru.getGlobalEnvVar('server'),\r
+
+        \    method: 'POST',\r
+
+        \    headers: {\r
+
+        \        'Authorization': `Bearer ${bru.getGlobalEnvVar('BearerToken')}`,\r
+
+        \        'Content-Type': 'text/xml',\r
+
+        \    },\r
+
+        \    data: xmlRequest,\r
+
+        }, async function(error, response) {\r
+
+        \    if (error) {\r
+
+        \        console.error('Request error:', error);\r
+
+        \    } else {\r
+
+        \        // Parse the XML response\r
+
+        \        const xmlResponse = response.data;\r
+
+        \r
+
+        \        // Use an XML parsing library like xml2js to parse the response\r
+
+        \        const xml2js = require('xml2js');\r
+
+        \        const parser = new xml2js.Parser({ explicitArray: false });\r
+
+        \r
+
+        \        parser.parseString(xmlResponse, function (err, result) {\r
+
+        \            if (err) {\r
+
+        \                console.error('XML parsing error:', err);\r
+
+        \            } else {\r
+
+        \                // Extract the ActiveJourneyRef value\r
+
+        \                const activeJourneyRef = findPropertyValue(result, 'JourneyRef');\r
+
+        \                \r
+
+        \                // Extract the ActiveOperatingDayRef value\r
+
+        \                const activeOperatingDayRef = findPropertyValue(result, 'OperatingDayRef');\r
+
+        \r
+
+        \                // Set the ActiveJourneyRef variable\r
+
+        \                bru.setGlobalEnvVar('ActiveJourneyRef', activeJourneyRef);\r
+
+        \                \r
+
+        \                // Set the ActiveOperatingDayRef variable\r
+
+        \                bru.setGlobalEnvVar('ActiveOperatingDayRef', activeOperatingDayRef);\r
+
+        \r
+
+        \                // Print to the console\r
+
+        \                console.log('ActiveJourneyRef:', activeJourneyRef);\r
+
+        \                console.log('ActiveOperatingDayRef:', activeOperatingDayRef);\r
+
+        \            }\r
+
+        \        });\r
+
+        \    }\r
+
+        });\r
+
+        \r
+
+        // Helper function to find property value in the response\r
+
+        function findPropertyValue(obj, propertyName) {\r
+
+        \    for (const key in obj) {\r
+
+        \        if (key.includes(propertyName)) {\r
+
+        \            return obj[key];\r
+
+        \        } else if (typeof obj[key] === 'object') {\r
+
+        \            const result = findPropertyValue(obj[key], propertyName);\r
+
+        \            if (result) {\r
+
+        \                return result;\r
+
+        \            }\r
+
+        \        }\r
+
+        \    }\r
+
+        \    return null;\r
+
+        }"
+    - type: after-response
+      code: "test(\"Body matches string not\", function () {\r
+
+        \    expect(res.getBody()?.toString()).to.not.include(\"<ojp:OnwardCall>\");\r
+
+        });"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: TIR-1c_IncludeCalls-false
+    request:
+      url: "{{server}}"
+      method: POST
+      headers:
+        - name: Content-Type
+          value: text/xml
+      body:
+        type: xml
+        data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+          <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+          \    <OJPRequest>\r
+
+          \        <ServiceRequest>\r
+
+          \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+          \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+          \            <ojp:OJPTripInfoRequest>\r
+
+          \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+          \                <MessageIdentifier>TIR-1c</MessageIdentifier>\r
+
+          \                <ojp:JourneyRef>{{JourneyRef}}</ojp:JourneyRef>\r
+
+          \                <ojp:OperatingDayRef>{{friday_timetable_change}}T11:00:00Z</ojp:OperatingDayRef>\r
+
+          \                <ojp:Params>\r
+
+          \                    <ojp:IncludeCalls>false</ojp:IncludeCalls> <!--Standardmässig aktiv. Fahrzeiten !-->\r
+
+          \                </ojp:Params>\r
+
+          \            </ojp:OJPTripInfoRequest>\r
+
+          \        </ServiceRequest>\r
+
+          \    </OJPRequest>\r
+
+          </OJP>"
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Server
+          value: EFAController/10.6.14.5/OJP-EFA01-I
+        - name: Date
+          value: Fri, 01 Dec 2023 19:32:07 GMT
+        - name: Content-Type
+          value: text/xml
+        - name: Accept-Ranges
+          value: none
+        - name: Content-Length
+          value: "2657"
+        - name: Last-Modified
+          value: Fri, 01 Dec 2023 19:32:07 GMT
+        - name: Connection
+          value: Keep-Alive
+        - name: Content-Encoding
+          value: gzip
+        - name: Access-Control-Allow-Origin
+          value: "*"
+      body:
+        type: xml
+        data: |-
+          <?xml version="1.0" encoding="UTF-8"?>
+          <siri:OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns:ojp="http://www.vdv.de/ojp" version="1.0">
+              <siri:OJPResponse>
+                  <siri:ServiceDelivery>
+                      <siri:ResponseTimestamp>2023-12-01T19:32:07Z</siri:ResponseTimestamp>
+                      <siri:ProducerRef>EFAController10.6.14.5-OJP-EFA01-I</siri:ProducerRef>
+                      <siri:Status>true</siri:Status>
+                      <ojp:OJPTripInfoDelivery>
+                          <siri:ResponseTimestamp>2023-12-01T19:32:07Z</siri:ResponseTimestamp>
+                          <siri:RequestMessageRef>TIR-1c</siri:RequestMessageRef>
+                          <siri:Status>true</siri:Status>
+                          <ojp:CalcTime>34</ojp:CalcTime>
+                          <ojp:TripInfoResponseContext>
+                              <ojp:Places>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8501026</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Genève-Aéroport</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>107029</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23009623:2</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Genève-Aéroport</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>6.11035</siri:Longitude>
+                                          <siri:Latitude>46.23125</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPoint>
+                                          <siri:StopPointRef>ch:1:sloid:1026:2:4</siri:StopPointRef>
+                                          <ojp:StopPointName>
+                                              <ojp:Text xml:lang="de">Genève-Aéroport</ojp:Text>
+                                          </ojp:StopPointName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>107029:0:4</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:ParentRef>8501026</ojp:ParentRef>
+                                          <ojp:TopographicPlaceRef>23009623:2</ojp:TopographicPlaceRef>
+                                      </ojp:StopPoint>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Genève-Aéroport</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>6.11035</siri:Longitude>
+                                          <siri:Latitude>46.23125</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8501008</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Genève</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>107019</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23009621:2</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Genève</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>6.14389</siri:Longitude>
+                                          <siri:Latitude>46.21216</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPoint>
+                                          <siri:StopPointRef>ch:1:sloid:1008:3:4</siri:StopPointRef>
+                                          <ojp:StopPointName>
+                                              <ojp:Text xml:lang="de">Genève</ojp:Text>
+                                          </ojp:StopPointName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>107019:0:4</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:ParentRef>8501008</ojp:ParentRef>
+                                          <ojp:TopographicPlaceRef>23009621:2</ojp:TopographicPlaceRef>
+                                      </ojp:StopPoint>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Genève</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>6.14389</siri:Longitude>
+                                          <siri:Latitude>46.21216</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8501030</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Nyon</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>107030</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23023724:3</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Nyon</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>6.23750</siri:Longitude>
+                                          <siri:Latitude>46.38588</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPoint>
+                                          <siri:StopPointRef>ch:1:sloid:1030:2:2</siri:StopPointRef>
+                                          <ojp:StopPointName>
+                                              <ojp:Text xml:lang="de">Nyon</ojp:Text>
+                                          </ojp:StopPointName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>107030:0:2</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:ParentRef>8501030</ojp:ParentRef>
+                                          <ojp:TopographicPlaceRef>23023724:3</ojp:TopographicPlaceRef>
+                                      </ojp:StopPoint>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Nyon</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>6.23750</siri:Longitude>
+                                          <siri:Latitude>46.38588</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8501037</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Morges</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>107035</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23023642:2</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Morges</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>6.49397</siri:Longitude>
+                                          <siri:Latitude>46.51110</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPoint>
+                                          <siri:StopPointRef>ch:1:sloid:1037:2:3</siri:StopPointRef>
+                                          <ojp:StopPointName>
+                                              <ojp:Text xml:lang="de">Morges</ojp:Text>
+                                          </ojp:StopPointName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>107035:0:3</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:ParentRef>8501037</ojp:ParentRef>
+                                          <ojp:TopographicPlaceRef>23023642:2</ojp:TopographicPlaceRef>
+                                      </ojp:StopPoint>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Morges</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>6.49397</siri:Longitude>
+                                          <siri:Latitude>46.51110</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8501120</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Lausanne</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>107099</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23023586:3</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Lausanne</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>6.62909</siri:Longitude>
+                                          <siri:Latitude>46.51679</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPoint>
+                                          <siri:StopPointRef>ch:1:sloid:1120:0:668579</siri:StopPointRef>
+                                          <ojp:StopPointName>
+                                              <ojp:Text xml:lang="de">Lausanne</ojp:Text>
+                                          </ojp:StopPointName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>107099:0:1</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:ParentRef>8501120</ojp:ParentRef>
+                                          <ojp:TopographicPlaceRef>23023586:3</ojp:TopographicPlaceRef>
+                                      </ojp:StopPoint>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Lausanne</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>6.62909</siri:Longitude>
+                                          <siri:Latitude>46.51679</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8504100</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Fribourg/Freiburg</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>109019</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23008196:4</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Fribourg/Freiburg</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>7.14875</siri:Longitude>
+                                          <siri:Latitude>46.80029</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPoint>
+                                          <siri:StopPointRef>ch:1:sloid:4100:0:54</siri:StopPointRef>
+                                          <ojp:StopPointName>
+                                              <ojp:Text xml:lang="de">Fribourg/Freiburg</ojp:Text>
+                                          </ojp:StopPointName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>109019:0:4</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:ParentRef>8504100</ojp:ParentRef>
+                                          <ojp:TopographicPlaceRef>23008196:4</ojp:TopographicPlaceRef>
+                                      </ojp:StopPoint>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Fribourg/Freiburg</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>7.14875</siri:Longitude>
+                                          <siri:Latitude>46.80029</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8507000</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Bern</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>111055</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23006351:1</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Bern</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>7.43456</siri:Longitude>
+                                          <siri:Latitude>46.94788</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPoint>
+                                          <siri:StopPointRef>ch:1:sloid:7000:2:3</siri:StopPointRef>
+                                          <ojp:StopPointName>
+                                              <ojp:Text xml:lang="de">Bern</ojp:Text>
+                                          </ojp:StopPointName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>111055:0:3</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:ParentRef>8507000</ojp:ParentRef>
+                                          <ojp:TopographicPlaceRef>23006351:1</ojp:TopographicPlaceRef>
+                                      </ojp:StopPoint>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Bern</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>7.43456</siri:Longitude>
+                                          <siri:Latitude>46.94788</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8503000</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich HB</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>108276</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich HB</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.53923</siri:Longitude>
+                                          <siri:Latitude>47.37781</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPoint>
+                                          <siri:StopPointRef>ch:1:sloid:3000:501:33</siri:StopPointRef>
+                                          <ojp:StopPointName>
+                                              <ojp:Text xml:lang="de">Zürich HB</ojp:Text>
+                                          </ojp:StopPointName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>108276:0:33</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:ParentRef>8503000</ojp:ParentRef>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPoint>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich HB</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.53923</siri:Longitude>
+                                          <siri:Latitude>47.37781</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8503006</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich Oerlikon</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>108280</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich Oerlikon</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.54195</siri:Longitude>
+                                          <siri:Latitude>47.41109</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPoint>
+                                          <siri:StopPointRef>ch:1:sloid:3006:4:6</siri:StopPointRef>
+                                          <ojp:StopPointName>
+                                              <ojp:Text xml:lang="de">Zürich Oerlikon</ojp:Text>
+                                          </ojp:StopPointName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>108280:0:6</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:ParentRef>8503006</ojp:ParentRef>
+                                          <ojp:TopographicPlaceRef>23026261:27</ojp:TopographicPlaceRef>
+                                      </ojp:StopPoint>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich Oerlikon</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.54195</siri:Longitude>
+                                          <siri:Latitude>47.41109</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8503016</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Zürich Flughafen</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>108287</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026062:5</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich Flughafen</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.55988</siri:Longitude>
+                                          <siri:Latitude>47.44828</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPoint>
+                                          <siri:StopPointRef>ch:1:sloid:3016:1:1</siri:StopPointRef>
+                                          <ojp:StopPointName>
+                                              <ojp:Text xml:lang="de">Zürich Flughafen</ojp:Text>
+                                          </ojp:StopPointName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>108287:0:1</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:ParentRef>8503016</ojp:ParentRef>
+                                          <ojp:TopographicPlaceRef>23026062:5</ojp:TopographicPlaceRef>
+                                      </ojp:StopPoint>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Zürich Flughafen</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.55988</siri:Longitude>
+                                          <siri:Latitude>47.44828</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8506000</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Winterthur</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>110388</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23026230:17</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Winterthur</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.72233</siri:Longitude>
+                                          <siri:Latitude>47.49883</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPoint>
+                                          <siri:StopPointRef>ch:1:sloid:6000:3:5</siri:StopPointRef>
+                                          <ojp:StopPointName>
+                                              <ojp:Text xml:lang="de">Winterthur</ojp:Text>
+                                          </ojp:StopPointName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>110388:0:5</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:ParentRef>8506000</ojp:ParentRef>
+                                          <ojp:TopographicPlaceRef>23026230:17</ojp:TopographicPlaceRef>
+                                      </ojp:StopPoint>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Winterthur</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>8.72233</siri:Longitude>
+                                          <siri:Latitude>47.49883</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8506206</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Wil SG</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>110528</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23016427:1</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Wil SG</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>9.04357</siri:Longitude>
+                                          <siri:Latitude>47.46168</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPoint>
+                                          <siri:StopPointRef>ch:1:sloid:6206:1:1</siri:StopPointRef>
+                                          <ojp:StopPointName>
+                                              <ojp:Text xml:lang="de">Wil SG</ojp:Text>
+                                          </ojp:StopPointName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>110528:0:1</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:ParentRef>8506206</ojp:ParentRef>
+                                          <ojp:TopographicPlaceRef>23016427:1</ojp:TopographicPlaceRef>
+                                      </ojp:StopPoint>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Wil SG</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>9.04357</siri:Longitude>
+                                          <siri:Latitude>47.46168</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8506208</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Uzwil</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>110529</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23016408:7</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Uzwil</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>9.13092</siri:Longitude>
+                                          <siri:Latitude>47.43547</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPoint>
+                                          <siri:StopPointRef>ch:1:sloid:6208:2:4</siri:StopPointRef>
+                                          <ojp:StopPointName>
+                                              <ojp:Text xml:lang="de">Uzwil</ojp:Text>
+                                          </ojp:StopPointName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>110529:0:4</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:ParentRef>8506208</ojp:ParentRef>
+                                          <ojp:TopographicPlaceRef>23016408:7</ojp:TopographicPlaceRef>
+                                      </ojp:StopPoint>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Uzwil</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>9.13092</siri:Longitude>
+                                          <siri:Latitude>47.43547</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8506209</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Flawil</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>110530</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23016402:5</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Flawil</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>9.19026</siri:Longitude>
+                                          <siri:Latitude>47.41501</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPoint>
+                                          <siri:StopPointRef>ch:1:sloid:6209:1:2</siri:StopPointRef>
+                                          <ojp:StopPointName>
+                                              <ojp:Text xml:lang="de">Flawil</ojp:Text>
+                                          </ojp:StopPointName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>110530:0:2</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:ParentRef>8506209</ojp:ParentRef>
+                                          <ojp:TopographicPlaceRef>23016402:5</ojp:TopographicPlaceRef>
+                                      </ojp:StopPoint>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Flawil</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>9.19026</siri:Longitude>
+                                          <siri:Latitude>47.41501</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8506210</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">Gossau SG</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>110531</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23016443:2</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Gossau SG</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>9.25690</siri:Longitude>
+                                          <siri:Latitude>47.41171</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPoint>
+                                          <siri:StopPointRef>ch:1:sloid:6210:2:3</siri:StopPointRef>
+                                          <ojp:StopPointName>
+                                              <ojp:Text xml:lang="de">Gossau SG</ojp:Text>
+                                          </ojp:StopPointName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>110531:0:3</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:ParentRef>8506210</ojp:ParentRef>
+                                          <ojp:TopographicPlaceRef>23016443:2</ojp:TopographicPlaceRef>
+                                      </ojp:StopPoint>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">Gossau SG</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>9.25690</siri:Longitude>
+                                          <siri:Latitude>47.41171</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPlace>
+                                          <ojp:StopPlaceRef>8506302</ojp:StopPlaceRef>
+                                          <ojp:StopPlaceName>
+                                              <ojp:Text xml:lang="de">St. Gallen</ojp:Text>
+                                          </ojp:StopPlaceName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>110601</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:TopographicPlaceRef>23016203:13</ojp:TopographicPlaceRef>
+                                      </ojp:StopPlace>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">St. Gallen</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>9.37105</siri:Longitude>
+                                          <siri:Latitude>47.42453</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                                  <ojp:Location>
+                                      <ojp:StopPoint>
+                                          <siri:StopPointRef>ch:1:sloid:6302:1:1</siri:StopPointRef>
+                                          <ojp:StopPointName>
+                                              <ojp:Text xml:lang="de">St. Gallen</ojp:Text>
+                                          </ojp:StopPointName>
+                                          <ojp:PrivateCode>
+                                              <ojp:System>EFA</ojp:System>
+                                              <ojp:Value>110601:0:1</ojp:Value>
+                                          </ojp:PrivateCode>
+                                          <ojp:ParentRef>8506302</ojp:ParentRef>
+                                          <ojp:TopographicPlaceRef>23016203:13</ojp:TopographicPlaceRef>
+                                      </ojp:StopPoint>
+                                      <ojp:LocationName>
+                                          <ojp:Text xml:lang="de">St. Gallen</ojp:Text>
+                                      </ojp:LocationName>
+                                      <ojp:GeoPosition>
+                                          <siri:Longitude>9.37105</siri:Longitude>
+                                          <siri:Latitude>47.42453</siri:Latitude>
+                                      </ojp:GeoPosition>
+                                  </ojp:Location>
+                              </ojp:Places>
+                          </ojp:TripInfoResponseContext>
+                          <ojp:TripInfoResult>
+                              <ojp:Service>
+                                  <ojp:OperatingDayRef>2023-12-08</ojp:OperatingDayRef>
+                                  <ojp:JourneyRef>ch:1:sjyid:100001:715-002</ojp:JourneyRef>
+                                  <siri:LineRef>ojp:91001:D</siri:LineRef>
+                                  <siri:DirectionRef>H</siri:DirectionRef>
+                                  <ojp:Mode>
+                                      <ojp:PtMode>rail</ojp:PtMode>
+                                      <siri:RailSubmode>interRegionalRailService</siri:RailSubmode>
+                                      <ojp:Name>
+                                          <ojp:Text xml:lang="de">Zug</ojp:Text>
+                                      </ojp:Name>
+                                      <ojp:ShortName>
+                                          <ojp:Text xml:lang="de">IC</ojp:Text>
+                                      </ojp:ShortName>
+                                  </ojp:Mode>
+                                  <ojp:PublishedLineName>
+                                      <ojp:Text xml:lang="de">IC1</ojp:Text>
+                                  </ojp:PublishedLineName>
+                                  <ojp:OperatorRef>ojp:11</ojp:OperatorRef>
+                                  <ojp:OriginStopPointRef>ch:1:sloid:1026:2:4</ojp:OriginStopPointRef>
+                                  <ojp:OriginText>
+                                      <ojp:Text xml:lang="de">Genève-Aéroport</ojp:Text>
+                                  </ojp:OriginText>
+                                  <ojp:DestinationStopPointRef>ch:1:sloid:6302:1:1</ojp:DestinationStopPointRef>
+                                  <ojp:DestinationText>
+                                      <ojp:Text xml:lang="de">St. Gallen</ojp:Text>
+                                  </ojp:DestinationText>
+                              </ojp:Service>
+                              <ojp:Extension>
+                                  <ojp:TransportTypeName>
+                                      <ojp:Text xml:lang="de">InterCity</ojp:Text>
+                                  </ojp:TransportTypeName>
+                                  <ojp:PublishedJourneyNumber>
+                                      <ojp:Text xml:lang="de">715</ojp:Text>
+                                  </ojp:PublishedJourneyNumber>
+                                  <ojp:OperatorName>
+                                      <ojp:Text xml:lang="de">Schweizerische Bundesbahnen SBB</ojp:Text>
+                                  </ojp:OperatorName>
+                              </ojp:Extension>
+                          </ojp:TripInfoResult>
+                      </ojp:OJPTripInfoDelivery>
+                  </siri:ServiceDelivery>
+              </siri:OJPResponse>
+          </siri:OJP>

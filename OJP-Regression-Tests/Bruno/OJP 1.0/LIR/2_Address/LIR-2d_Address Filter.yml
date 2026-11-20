@@ -1,0 +1,186 @@
+info:
+  name: LIR-2d_Address Filter
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: "{{server}}"
+  body:
+    type: xml
+    data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+      <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+      \    <OJPRequest>\r
+
+      \        <ServiceRequest>\r
+
+      \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+      \            <ojp:OJPLocationInformationRequest>\r
+
+      \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \                <MessageIdentifier>LIR-2a</MessageIdentifier>\r
+
+      \                <ojp:InitialInput>\r
+
+      \                    <ojp:LocationName>Schulstrasse</ojp:LocationName>\r
+
+      \                </ojp:InitialInput>\r
+
+      \                <ojp:Restrictions>\r
+
+      \                    <ojp:Type>address</ojp:Type>\r
+
+      \                    <ojp:NumberOfResults>10</ojp:NumberOfResults>\r
+
+      \                </ojp:Restrictions>\r
+
+      \            </ojp:OJPLocationInformationRequest>\r
+
+      \        </ServiceRequest>\r
+
+      \    </OJPRequest>\r
+
+      </OJP>"
+  auth:
+    type: bearer
+    token: "{{BearerToken}}"
+
+runtime:
+  scripts:
+    - type: after-response
+      code: "test(\"Body contains <Address>\", function () {\r
+
+        \    expect(res.getBody()?.toString()).to.include(\"Address>\");\r
+
+        });\r
+
+        \r
+
+        test(\"Body contains not <StopPlace>\", function () {\r
+
+        \    expect(res.getBody()?.toString()).to.not.include(\"StopPlace>\");\r
+
+        });"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: LIR-2a_Address
+    request:
+      url: "{{server}}"
+      method: POST
+      body:
+        type: xml
+        data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+          <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+          \    <OJPRequest>\r
+
+          \        <ServiceRequest>\r
+
+          \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+          \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+          \            <ojp:OJPLocationInformationRequest>\r
+
+          \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+          \                <MessageIdentifier>LIR-2a</MessageIdentifier>\r
+
+          \                <ojp:InitialInput>\r
+
+          \                    <ojp:LocationName>Staffelstrasse 12 8045</ojp:LocationName>\r
+
+          \                </ojp:InitialInput>\r
+
+          \                <ojp:Restrictions>\r
+
+          \                    <ojp:Type>address</ojp:Type>\r
+
+          \                    <ojp:NumberOfResults>10</ojp:NumberOfResults>\r
+
+          \                </ojp:Restrictions>\r
+
+          \            </ojp:OJPLocationInformationRequest>\r
+
+          \        </ServiceRequest>\r
+
+          \    </OJPRequest>\r
+
+          </OJP>"
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Server
+          value: EFAController/10.6.14.5/OJP-EFA01-I
+        - name: Date
+          value: Fri, 01 Dec 2023 16:48:05 GMT
+        - name: Content-Type
+          value: text/xml
+        - name: Accept-Ranges
+          value: none
+        - name: Content-Length
+          value: "1755"
+        - name: Last-Modified
+          value: Fri, 01 Dec 2023 16:48:05 GMT
+        - name: Connection
+          value: Keep-Alive
+        - name: Access-Control-Allow-Origin
+          value: "*"
+      body:
+        type: xml
+        data: |-
+          <?xml version="1.0" encoding="UTF-8"?>
+          <siri:OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns:ojp="http://www.vdv.de/ojp" version="1.0">
+              <siri:OJPResponse>
+                  <siri:ServiceDelivery>
+                      <siri:ResponseTimestamp>2023-12-01T16:48:05Z</siri:ResponseTimestamp>
+                      <siri:ProducerRef>EFAController10.6.14.5-OJP-EFA01-I</siri:ProducerRef>
+                      <siri:Status>true</siri:Status>
+                      <ojp:OJPLocationInformationDelivery>
+                          <siri:ResponseTimestamp>2023-12-01T16:48:05Z</siri:ResponseTimestamp>
+                          <siri:RequestMessageRef>LIR-2a</siri:RequestMessageRef>
+                          <siri:Status>true</siri:Status>
+                          <ojp:CalcTime>380</ojp:CalcTime>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:Address>
+                                      <ojp:AddressCode>streetID:1500000434:12:23026261:-1:Staffelstrasse:Zürich:Staffelstrasse::Staffelstrasse:8045:ANY:DIVA_SINGLEHOUSE:948536:5998789:MRCV:sbb:0</ojp:AddressCode>
+                                      <ojp:AddressName>
+                                          <ojp:Text xml:lang="de">Zürich, Staffelstrasse 12</ojp:Text>
+                                      </ojp:AddressName>
+                                      <ojp:PostCode>8045</ojp:PostCode>
+                                      <ojp:TopographicPlaceName>Zürich</ojp:TopographicPlaceName>
+                                      <ojp:TopographicPlaceRef>23026261:-1</ojp:TopographicPlaceRef>
+                                      <ojp:Street>Staffelstrasse</ojp:Street>
+                                      <ojp:HouseNumber>12</ojp:HouseNumber>
+                                  </ojp:Address>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Staffelstrasse 12 (Zürich)</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>8.52084</siri:Longitude>
+                                      <siri:Latitude>47.36107</siri:Latitude>
+                                  </ojp:GeoPosition>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                      </ojp:OJPLocationInformationDelivery>
+                  </siri:ServiceDelivery>
+              </siri:OJPResponse>
+          </siri:OJP>

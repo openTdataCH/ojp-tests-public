@@ -1,0 +1,41 @@
+opencollection: 1.0.0
+
+info:
+  name: OJP 1.0 2026 11
+config:
+  proxy:
+    inherit: true
+    config:
+      protocol: http
+      hostname: ""
+      port: ""
+      auth:
+        username: ""
+        password: ""
+      bypassProxy: ""
+
+request:
+  auth:
+    type: bearer
+    token: "{{BearerToken}}"
+  variables:
+    - name: friday_timetable_change
+      value: 2026-12-11
+    - name: saturday_timetable_change
+      value: 2026-12-12
+    - name: new_timetable_date
+      value: 2026-12-12
+    - name: late_summer_weekday
+      value: 2027-10-01
+  scripts:
+    - type: before-request
+      code: |-
+        const mymoment = require('moment');
+        const now = mymoment().format("yyyy-MM-DDTHH:mm:ssZ");
+        bru.setVar('isoTimestamp', now);
+bundled: false
+extensions:
+  bruno:
+    ignore:
+      - node_modules
+      - .git

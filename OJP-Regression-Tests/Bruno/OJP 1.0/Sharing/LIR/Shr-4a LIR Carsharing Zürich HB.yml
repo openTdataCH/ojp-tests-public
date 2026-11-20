@@ -1,0 +1,2752 @@
+info:
+  name: Shr-4a LIR Carsharing Zürich HB
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: "{{server}}"
+  headers:
+    - name: Content-Type
+      value: text/xml
+  body:
+    type: xml
+    data: "<OJP xmlns=\"http://www.siri.org.uk/siri\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\" version=\"1.0\">\r
+
+      \    <OJPRequest>\r
+
+      \        <ServiceRequest>\r
+
+      \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+      \            <ojp:OJPLocationInformationRequest>\r
+
+      \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \                <MessageIdentifier>Shr-4a</MessageIdentifier>\r
+
+      \                <ojp:InitialInput>\r
+
+      \                    <ojp:GeoRestriction>\r
+
+      \                        <ojp:Circle> <!--Anfrag mittels Circle oder Rectangle-->\r
+
+      \                            <ojp:Center> <!--Koordinate, zu welcher Objekte geliefert werden sollen-->\r
+
+      \                                <Longitude>8.53625</Longitude> <!--WGS84 Lon-->\r
+
+      \                                <Latitude>47.37786</Latitude> <!--WGS84 Lat-->\r
+
+      \                            </ojp:Center>\r
+
+      \                            <ojp:Radius>2000</ojp:Radius> <!--Radius in Meter um Koordinate-->\r
+
+      \                        </ojp:Circle>\r
+
+      \                    </ojp:GeoRestriction>\r
+
+      \                </ojp:InitialInput>\r
+
+      \                <ojp:Restrictions>\r
+
+      \                    <ojp:Type>poi</ojp:Type>\r
+
+      \                    <ojp:PointOfInterestFilter>\r
+
+      \                        <ojp:PointOfInterestCategory>\r
+
+      \                            <ojp:OsmTag>\r
+
+      \                                <ojp:Tag>amenity</ojp:Tag>\r
+
+      \                                <ojp:Value>car_sharing</ojp:Value>  <!--CarSharer oder deren Stationen-->\r
+
+      \                            </ojp:OsmTag>\r
+
+      \                        </ojp:PointOfInterestCategory>\r
+
+      \                    </ojp:PointOfInterestFilter>\r
+
+      \                </ojp:Restrictions>\r
+
+      \            </ojp:OJPLocationInformationRequest>\r
+
+      \        </ServiceRequest>\r
+
+      \    </OJPRequest>\r
+
+      </OJP>"
+  auth:
+    type: bearer
+    token: "{{BearerToken}}"
+
+runtime:
+  scripts:
+    - type: after-response
+      code: "test(\"Body matches string car_sharing\", function () {\r
+
+        \    expect(res.getBody()?.toString()).to.include(\"<ojp:Value>car_sharing</ojp:Value>\");\r
+
+        });\r
+
+        test(\"Body matches string num_docks and vehicles available\", function () {\r
+
+        \    expect(res.getBody()?.toString()).to.include(\"ojp:num_vehicles_available\")\r
+
+        \    expect(res.getBody()?.toString()).to.include(\"ojp:num_docks_available\");;\r
+
+        });"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: E0 - LIR Carsharing
+    request:
+      url: "{{server}}"
+      method: POST
+      headers:
+        - name: Content-Type
+          value: text/xml
+      body:
+        type: xml
+        data: "<OJP xmlns=\"http://www.siri.org.uk/siri\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\" version=\"1.0\">\r
+
+          \    <OJPRequest>\r
+
+          \        <ServiceRequest>\r
+
+          \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+          \            <RequestorRef>IRMA</RequestorRef>\r
+
+          \            <ojp:OJPLocationInformationRequest>\r
+
+          \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+          \                <MessageIdentifier>4711</MessageIdentifier>\r
+
+          \                <ojp:InitialInput>\r
+
+          \                    <ojp:GeoRestriction>\r
+
+          \                        <ojp:Circle>\r
+
+          \                            <ojp:Center>\r
+
+          \                                <Longitude>7.5895</Longitude>\r
+
+          \                                <Latitude>47.5473</Latitude>\r
+
+          \                            </ojp:Center>\r
+
+          \                            <ojp:Radius>2000</ojp:Radius>\r
+
+          \                        </ojp:Circle>\r
+
+          \                    </ojp:GeoRestriction>\r
+
+          \                </ojp:InitialInput>\r
+
+          \                <ojp:Restrictions>\r
+
+          \                    <ojp:Type>poi</ojp:Type>\r
+
+          \                    <ojp:PointOfInterestFilter>\r
+
+          \                        <ojp:PointOfInterestCategory>\r
+
+          \                            <ojp:OsmTag>\r
+
+          \                                <ojp:Tag>amenity</ojp:Tag>\r
+
+          \                                <ojp:Value>car_sharing</ojp:Value>\r
+
+          \                            </ojp:OsmTag>\r
+
+          \                        </ojp:PointOfInterestCategory>\r
+
+          \                    </ojp:PointOfInterestFilter>\r
+
+          \                </ojp:Restrictions>\r
+
+          \            </ojp:OJPLocationInformationRequest>\r
+
+          \        </ServiceRequest>\r
+
+          \    </OJPRequest>\r
+
+          </OJP>"
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Date
+          value: Wed, 15 Jun 2022 18:24:27 GMT
+        - name: Content-Type
+          value: text/xml
+        - name: Content-Length
+          value: "6662"
+        - name: Connection
+          value: keep-alive
+        - name: Server
+          value: EFAController/10.5.14.43/OD-EFA01-T
+        - name: Accept-Ranges
+          value: none
+        - name: Last-Modified
+          value: Wed, 15 Jun 2022 18:24:27 GMT
+        - name: Content-Encoding
+          value: gzip
+      body:
+        type: xml
+        data: |-
+          <?xml version="1.0" encoding="UTF-8"?>
+          <siri:OJP xmlns:siri="http://www.siri.org.uk/siri" xmlns:ojp="http://www.vdv.de/ojp" version="1.0">
+              <siri:OJPResponse>
+                  <siri:ServiceDelivery>
+                      <siri:ResponseTimestamp>2022-06-15T18:24:27Z</siri:ResponseTimestamp>
+                      <siri:ProducerRef>OJPCH_test</siri:ProducerRef>
+                      <siri:Status>true</siri:Status>
+                      <ojp:OJPLocationInformationDelivery>
+                          <siri:ResponseTimestamp>2022-06-15T18:24:26Z</siri:ResponseTimestamp>
+                          <siri:RequestMessageRef>4711</siri:RequestMessageRef>
+                          <siri:Status>true</siri:Status>
+                          <ojp:CalcTime>247</ojp:CalcTime>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:841644:5966235:MRCV:Mobility Allschwil Lindenplatz</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Allschwil Lindenplatz</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.56062</siri:Longitude>
+                                      <siri:Latitude>47.55879</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Allschwil Lindenplatz</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:71330</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:840768:5966869:MRCV:Mobility Allschwil Parkallee</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Allschwil Parkallee</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.55275</siri:Longitude>
+                                      <siri:Latitude>47.55495</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Allschwil Parkallee</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:81814</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:841187:5968186:MRCV:Mobility Allschwil Steinbühlallee </ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Allschwil Steinbühlallee </ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.55651</siri:Longitude>
+                                      <siri:Latitude>47.54696</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Allschwil Steinbühlallee </ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:82117</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:845478:5967287:MRCV:Mobility Basel Aeschenplatz / Dufourstrasse</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Aeschenplatz / Dufourstrasse</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.59506</siri:Longitude>
+                                      <siri:Latitude>47.55241</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Aeschenplatz / Dufourstrasse</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:80771</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:843359:5965538:MRCV:Mobility Basel Augenspital</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Augenspital</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.57602</siri:Longitude>
+                                      <siri:Latitude>47.56302</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Augenspital</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:81238</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:846982:5965126:MRCV:Mobility Basel Badischer Bahnhof</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Badischer Bahnhof</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.60857</siri:Longitude>
+                                      <siri:Latitude>47.56551</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Badischer Bahnhof</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:70029</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:844872:5968033:MRCV:Mobility Basel Bahnhof SBB / Central Bahnparking</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Bahnhof SBB / Central Bahnparking</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.58961</siri:Longitude>
+                                      <siri:Latitude>47.54789</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Bahnhof SBB / Central Bahnparking</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:69964</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:844706:5968313:MRCV:Mobility Basel Bahnhof SBB / Parkhaus Bahnhof Süd</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Bahnhof SBB / Parkhaus Bahnhof Süd</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.58812</siri:Longitude>
+                                      <siri:Latitude>47.54619</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Bahnhof SBB / Parkhaus Bahnhof Süd</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:70102</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:844961:5968460:MRCV:Mobility Basel Bahnhof SBB / Solothurnerstrasse</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Bahnhof SBB / Solothurnerstrasse</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.59041</siri:Longitude>
+                                      <siri:Latitude>47.54530</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Bahnhof SBB / Solothurnerstrasse</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:69961</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:844035:5966082:MRCV:Mobility Basel Bernoullistrasse</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Bernoullistrasse</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.58210</siri:Longitude>
+                                      <siri:Latitude>47.55972</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Bernoullistrasse</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:80507</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:848024:5967992:MRCV:Mobility Basel Bethesda Spital</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Bethesda Spital</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.61793</siri:Longitude>
+                                      <siri:Latitude>47.54814</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Bethesda Spital</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:71212</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:844680:5964634:MRCV:Mobility Basel Bläsiring</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Bläsiring</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.58789</siri:Longitude>
+                                      <siri:Latitude>47.56850</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Bläsiring</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:79580</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:847657:5966684:MRCV:Mobility Basel Breite</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Breite</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.61463</siri:Longitude>
+                                      <siri:Latitude>47.55607</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Breite</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:69782</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:845748:5970155:MRCV:Mobility Basel Bruderholz / Hauensteinstrasse</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Bruderholz / Hauensteinstrasse</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.59748</siri:Longitude>
+                                      <siri:Latitude>47.53502</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Bruderholz / Hauensteinstrasse</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:71128</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:843182:5967461:MRCV:Mobility Basel Bundesplatz / Brennerstrasse</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Bundesplatz / Brennerstrasse</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.57443</siri:Longitude>
+                                      <siri:Latitude>47.55136</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Bundesplatz / Brennerstrasse</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:80510</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:842467:5965260:MRCV:Mobility Basel Burgfelderstrasse / Ensisheimerstrasse</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Burgfelderstrasse / Ensisheimerstrasse</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.56801</siri:Longitude>
+                                      <siri:Latitude>47.56470</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Burgfelderstrasse / Ensisheimerstrasse</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:80508</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:845279:5965329:MRCV:Mobility Basel Claragraben</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Claragraben</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.59327</siri:Longitude>
+                                      <siri:Latitude>47.56428</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Claragraben</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:82843</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:845308:5965674:MRCV:Mobility Basel Claraplatz</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Claraplatz</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.59353</siri:Longitude>
+                                      <siri:Latitude>47.56219</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Claraplatz</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:70085</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:846931:5970529:MRCV:Mobility Basel Dreispitz / Freilager</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Dreispitz / Freilager</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.60811</siri:Longitude>
+                                      <siri:Latitude>47.53276</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Dreispitz / Freilager</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:81279</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:846038:5964486:MRCV:Mobility Basel Erlenmatt</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Erlenmatt</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.60009</siri:Longitude>
+                                      <siri:Latitude>47.56939</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Erlenmatt</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:70241</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:846106:5964360:MRCV:Mobility Basel Erlenmattpark</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Erlenmattpark</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.60070</siri:Longitude>
+                                      <siri:Latitude>47.57016</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Erlenmattpark</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:80511</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:846668:5967644:MRCV:Mobility Basel Gellertquartier / Hardstrasse</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Gellertquartier / Hardstrasse</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.60575</siri:Longitude>
+                                      <siri:Latitude>47.55025</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Gellertquartier / Hardstrasse</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:70218</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:845381:5969246:MRCV:Mobility Basel Gundeli-Park</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Gundeli-Park</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.59419</siri:Longitude>
+                                      <siri:Latitude>47.54054</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Gundeli-Park</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:70233</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:842210:5965463:MRCV:Mobility Basel Hegenheimerstrasse  / Ensisheimerstrasse</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Hegenheimerstrasse  / Ensisheimerstrasse</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.56570</siri:Longitude>
+                                      <siri:Latitude>47.56347</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Hegenheimerstrasse  / Ensisheimerstrasse</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:80509</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:844243:5966875:MRCV:Mobility Basel Holbeinplatz</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Holbeinplatz</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.58396</siri:Longitude>
+                                      <siri:Latitude>47.55491</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Holbeinplatz</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:71132</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:844167:5968252:MRCV:Mobility Basel IWB</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel IWB</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.58328</siri:Longitude>
+                                      <siri:Latitude>47.54656</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel IWB</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:69917</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:842931:5965477:MRCV:Mobility Basel Kannenfeldpark</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Kannenfeldpark</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.57218</siri:Longitude>
+                                      <siri:Latitude>47.56339</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Kannenfeldpark</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:69783</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:844907:5965193:MRCV:Mobility Basel Klybeckhof</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Klybeckhof</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.58993</siri:Longitude>
+                                      <siri:Latitude>47.56511</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Klybeckhof</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:70228</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:845435:5966260:MRCV:Mobility Basel Lindenberg</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Lindenberg</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.59467</siri:Longitude>
+                                      <siri:Latitude>47.55864</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Lindenberg</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:71504</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:845296:5964768:MRCV:Mobility Basel Matthäuskirche / Mörsbergerstrasse</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Matthäuskirche / Mörsbergerstrasse</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.59342</siri:Longitude>
+                                      <siri:Latitude>47.56768</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Matthäuskirche / Mörsbergerstrasse</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:80506</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:846164:5965409:MRCV:Mobility Basel Messe</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Messe</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.60122</siri:Longitude>
+                                      <siri:Latitude>47.56380</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Messe</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:70009</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:846485:5969451:MRCV:Mobility Basel Migros Dreispitz</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Migros Dreispitz</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.60410</siri:Longitude>
+                                      <siri:Latitude>47.53929</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Migros Dreispitz</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:70796</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:845154:5966740:MRCV:Mobility Basel Münsterplatz / Rittergasse</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Münsterplatz / Rittergasse</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.59215</siri:Longitude>
+                                      <siri:Latitude>47.55573</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Münsterplatz / Rittergasse</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:70124</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:843278:5966129:MRCV:Mobility Basel Nonnenweg</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Nonnenweg</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.57530</siri:Longitude>
+                                      <siri:Latitude>47.55944</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Nonnenweg</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:81190</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:841991:5967095:MRCV:Mobility Basel Pilatusstrasse</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Pilatusstrasse</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.56373</siri:Longitude>
+                                      <siri:Latitude>47.55358</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Pilatusstrasse</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:71074</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:845895:5968081:MRCV:Mobility Basel Sommercasino / Münchensteinerstrasse</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Sommercasino / Münchensteinerstrasse</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.59880</siri:Longitude>
+                                      <siri:Latitude>47.54760</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Sommercasino / Münchensteinerstrasse</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:70166</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:844242:5965623:MRCV:Mobility Basel Spitalstrasse</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Spitalstrasse</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.58395</siri:Longitude>
+                                      <siri:Latitude>47.56250</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Spitalstrasse</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:80505</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:846548:5967260:MRCV:Mobility Basel St. Alban</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel St. Alban</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.60467</siri:Longitude>
+                                      <siri:Latitude>47.55258</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel St. Alban</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:81265</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:843791:5964875:MRCV:Mobility Basel St. Johannpark</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel St. Johannpark</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.57990</siri:Longitude>
+                                      <siri:Latitude>47.56704</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel St. Johannpark</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:71266</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:843929:5964979:MRCV:Mobility Basel St. Johanns-Platz</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel St. Johanns-Platz</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.58114</siri:Longitude>
+                                      <siri:Latitude>47.56641</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel St. Johanns-Platz</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:79840</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:843177:5966877:MRCV:Mobility Basel Thannerstrasse</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Thannerstrasse</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.57439</siri:Longitude>
+                                      <siri:Latitude>47.55490</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Thannerstrasse</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:69928</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:845880:5966365:MRCV:Mobility Basel Theodorsgraben / Alemannengasse</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Theodorsgraben / Alemannengasse</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.59867</siri:Longitude>
+                                      <siri:Latitude>47.55800</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Theodorsgraben / Alemannengasse</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:70627</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:844039:5965580:MRCV:Mobility Basel Universitätsspital / Klinikum 1</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Universitätsspital / Klinikum 1</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.58213</siri:Longitude>
+                                      <siri:Latitude>47.56276</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Universitätsspital / Klinikum 1</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:81213</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:843226:5964601:MRCV:Mobility Basel Vogesenstrasse</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Vogesenstrasse</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.57483</siri:Longitude>
+                                      <siri:Latitude>47.56870</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Vogesenstrasse</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:69642</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:846722:5968716:MRCV:Mobility Basel Wolf-Areal</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Wolf-Areal</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.60623</siri:Longitude>
+                                      <siri:Latitude>47.54375</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Wolf-Areal</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:81280</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:847108:5968447:MRCV:Mobility Basel Zeughaus / CityGate</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Zeughaus / CityGate</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.60970</siri:Longitude>
+                                      <siri:Latitude>47.54538</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Zeughaus / CityGate</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:82813</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:842643:5969924:MRCV:Mobility Binningen Benkenstrasse</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Binningen Benkenstrasse</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.56959</siri:Longitude>
+                                      <siri:Latitude>47.53642</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Binningen Benkenstrasse</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:82657</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:843189:5968655:MRCV:Mobility Binningen Dorenbachstrasse</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Binningen Dorenbachstrasse</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.57450</siri:Longitude>
+                                      <siri:Latitude>47.54412</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Binningen Dorenbachstrasse</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:82655</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:842958:5969366:MRCV:Mobility Binningen Hauptstrasse</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Binningen Hauptstrasse</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.57242</siri:Longitude>
+                                      <siri:Latitude>47.53981</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Binningen Hauptstrasse</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:81305</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:843132:5969543:MRCV:Mobility Binningen Kronenplatz / Amerikanerstrasse</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Binningen Kronenplatz / Amerikanerstrasse</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.57398</siri:Longitude>
+                                      <siri:Latitude>47.53874</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Binningen Kronenplatz / Amerikanerstrasse</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:80127</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:843091:5970932:MRCV:Mobility Binningen Mühlematt</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Binningen Mühlematt</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.57362</siri:Longitude>
+                                      <siri:Latitude>47.53031</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Binningen Mühlematt</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:70051</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:848475:5967285:MRCV:Mobility Birsfelden Birsstegweg</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Birsfelden Birsstegweg</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.62198</siri:Longitude>
+                                      <siri:Latitude>47.55243</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Birsfelden Birsstegweg</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:70199</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:848790:5966735:MRCV:Mobility Birsfelden Hofstrasse</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Birsfelden Hofstrasse</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.62481</siri:Longitude>
+                                      <siri:Latitude>47.55576</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Birsfelden Hofstrasse</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:71374</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:842870:5971863:MRCV:Mobility Bottmingen Buswendeschleife</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Bottmingen Buswendeschleife</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.57163</siri:Longitude>
+                                      <siri:Latitude>47.52466</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Bottmingen Buswendeschleife</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:69650</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:847345:5971255:MRCV:Mobility Münchenstein Schaulager</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Münchenstein Schaulager</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.61183</siri:Longitude>
+                                      <siri:Latitude>47.52835</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Münchenstein Schaulager</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>mobility:82908</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:844706:5968313:MRCV:Mobility Basel Bahnhof SBB / Parkhaus Bahnhof Süd</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Bahnhof SBB / Parkhaus Bahnhof Süd</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.58812</siri:Longitude>
+                                      <siri:Latitude>47.54619</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Bahnhof SBB / Parkhaus Bahnhof Süd</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>emobility:70102</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:845279:5965329:MRCV:Mobility Basel Claragraben</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Basel Claragraben</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">Mobility</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.59327</siri:Longitude>
+                                      <siri:Latitude>47.56428</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Basel Claragraben</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>emobility:82843</ojp:Code>
+                                      <ojp:InfoURL></ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:846472:5967919:MRCV:2EM Car Sharing Bmw 320xd 2015</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Bmw 320xd 2015</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">2EM Car Sharing</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.60399</siri:Longitude>
+                                      <siri:Latitude>47.54858</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Bmw 320xd 2015</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>2em_cars:1635</ojp:Code>
+                                      <ojp:InfoURL>ch.2em://search/cars/1635</ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:843350:5970308:MRCV:2EM Car Sharing Volkswagen T4 (Langzeitmiete möglich) 2001</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Volkswagen T4 (Langzeitmiete möglich) 2001</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">2EM Car Sharing</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.57594</siri:Longitude>
+                                      <siri:Latitude>47.53410</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Volkswagen T4 (Langzeitmiete möglich) 2001</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>2em_cars:3317</ojp:Code>
+                                      <ojp:InfoURL>ch.2em://search/cars/3317</ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:843065:5966114:MRCV:2EM Car Sharing Skoda Rapid 2015</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Skoda Rapid 2015</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">2EM Car Sharing</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.57338</siri:Longitude>
+                                      <siri:Latitude>47.55953</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Skoda Rapid 2015</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>2em_cars:3325</ojp:Code>
+                                      <ojp:InfoURL>ch.2em://search/cars/3325</ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:842501:5966547:MRCV:2EM Car Sharing Skoda Fabia Tdi RS 2006</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Skoda Fabia Tdi RS 2006</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">2EM Car Sharing</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.56832</siri:Longitude>
+                                      <siri:Latitude>47.55690</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Skoda Fabia Tdi RS 2006</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>2em_cars:3455</ojp:Code>
+                                      <ojp:InfoURL>ch.2em://search/cars/3455</ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:843527:5970257:MRCV:2EM Car Sharing Volkswagen Passat 2007</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Volkswagen Passat 2007</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">2EM Car Sharing</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.57753</siri:Longitude>
+                                      <siri:Latitude>47.53440</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Volkswagen Passat 2007</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>2em_cars:3492</ojp:Code>
+                                      <ojp:InfoURL>ch.2em://search/cars/3492</ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:843812:5964847:MRCV:2EM Car Sharing Alfa-Romeo 159 2007</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Alfa-Romeo 159 2007</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">2EM Car Sharing</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.58009</siri:Longitude>
+                                      <siri:Latitude>47.56721</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Alfa-Romeo 159 2007</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>2em_cars:3502</ojp:Code>
+                                      <ojp:InfoURL>ch.2em://search/cars/3502</ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:844068:5967151:MRCV:2EM Car Sharing Volkswagen T5 Kombi Champion RS 3400 TDI lang, Allrad 2012</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Volkswagen T5 Kombi Champion RS 3400 TDI lang, Allrad 2012</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">2EM Car Sharing</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.58239</siri:Longitude>
+                                      <siri:Latitude>47.55324</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Volkswagen T5 Kombi Champion RS 3400 TDI lang, Allrad 2012</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>2em_cars:3790</ojp:Code>
+                                      <ojp:InfoURL>ch.2em://search/cars/3790</ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:843252:5965653:MRCV:2EM Car Sharing Renault Espace 2010</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Renault Espace 2010</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">2EM Car Sharing</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.57506</siri:Longitude>
+                                      <siri:Latitude>47.56232</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Renault Espace 2010</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>2em_cars:3801</ojp:Code>
+                                      <ojp:InfoURL>ch.2em://search/cars/3801</ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:843740:5967866:MRCV:2EM Car Sharing Renault Master 2004</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Renault Master 2004</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">2EM Car Sharing</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.57945</siri:Longitude>
+                                      <siri:Latitude>47.54890</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Renault Master 2004</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>2em_cars:4148</ojp:Code>
+                                      <ojp:InfoURL>ch.2em://search/cars/4148</ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:842428:5966990:MRCV:2EM Car Sharing Volkswagen Golf 7 2016</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Volkswagen Golf 7 2016</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">2EM Car Sharing</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.56766</siri:Longitude>
+                                      <siri:Latitude>47.55422</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Volkswagen Golf 7 2016</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>2em_cars:4295</ojp:Code>
+                                      <ojp:InfoURL>ch.2em://search/cars/4295</ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:845567:5967272:MRCV:2EM Car Sharing Audi Q7 7-Sitzer 2008</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Audi Q7 7-Sitzer 2008</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">2EM Car Sharing</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.59586</siri:Longitude>
+                                      <siri:Latitude>47.55251</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Audi Q7 7-Sitzer 2008</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>2em_cars:4372</ojp:Code>
+                                      <ojp:InfoURL>ch.2em://search/cars/4372</ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:843611:5969359:MRCV:2EM Car Sharing Toyota Yaris (Langzeitmiete möglich) 2009</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Toyota Yaris (Langzeitmiete möglich) 2009</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">2EM Car Sharing</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.57829</siri:Longitude>
+                                      <siri:Latitude>47.53985</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Toyota Yaris (Langzeitmiete möglich) 2009</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>2em_cars:4610</ojp:Code>
+                                      <ojp:InfoURL>ch.2em://search/cars/4610</ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:846718:5965818:MRCV:2EM Car Sharing Toyota Yaris 1.5 VVT-i HSD Hybrid 2021</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Toyota Yaris 1.5 VVT-i HSD Hybrid 2021</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">2EM Car Sharing</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.60620</siri:Longitude>
+                                      <siri:Latitude>47.56132</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Toyota Yaris 1.5 VVT-i HSD Hybrid 2021</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>2em_cars:4696</ojp:Code>
+                                      <ojp:InfoURL>ch.2em://search/cars/4696</ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:843051:5971826:MRCV:2EM Car Sharing Mercedes 250 Sport 4Matic 2016</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Mercedes 250 Sport 4Matic 2016</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">2EM Car Sharing</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.57326</siri:Longitude>
+                                      <siri:Latitude>47.52489</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Mercedes 250 Sport 4Matic 2016</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>2em_cars:4821</ojp:Code>
+                                      <ojp:InfoURL>ch.2em://search/cars/4821</ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:845311:5968839:MRCV:2EM Car Sharing Renault Clio 2015</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Renault Clio 2015</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">2EM Car Sharing</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.59356</siri:Longitude>
+                                      <siri:Latitude>47.54300</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Renault Clio 2015</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>2em_cars:5000</ojp:Code>
+                                      <ojp:InfoURL>ch.2em://search/cars/5000</ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:843392:5966107:MRCV:2EM Car Sharing Audi A3 2011</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Audi A3 2011</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">2EM Car Sharing</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.57632</siri:Longitude>
+                                      <siri:Latitude>47.55957</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Audi A3 2011</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>2em_cars:5039</ojp:Code>
+                                      <ojp:InfoURL>ch.2em://search/cars/5039</ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:843828:5968585:MRCV:2EM Car Sharing Hyundai i10 1.2 2000</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Hyundai i10 1.2 2000</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">2EM Car Sharing</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.58024</siri:Longitude>
+                                      <siri:Latitude>47.54454</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Hyundai i10 1.2 2000</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>2em_cars:5120</ojp:Code>
+                                      <ojp:InfoURL>ch.2em://search/cars/5120</ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:845753:5969618:MRCV:2EM Car Sharing Peugeot 107 5 Türen 2010</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Peugeot 107 5 Türen 2010</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">2EM Car Sharing</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.59753</siri:Longitude>
+                                      <siri:Latitude>47.53828</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Peugeot 107 5 Türen 2010</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>2em_cars:5173</ojp:Code>
+                                      <ojp:InfoURL>ch.2em://search/cars/5173</ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:846718:5965818:MRCV:2EM Car Sharing Toyota Yaris 1.5 VVT-i HSD Hybrid 2021</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Toyota Yaris 1.5 VVT-i HSD Hybrid 2021</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">2EM Car Sharing</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.60620</siri:Longitude>
+                                      <siri:Latitude>47.56132</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Toyota Yaris 1.5 VVT-i HSD Hybrid 2021</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>2em_cars:5219</ojp:Code>
+                                      <ojp:InfoURL>ch.2em://search/cars/5219</ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:845731:5965230:MRCV:2EM Car Sharing Toyota Aygo 2012</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Toyota Aygo 2012</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">2EM Car Sharing</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.59733</siri:Longitude>
+                                      <siri:Latitude>47.56488</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Toyota Aygo 2012</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>2em_cars:5405</ojp:Code>
+                                      <ojp:InfoURL>ch.2em://search/cars/5405</ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:843310:5964724:MRCV:2EM Car Sharing Toyota Corolla 2005</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Toyota Corolla 2005</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">2EM Car Sharing</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.57558</siri:Longitude>
+                                      <siri:Latitude>47.56795</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Toyota Corolla 2005</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>2em_cars:5443</ojp:Code>
+                                      <ojp:InfoURL>ch.2em://search/cars/5443</ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                          <ojp:Location>
+                              <ojp:Location>
+                                  <ojp:PointOfInterest>
+                                      <ojp:PointOfInterestCode>coord:842692:5967710:MRCV:2EM Car Sharing Tesla Model 3 2019</ojp:PointOfInterestCode>
+                                      <ojp:PointOfInterestName>
+                                          <ojp:Text xml:lang="de">Tesla Model 3 2019</ojp:Text>
+                                      </ojp:PointOfInterestName>
+                                      <ojp:PointOfInterestCategory>
+                                          <ojp:OsmTag>
+                                              <ojp:Tag>amenity</ojp:Tag>
+                                              <ojp:Value>car_sharing</ojp:Value>
+                                          </ojp:OsmTag>
+                                      </ojp:PointOfInterestCategory>
+                                  </ojp:PointOfInterest>
+                                  <ojp:LocationName>
+                                      <ojp:Text xml:lang="de">2EM Car Sharing</ojp:Text>
+                                  </ojp:LocationName>
+                                  <ojp:GeoPosition>
+                                      <siri:Longitude>7.57003</siri:Longitude>
+                                      <siri:Latitude>47.54985</siri:Latitude>
+                                  </ojp:GeoPosition>
+                                  <ojp:Attribute>
+                                      <ojp:Text>
+                                          <ojp:Text xml:lang="de">Tesla Model 3 2019</ojp:Text>
+                                      </ojp:Text>
+                                      <ojp:Code>2em_cars_e:3520</ojp:Code>
+                                      <ojp:InfoURL>ch.2em://search/cars/3520</ojp:InfoURL>
+                                  </ojp:Attribute>
+                              </ojp:Location>
+                              <ojp:Complete>true</ojp:Complete>
+                              <ojp:Probability>1</ojp:Probability>
+                          </ojp:Location>
+                      </ojp:OJPLocationInformationDelivery>
+                  </siri:ServiceDelivery>
+              </siri:OJPResponse>
+          </siri:OJP>

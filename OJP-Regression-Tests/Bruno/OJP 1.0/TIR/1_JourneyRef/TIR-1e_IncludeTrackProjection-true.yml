@@ -1,0 +1,249 @@
+info:
+  name: TIR-1e_IncludeTrackProjection-true
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{server}}"
+  headers:
+    - name: Content-Type
+      value: text/xml
+  body:
+    type: xml
+    data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+      <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+      \    <OJPRequest>\r
+
+      \        <ServiceRequest>\r
+
+      \            <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+      \            <ojp:OJPTripInfoRequest>\r
+
+      \                <RequestTimestamp>{{isoTimestamp}}</RequestTimestamp>\r
+
+      \                <MessageIdentifier>TIR-1e</MessageIdentifier>\r
+
+      \                <ojp:JourneyRef>{{ActiveJourneyRef}}</ojp:JourneyRef>\r
+
+      \                <ojp:OperatingDayRef>{{ActiveOperatingDayRef}}</ojp:OperatingDayRef>\r
+
+      \                <ojp:Params>\r
+
+      \                    <ojp:IncludeTrackSections>true</ojp:IncludeTrackSections>\r
+
+      \                    <ojp:IncludeTrackProjection>true</ojp:IncludeTrackProjection>\r
+
+      \                </ojp:Params>\r
+
+      \            </ojp:OJPTripInfoRequest>\r
+
+      \        </ServiceRequest>\r
+
+      \    </OJPRequest>\r
+
+      </OJP>"
+  auth:
+    type: bearer
+    token: "{{BearerToken}}"
+
+runtime:
+  scripts:
+    - type: before-request
+      code: "// Define the XML request body\r
+
+        const xmlRequest = `<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
+
+        <OJP xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.siri.org.uk/siri\" version=\"1.0\" xmlns:ojp=\"http://www.vdv.de/ojp\" xsi:schemaLocation=\"http://www.siri.org.uk/siri ../ojp-xsd-v1.0/OJP.xsd\">\r
+
+        \    <OJPRequest>\r
+
+        \        <ServiceRequest>\r
+
+        \            <RequestTimestamp>2023-11-02T10:12:55.403Z</RequestTimestamp>\r
+
+        \            <RequestorRef>SKIPlusRegTest</RequestorRef>\r
+
+        \            <ojp:OJPStopEventRequest>\r
+
+        \                <RequestTimestamp>2023-11-02T10:12:55.403Z</RequestTimestamp>\r
+
+        \                <MessageIdentifier>ojp1_0</MessageIdentifier>\r
+
+        \                <ojp:Location>\r
+
+        \                    <ojp:PlaceRef>\r
+
+        \                        <StopPointRef>ch:1:sloid:91381</StopPointRef>\r
+
+        \                        <ojp:LocationName>\r
+
+        \                            <ojp:Text>Zürich Stauffacher</ojp:Text>\r
+
+        \                        </ojp:LocationName>\r
+
+        \                    </ojp:PlaceRef>\r
+
+        \                </ojp:Location>\r
+
+        \                <ojp:Params>\r
+
+        \                    <ojp:NumberOfResults>1</ojp:NumberOfResults>\r
+
+        \                    <ojp:StopEventType>both</ojp:StopEventType>\r
+
+        \                    <ojp:IncludeRealtimeData>true</ojp:IncludeRealtimeData>\r
+
+        \                </ojp:Params>\r
+
+        \            </ojp:OJPStopEventRequest>\r
+
+        \        </ServiceRequest>\r
+
+        \    </OJPRequest>\r
+
+        </OJP>`;\r
+
+        \r
+
+        \r
+
+        \r
+
+        \r
+
+        \r
+
+        // Send the POST request\r
+
+        await bru.sendRequest({\r
+
+        \    url: bru.getGlobalEnvVar('server'),\r
+
+        \    method: 'POST',\r
+
+        \    headers: {\r
+
+        \        'Authorization': `Bearer ${bru.getGlobalEnvVar('BearerToken')}`,\r
+
+        \        'Content-Type': 'text/xml',\r
+
+        \    },\r
+
+        \    data: xmlRequest,\r
+
+        }, async function(error, response) {\r
+
+        \    if (error) {\r
+
+        \        console.error('Request error:', error);\r
+
+        \    } else {\r
+
+        \        // Parse the XML response\r
+
+        \        const xmlResponse = response.data;\r
+
+        \r
+
+        \        // Use an XML parsing library like xml2js to parse the response\r
+
+        \        const xml2js = require('xml2js');\r
+
+        \        const parser = new xml2js.Parser({ explicitArray: false });\r
+
+        \r
+
+        \        parser.parseString(xmlResponse, function (err, result) {\r
+
+        \            if (err) {\r
+
+        \                console.error('XML parsing error:', err);\r
+
+        \            } else {\r
+
+        \                // Extract the ActiveJourneyRef value\r
+
+        \                const activeJourneyRef = findPropertyValue(result, 'JourneyRef');\r
+
+        \                \r
+
+        \                // Extract the ActiveOperatingDayRef value\r
+
+        \                const activeOperatingDayRef = findPropertyValue(result, 'OperatingDayRef');\r
+
+        \r
+
+        \                // Set the ActiveJourneyRef variable\r
+
+        \                bru.setGlobalEnvVar('ActiveJourneyRef', activeJourneyRef);\r
+
+        \                \r
+
+        \                // Set the ActiveOperatingDayRef variable\r
+
+        \                bru.setGlobalEnvVar('ActiveOperatingDayRef', activeOperatingDayRef);\r
+
+        \r
+
+        \                // Print to the console\r
+
+        \                console.log('ActiveJourneyRef:', activeJourneyRef);\r
+
+        \                console.log('ActiveOperatingDayRef:', activeOperatingDayRef);\r
+
+        \            }\r
+
+        \        });\r
+
+        \    }\r
+
+        });\r
+
+        \r
+
+        // Helper function to find property value in the response\r
+
+        function findPropertyValue(obj, propertyName) {\r
+
+        \    for (const key in obj) {\r
+
+        \        if (key.includes(propertyName)) {\r
+
+        \            return obj[key];\r
+
+        \        } else if (typeof obj[key] === 'object') {\r
+
+        \            const result = findPropertyValue(obj[key], propertyName);\r
+
+        \            if (result) {\r
+
+        \                return result;\r
+
+        \            }\r
+
+        \        }\r
+
+        \    }\r
+
+        \    return null;\r
+
+        }"
+    - type: after-response
+      code: "test(\"Body matches string\", function () {\r
+
+        \    expect(res.getBody()?.toString()).to.include(\"LinkProjection\");\r
+
+        });"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
